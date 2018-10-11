@@ -15,7 +15,9 @@ FogVMDelegatecall class >> byteCode [
 
 { #category : #'as yet unclassified' }
 FogVMDelegatecall class >> description [ 
+
 	^ 'Message-call into this account with an alternative accounts code, but persisting the current values for it sender and it value'
+
 ]
 
 { #category : #generated }

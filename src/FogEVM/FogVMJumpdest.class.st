@@ -32,7 +32,7 @@ FogVMJumpdest class >> expectedPushes [
 
 { #category : #'as yet unclassified' }
 FogVMJumpdest class >> gas [
-		^ self gasTable at: #params.JumpdestGas.
+		^ self gasTable at: #JumpdestGas.
 
 ]
 

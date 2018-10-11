@@ -16,6 +16,7 @@ FogVMDifficulty class >> byteCode [
 { #category : #'as yet unclassified' }
 FogVMDifficulty class >> description [ 
 	^ 'Get the blocks difficulty'
+
 ]
 
 { #category : #generated }

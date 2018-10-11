@@ -52,7 +52,7 @@ FogVMLog1 class >> goCode [
 			Topics:  topics,
 			Data:    d,
 			// This is a non-consensus field, but assigned here because
-			// core/state doesn't know the current block number.
+			// core/state doesnt know the current block number.
 			BlockNumber: interpreter.evm.BlockNumber.Uint64(),
 		})
 

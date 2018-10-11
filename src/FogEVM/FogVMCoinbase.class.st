@@ -16,6 +16,7 @@ FogVMCoinbase class >> byteCode [
 { #category : #'as yet unclassified' }
 FogVMCoinbase class >> description [ 
 	^ 'Get the blocks beneficiary address'
+
 ]
 
 { #category : #generated }

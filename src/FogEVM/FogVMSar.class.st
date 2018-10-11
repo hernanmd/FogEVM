@@ -34,7 +34,7 @@ FogVMSar class >> gas [
 { #category : #generated }
 FogVMSar class >> goCode [
 	^ 'func opSAR(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	// Note, S256 returns (potentially) a new bigint, so we're popping, not peeking this one
+	// Note, S256 returns (potentially) a new bigint, so were popping, not peeking this one
 	shift, value := math.U256(stack.pop()), math.S256(stack.pop())
 	defer interpreter.intPool.put(shift) // First operand back into the pool
 
