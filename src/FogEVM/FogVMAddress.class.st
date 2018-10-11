@@ -13,6 +13,11 @@ FogVMAddress class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMAddress class >> description [ 
+	^ 'Get address of currently executing account'
+]
+
 { #category : #generated }
 FogVMAddress class >> expectedPops [
 		^0.
@@ -23,6 +28,19 @@ FogVMAddress class >> expectedPops [
 FogVMAddress class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMAddress class >> gas [
+		^ self gasTable at: #GasQuickStep.
+
+]
+
+{ #category : #generated }
+FogVMAddress class >> goCode [
+	^ 'func opAddress(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	stack.push(contract.Address().Big())
+	retur'
 ]
 
 { #category : #generated }

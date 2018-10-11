@@ -13,6 +13,11 @@ FogVMInvalid class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMInvalid class >> description [ 
+	^ 'Designated invalid instruction'
+]
+
 { #category : #generated }
 FogVMInvalid class >> expectedPops [
 		^0.
@@ -23,6 +28,11 @@ FogVMInvalid class >> expectedPops [
 FogVMInvalid class >> expectedPushes [
 		^0.
 	
+]
+
+{ #category : #generated }
+FogVMInvalid class >> goCode [
+	^ ''
 ]
 
 { #category : #generated }

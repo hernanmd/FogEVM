@@ -10,7 +10,17 @@ Class {
 	#category : 'FogEVM-ByteCode'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #assertion }
+FogEVMInstruction class >> assert: aValue equals: anExpected [
+	self assert: aValue = anExpected
+]
+
+{ #category : #asserting }
+FogEVMInstruction class >> assert: aString in: aCollection [
+	self assert: (aCollection anySatisfy: [ :s | s = aString ])
+]
+
+{ #category : #generating }
 FogEVMInstruction class >> bootstrapInstructions [
 	self
 		register: '0x00'
@@ -443,7 +453,8 @@ FogEVMInstruction class >> bootstrapInstructions [
 		and: 'DELEGATECALL'
 		and: '6'
 		and: '1'
-		and: 'Message-call into this account with an alternative account''s code, but persisting the current values for it sender and it value'.
+		and:
+			'Message-call into this account with an alternative account''s code, but persisting the current values for it sender and it value'.
 	self
 		register: '0xfe'
 		and: 'INVALID'
@@ -455,17 +466,82 @@ FogEVMInstruction class >> bootstrapInstructions [
 		and: 'SELFDESTRUCT'
 		and: '1'
 		and: '0'
-		and: 'Halt execution and register account for later deletion'
+		and: 'Halt execution and register account for later deletion'.
+	self
+		register: (FogVMByte byteCode asBKNumber + 1) asBKHexa
+		and: 'SHL'
+		and: 2
+		and: 1
+		and: 'Shift val left by shift bits, filling with zero bits'.
+	self
+		register: (FogVMByte byteCode asBKNumber + 2) asBKHexa
+		and: 'SHR'
+		and: 2
+		and: 1
+		and: 'Shift val right by shift bits, filling with zero bits.'.
+	self
+		register: (FogVMByte byteCode asBKNumber + 3) asBKHexa
+		and: 'SAR'
+		and: 2
+		and: 1
+		and:
+			'The SAR instruction (arithmetic shift right) pops 2 values from the stack, first arg1 and then arg2 '.
+	self
+		register: (FogVMDelegatecall byteCode asBKNumber + 1) asBKHexa
+		and: 'CREATE2'
+		and: 4
+		and: 1
+		and: ' New create routine '.
+	self
+		register: (FogVMDelegatecall byteCode asBKNumber + 2) asBKHexa
+		and: 'STATICCALL'
+		and: 6
+		and: 1
+		and: ' Documentation shows nothuing about this'.
+	self
+		register: (FogVMExtcodecopy byteCode asBKNumber + 3) asBKHexa
+		and: 'EXTCODEHASH'
+		and: 1
+		and: 1
+		and: ' opExtCodeHash returns the code hash of a specified account.'.
+	self
+		register: (FogVMExtcodecopy byteCode asBKNumber + 1) asBKHexa
+		and: 'RETURNDATASIZE'
+		and: 0
+		and: 1
+		and: ' Documentation says nothing about'.
+	self
+		register: (FogVMExtcodecopy byteCode asBKNumber + 2) asBKHexa
+		and: 'RETURNDATACOPY'
+		and: 3
+		and: 0
+		and: ' Documentation says nothing about'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'matching with go vm - crawling pandora box' }
+FogEVMInstruction class >> checkUnImplementedBytecodes [
+	| stream codes |
+	stream := 'opcodes.go' asFileReference readStream.
+	stream upToAll: 'var stringToOp = map[string]OpCode{'.
+	codes := Set new.
+	[ stream atEnd ]
+		whileFalse: [ codes
+				add:
+					(stream
+						upTo: $:;
+						upTo: $,) trimBoth ].
+	^ codes
+		reject: [ :c | c isEmpty or: [ Smalltalk globals includesKey: ('FogVM{1}' format: {c asLowercase capitalized}) asSymbol ] ]
+]
+
+{ #category : #generating }
 FogEVMInstruction class >> codeOpClassMethod: anAmount [
 	^ 'byteCode
 		^''{1}''.
 	' format: {anAmount}
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #generating }
 FogEVMInstruction class >> createSubclassFor: aMnemoic [
 	^ FogEVMInstruction
 		subclass: ('FogVM' , aMnemoic asLowercase capitalized) asSymbol
@@ -474,7 +550,22 @@ FogEVMInstruction class >> createSubclassFor: aMnemoic [
 		package: 'FogEVMByteCode'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'go configuration - crawling pandora box' }
+FogEVMInstruction class >> execute: aString [
+	| content |
+	content := aString trimBoth.
+	content := content copyReplaceAll: '(' with: ''.
+	content := content copyReplaceAll: ')' with: ''.
+	content := content readStream upTo: $,.
+
+	self
+		assert: content asLowercase
+		in:
+			{('op' , self mnemonicForCrawl asLowercase).
+			('make' , self mnemonicForCrawl asLowercase)}
+]
+
+{ #category : #generated }
 FogEVMInstruction class >> expectedPops [
 	self shouldBeImplemented.
 ]
@@ -484,19 +575,148 @@ FogEVMInstruction class >> expectedPushes [
 	self shouldBeImplemented.
 ]
 
+{ #category : #'matching with go vm - crawling pandora box' }
+FogEVMInstruction class >> fetchGoCode [
+	| stream lowcaseStream selector bytes goCode |
+	stream := 'instructions.go' asFileReference readStream.
+	lowcaseStream := stream contents asLowercase readStream.
+	selector := 'func op' , self mnemonic asLowercase.
+	lowcaseStream upToAll: selector.
+	stream position: lowcaseStream position - selector size.
+	bytes := (lowcaseStream upToAll: 'func') size.
+	goCode := stream next: bytes.
+	self class
+		compile:
+			('goCode
+	^ ''{1}''' format: {goCode})
+		classified: #generated
+]
+
+{ #category : #'matching with go vm - crawling pandora box' }
+FogEVMInstruction class >> fetchGoInstructionConf [
+	| stream selector confstream setter |
+	self allSubclasses ifNotEmpty: [ ^ self ].
+	stream := 'jump_table.go' asFileReference readStream.
+	selector := 'instructionSet[' , self mnemonic , ']'.
+	stream upToAll: selector.
+	stream atEnd
+		ifTrue: [ stream position: 1.
+			stream upToAll: (',
+		',self mnemonic , ':') ].
+	stream upTo: ${.
+	confstream := (stream upTo: $}) contents readStream.
+	[ confstream atEnd ]
+		whileFalse: [ setter := ((confstream upTo: $:) trimBoth , ':') asSymbol.
+			setter = #':'
+				ifTrue: [ ^ self ].
+			self perform: setter with: (confstream upTo: Character lf) ]
+]
+
+{ #category : #accessing }
+FogEVMInstruction class >> gas [ 	
+	self subclassResponsibility 
+]
+
+{ #category : #'matching with go vm - crawling pandora box' }
+FogEVMInstruction class >> gasCost: aString [
+	| stream gasTag |
+	stream := aString trimBoth readStream.
+	stream upTo: $(.
+	gasTag := stream atEnd
+		ifTrue: [ stream position: 0.
+			stream upTo: $, ]
+		ifFalse: [ stream peek isDigit
+				ifTrue: [ stream position: 0.
+					stream upTo: $( ]
+				ifFalse: [ stream upTo: $) ] ].
+	^ self class
+		compile:
+			('gas
+		^ self gasTable at: #{1}.
+' format: {gasTag})
+]
+
+{ #category : #testing }
+FogEVMInstruction class >> halts [
+	^ false 
+]
+
+{ #category : #'go configuration - crawling pandora box' }
+FogEVMInstruction class >> halts: aString [
+	| stream boolean |
+	stream := aString trimBoth readStream.
+	stream upTo: $(.
+	boolean := stream atEnd
+		ifTrue: [ stream position: 0.
+			stream upTo: $, ]
+		ifFalse: [ stream upTo: $) ].
+	^ self class
+		compile:
+			('halts
+		^ {1}.
+' format: {boolean})
+]
+
 { #category : #accessing }
 FogEVMInstruction class >> instance [
 	^ instance ifNil: [ instance  := self new  ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
+FogEVMInstruction class >> jumps [
+	^ false 
+]
+
+{ #category : #'go configuration - crawling pandora box' }
+FogEVMInstruction class >> jumps: aString [ 
+	| stream boolean |
+	stream := aString trimBoth readStream.
+	stream upTo: $(.
+	boolean := stream atEnd
+		ifTrue: [ stream position: 0.
+			stream upTo: $, ]
+		ifFalse: [ stream upTo: $) ].
+	^ self class
+		compile:
+			('jumps
+		^ {1}.
+' format: {boolean})
+]
+
+{ #category : #'go configuration - crawling pandora box' }
+FogEVMInstruction class >> memorySize: aString [
+	| stream memoryTag |
+	stream := aString trimBoth readStream.
+	stream upTo: $(.
+	memoryTag := stream atEnd
+		ifTrue: [ stream position: 0.
+			stream upTo: $, ]
+		ifFalse: [ stream upTo: $) ].
+	^ self class 
+		compile:
+			('memoryUsage
+		^ self memoryTable at: #{1}.
+' format: {memoryTag})
+]
+
+{ #category : #accessing }
+FogEVMInstruction class >> memoryUsage [
+	^ 0
+]
+
+{ #category : #generating }
 FogEVMInstruction class >> mnemonicClassMethod: anAmount [
 	^ 'mnemonic
 		^''{1}''.
 	' format: {anAmount}
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'go configuration - crawling pandora box' }
+FogEVMInstruction class >> mnemonicForCrawl [
+	^ self mnemonic 
+]
+
+{ #category : #generating }
 FogEVMInstruction class >> register: aCodeOp and: aMnemoic and: stackPops and: stackPushes and: aDescription [
 	| class |
 	class := self createSubclassFor: aMnemoic.
@@ -507,18 +727,74 @@ FogEVMInstruction class >> register: aCodeOp and: aMnemoic and: stackPops and: s
 	(self mnemonicClassMethod: aMnemoic)} do: [ :m | class class compile: m classified: 'generated' ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
+FogEVMInstruction class >> returns [
+	^ false 
+]
+
+{ #category : #'go configuration - crawling pandora box' }
+FogEVMInstruction class >> returns: aString [
+	| stream boolean |
+	stream := aString trimBoth readStream.
+	stream upTo: $(.
+	boolean := stream atEnd
+		ifTrue: [ stream position: 0.
+			stream upTo: $, ]
+		ifFalse: [ stream upTo: $) ].
+	^ self class
+		compile:
+			('returns
+		^ {1}.
+' format: {boolean})
+]
+
+{ #category : #testing }
+FogEVMInstruction class >> reverts [
+	^ false 
+]
+
+{ #category : #generating }
 FogEVMInstruction class >> stackPopsClassMethod: anAmount [
 	^ 'expectedPops
 		^{1}.
 	' format: {anAmount}
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #generating }
 FogEVMInstruction class >> stackPushesClassMethod: anAmount [
 	^ 'expectedPushes
 		^{1}.
 	' format: {anAmount}
+]
+
+{ #category : #'go configuration - crawling pandora box' }
+FogEVMInstruction class >> valid: aString [
+	self assert: (aString trimBoth beginsWith: 'true')
+]
+
+{ #category : #'go configuration - crawling pandora box' }
+FogEVMInstruction class >> validateStack: aString [
+	| stream |
+	stream := aString readStream.
+	stream upTo: $(.
+	self assert: self expectedPops equals: (stream upTo: $,) trimBoth asNumber.
+	self assert: self expectedPushes equals: (stream upTo: $)) trimBoth asNumber
+]
+
+{ #category : #'go configuration - crawling pandora box' }
+FogEVMInstruction class >> writes: aString [
+	| stream boolean |
+	stream := aString trimBoth readStream.
+	stream upTo: $(.
+	boolean := stream atEnd
+		ifTrue: [ stream position: 0.
+			stream upTo: $, ]
+		ifFalse: [ stream upTo: $) ].
+	^ self class
+		compile:
+			('writes
+		^ {1}.
+' format: {boolean})
 ]
 
 { #category : #generated }
@@ -565,7 +841,7 @@ FogEVMInstruction >> isFinishStatus [
 
 { #category : #generated }
 FogEVMInstruction >> isPush [
-	^false 
+	^ false
 ]
 
 { #category : #generated }

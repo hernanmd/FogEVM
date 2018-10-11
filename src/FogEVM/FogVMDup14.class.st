@@ -13,6 +13,11 @@ FogVMDup14 class >> byteCode [
 ]
 
 { #category : #'as yet unclassified' }
+FogVMDup14 class >> description [ 
+	^ 'Duplicates the item 14 at the stack and push it'
+]
+
+{ #category : #'as yet unclassified' }
 FogVMDup14 class >> expectedPops [ 
 	^14
 ]
@@ -20,6 +25,24 @@ FogVMDup14 class >> expectedPops [
 { #category : #'as yet unclassified' }
 FogVMDup14 class >> expectedPushes [ 
 	^15
+]
+
+{ #category : #'as yet unclassified' }
+FogVMDup14 class >> gas [
+		^ self gasTable at: #gasDup.
+
+]
+
+{ #category : #generated }
+FogVMDup14 class >> goCode [
+	^ 'func makeDup(size int64) executionFunc {
+	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+		stack.dup(interpreter.intPool, int(size))
+		return nil, nil
+	}
+}
+
+// ma'
 ]
 
 { #category : #'as yet unclassified' }

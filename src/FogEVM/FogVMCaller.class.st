@@ -13,6 +13,11 @@ FogVMCaller class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMCaller class >> description [ 
+	^ 'Get caller address'
+]
+
 { #category : #generated }
 FogVMCaller class >> expectedPops [
 		^0.
@@ -23,6 +28,19 @@ FogVMCaller class >> expectedPops [
 FogVMCaller class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMCaller class >> gas [
+		^ self gasTable at: #GasQuickStep.
+
+]
+
+{ #category : #generated }
+FogVMCaller class >> goCode [
+	^ 'func opCaller(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	stack.push(contract.Caller().Big())
+	return'
 ]
 
 { #category : #generated }

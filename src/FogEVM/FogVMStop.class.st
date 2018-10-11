@@ -13,6 +13,11 @@ FogVMStop class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMStop class >> description [ 
+	^ 'Halts execution'
+]
+
 { #category : #generated }
 FogVMStop class >> expectedPops [
 		^0.
@@ -23,6 +28,17 @@ FogVMStop class >> expectedPops [
 FogVMStop class >> expectedPushes [
 		^0.
 	
+]
+
+{ #category : #generated }
+FogVMStop class >> gas [
+	^ self gasTable at: #constGasFunc
+]
+
+{ #category : #generated }
+FogVMStop class >> goCode [
+	^ 'func opStop(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	return n'
 ]
 
 { #category : #generated }

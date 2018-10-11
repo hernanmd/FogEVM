@@ -13,6 +13,11 @@ FogVMNumber class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMNumber class >> description [ 
+	^ 'Get the block's number'
+]
+
 { #category : #generated }
 FogVMNumber class >> expectedPops [
 		^0.
@@ -23,6 +28,19 @@ FogVMNumber class >> expectedPops [
 FogVMNumber class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMNumber class >> gas [
+		^ self gasTable at: #GasQuickStep.
+
+]
+
+{ #category : #generated }
+FogVMNumber class >> goCode [
+	^ 'func opNumber(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.BlockNumber)))
+	return'
 ]
 
 { #category : #generated }

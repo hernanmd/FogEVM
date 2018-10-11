@@ -13,6 +13,11 @@ FogVMExtcodesize class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMExtcodesize class >> description [ 
+	^ 'Get size of an account's code'
+]
+
 { #category : #generated }
 FogVMExtcodesize class >> expectedPops [
 		^1.
@@ -23,6 +28,21 @@ FogVMExtcodesize class >> expectedPops [
 FogVMExtcodesize class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMExtcodesize class >> gas [
+		^ self gasTable at: #gasExtCodeSize.
+
+]
+
+{ #category : #generated }
+FogVMExtcodesize class >> goCode [
+	^ 'func opExtCodeSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	slot := stack.peek()
+	slot.SetUint64(uint64(interpreter.evm.StateDB.GetCodeSize(common.BigToAddress(slot))))
+
+	r'
 ]
 
 { #category : #generated }

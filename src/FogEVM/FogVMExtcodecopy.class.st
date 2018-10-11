@@ -13,6 +13,11 @@ FogVMExtcodecopy class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMExtcodecopy class >> description [ 
+	^ 'Copy an account's code to memory'
+]
+
 { #category : #generated }
 FogVMExtcodecopy class >> expectedPops [
 		^4.
@@ -23,6 +28,38 @@ FogVMExtcodecopy class >> expectedPops [
 FogVMExtcodecopy class >> expectedPushes [
 		^0.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMExtcodecopy class >> gas [
+		^ self gasTable at: #gasExtCodeCopy.
+
+]
+
+{ #category : #generated }
+FogVMExtcodecopy class >> goCode [
+	^ 'func opExtCodeCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	var (
+		addr       = common.BigToAddress(stack.pop())
+		memOffset  = stack.pop()
+		codeOffset = stack.pop()
+		length     = stack.pop()
+	)
+	codeCopy := getDataBig(interpreter.evm.StateDB.GetCode(addr), codeOffset, length)
+	memory.Set(memOffset.Uint64(), length.Uint64(), codeCopy)
+
+	interpreter.intPool.put(memOffset, codeOffset, length)
+	return nil, nil
+}
+
+// opExtCodeHash returns the code hash of a specified account.
+// There are sever'
+]
+
+{ #category : #'as yet unclassified' }
+FogVMExtcodecopy class >> memoryUsage [
+		^ self memoryTable at: #memoryExtCodeCopy.
+
 ]
 
 { #category : #generated }

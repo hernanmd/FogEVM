@@ -13,6 +13,11 @@ FogVMTimestamp class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMTimestamp class >> description [ 
+	^ 'Get the block's timestamp'
+]
+
 { #category : #generated }
 FogVMTimestamp class >> expectedPops [
 		^0.
@@ -23,6 +28,19 @@ FogVMTimestamp class >> expectedPops [
 FogVMTimestamp class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMTimestamp class >> gas [
+		^ self gasTable at: #GasQuickStep.
+
+]
+
+{ #category : #generated }
+FogVMTimestamp class >> goCode [
+	^ 'func opTimestamp(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.Time)))
+	ret'
 ]
 
 { #category : #generated }

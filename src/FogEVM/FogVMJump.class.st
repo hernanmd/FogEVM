@@ -13,6 +13,11 @@ FogVMJump class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMJump class >> description [ 
+	^ 'Alter the program counter'
+]
+
 { #category : #generated }
 FogVMJump class >> expectedPops [
 		^1.
@@ -23,6 +28,32 @@ FogVMJump class >> expectedPops [
 FogVMJump class >> expectedPushes [
 		^0.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMJump class >> gas [
+		^ self gasTable at: #GasMidStep.
+
+]
+
+{ #category : #generated }
+FogVMJump class >> goCode [
+	^ 'func opJump(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	pos := stack.pop()
+	if !contract.validJumpdest(pos) {
+		nop := contract.GetOp(pos.Uint64())
+		return nil, fmt.Errorf("invalid jump destination (%v) %v", nop, pos)
+	}
+	*pc = pos.Uint64()
+
+	interpreter.intPool.put(pos)
+	return n'
+]
+
+{ #category : #'as yet unclassified' }
+FogVMJump class >> jumps [
+		^ true.
+
 ]
 
 { #category : #generated }

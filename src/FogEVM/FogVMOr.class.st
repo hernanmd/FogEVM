@@ -13,6 +13,11 @@ FogVMOr class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMOr class >> description [ 
+	^ 'Bitwise OR operation'
+]
+
 { #category : #generated }
 FogVMOr class >> expectedPops [
 		^2.
@@ -23,6 +28,22 @@ FogVMOr class >> expectedPops [
 FogVMOr class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMOr class >> gas [
+		^ self gasTable at: #GasFastestStep.
+
+]
+
+{ #category : #generated }
+FogVMOr class >> goCode [
+	^ 'func opOr(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	x, y := stack.pop(), stack.peek()
+	y.Or(x, y)
+
+	interpreter.intPool.put(x)
+	return nil'
 ]
 
 { #category : #generated }

@@ -13,6 +13,11 @@ FogVMSelfdestruct class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMSelfdestruct class >> description [ 
+	^ 'Halt execution and register account for later deletion'
+]
+
 { #category : #generated }
 FogVMSelfdestruct class >> expectedPops [
 		^1.
@@ -25,8 +30,36 @@ FogVMSelfdestruct class >> expectedPushes [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMSelfdestruct class >> gas [
+		^ self gasTable at: #gasSuicide.
+
+]
+
+{ #category : #generated }
+FogVMSelfdestruct class >> goCode [
+	^ ''
+]
+
+{ #category : #'as yet unclassified' }
+FogVMSelfdestruct class >> halts [
+		^ true.
+
+]
+
 { #category : #generated }
 FogVMSelfdestruct class >> mnemonic [
 		^'SELFDESTRUCT'.
 	
+]
+
+{ #category : #generated }
+FogVMSelfdestruct class >> mnemonicForCrawl [
+	^ 'SUICIDE'
+]
+
+{ #category : #'as yet unclassified' }
+FogVMSelfdestruct class >> writes [
+		^ true.
+
 ]

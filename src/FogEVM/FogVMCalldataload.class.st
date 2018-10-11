@@ -13,6 +13,11 @@ FogVMCalldataload class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMCalldataload class >> description [ 
+	^ 'Get input data of current environment'
+]
+
 { #category : #generated }
 FogVMCalldataload class >> expectedPops [
 		^1.
@@ -23,6 +28,19 @@ FogVMCalldataload class >> expectedPops [
 FogVMCalldataload class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMCalldataload class >> gas [
+		^ self gasTable at: #GasFastestStep.
+
+]
+
+{ #category : #generated }
+FogVMCalldataload class >> goCode [
+	^ 'func opCallDataLoad(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	stack.push(interpreter.intPool.get().SetBytes(getDataBig(contract.Input, stack.pop(), big32)))
+	'
 ]
 
 { #category : #generated }

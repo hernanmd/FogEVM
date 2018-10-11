@@ -13,6 +13,11 @@ FogVMCalldatasize class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMCalldatasize class >> description [ 
+	^ 'Get size of input data in current environment'
+]
+
 { #category : #generated }
 FogVMCalldatasize class >> expectedPops [
 		^0.
@@ -23,6 +28,19 @@ FogVMCalldatasize class >> expectedPops [
 FogVMCalldatasize class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMCalldatasize class >> gas [
+		^ self gasTable at: #GasQuickStep.
+
+]
+
+{ #category : #generated }
+FogVMCalldatasize class >> goCode [
+	^ 'func opCallDataSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	stack.push(interpreter.intPool.get().SetInt64(int64(len(contract.Input))))
+	'
 ]
 
 { #category : #generated }

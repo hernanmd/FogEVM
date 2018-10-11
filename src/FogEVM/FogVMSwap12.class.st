@@ -13,13 +13,34 @@ FogVMSwap12 class >> byteCode [
 ]
 
 { #category : #'as yet unclassified' }
-FogVMSwap12 class >> expectedPops [ 
-	^12
+FogVMSwap12 class >> description [ 
+	^ 'Exchange 1st and 12 stack items.'
 ]
 
 { #category : #'as yet unclassified' }
-FogVMSwap12 class >> expectedPushes [ 
-	^12
+FogVMSwap12 class >> expectedPops [
+	^ 13
+]
+
+{ #category : #'as yet unclassified' }
+FogVMSwap12 class >> expectedPushes [
+	^ 13
+]
+
+{ #category : #'as yet unclassified' }
+FogVMSwap12 class >> gas [
+		^ self gasTable at: #gasSwap.
+
+]
+
+{ #category : #generated }
+FogVMSwap12 class >> goCode [
+	^ 'func makeSwap(size int64) executionFunc {
+	// switch n + 1 otherwise n would be swapped with n
+	size++
+	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+		stack.swap(int(size))
+		'
 ]
 
 { #category : #'as yet unclassified' }

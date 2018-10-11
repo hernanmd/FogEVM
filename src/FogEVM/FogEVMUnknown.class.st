@@ -1,12 +1,20 @@
+"
+UNKNOWN
+"
 Class {
 	#name : #FogEVMUnknown,
 	#superclass : #FogEVMInstruction,
-	#category : 'FogEVM-ByteCode'
+	#category : #'FogEVM-ByteCode'
 }
 
 { #category : #generated }
 FogEVMUnknown class >> byteCode [
 		^ nil 
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMUnknown class >> description [ 
+	^ 'UNKNOWN'
 ]
 
 { #category : #generated }
@@ -22,6 +30,11 @@ FogEVMUnknown class >> expectedPushes [
 ]
 
 { #category : #generated }
+FogEVMUnknown class >> goCode [
+	^ ''
+]
+
+{ #category : #generated }
 FogEVMUnknown class >> mnemonic [ 
-	^ 'UNKNOWN!s'
+	^ 'UNKNOWN'
 ]

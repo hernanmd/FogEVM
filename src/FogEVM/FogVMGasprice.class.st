@@ -13,6 +13,11 @@ FogVMGasprice class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMGasprice class >> description [ 
+	^ 'Get price of gas in current environment'
+]
+
 { #category : #generated }
 FogVMGasprice class >> expectedPops [
 		^0.
@@ -23,6 +28,19 @@ FogVMGasprice class >> expectedPops [
 FogVMGasprice class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMGasprice class >> gas [
+		^ self gasTable at: #GasQuickStep.
+
+]
+
+{ #category : #generated }
+FogVMGasprice class >> goCode [
+	^ 'func opGasprice(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	stack.push(interpreter.intPool.get().Set(interpreter.evm.GasPrice))
+	retu'
 ]
 
 { #category : #generated }

@@ -13,6 +13,11 @@ FogVMCoinbase class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMCoinbase class >> description [ 
+	^ 'Get the block's beneficiary address'
+]
+
 { #category : #generated }
 FogVMCoinbase class >> expectedPops [
 		^0.
@@ -23,6 +28,19 @@ FogVMCoinbase class >> expectedPops [
 FogVMCoinbase class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMCoinbase class >> gas [
+		^ self gasTable at: #GasQuickStep.
+
+]
+
+{ #category : #generated }
+FogVMCoinbase class >> goCode [
+	^ 'func opCoinbase(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	stack.push(interpreter.evm.Coinbase.Big())
+	retu'
 ]
 
 { #category : #generated }

@@ -18,6 +18,11 @@ FogVMPush class >> byteCode [
 	^ 'no-meaning'
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMPush class >> description [ 
+	^ 'Place N bytes item on stack'
+]
+
 { #category : #generated }
 FogVMPush class >> expectedPops [
 		^0.
@@ -28,6 +33,50 @@ FogVMPush class >> expectedPops [
 FogVMPush class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #generated }
+FogVMPush class >> fetchGoCode [
+	| stream lowcaseStream selector bytes goCode |
+	stream := 'instructions.go' asFileReference readStream.
+	lowcaseStream := stream contents asLowercase readStream.
+	selector := 'func makePush' asLowercase.
+	lowcaseStream upToAll: selector.
+	stream position: lowcaseStream position - selector size.
+	bytes := (lowcaseStream upToAll: 'func') size + (lowcaseStream upToAll: 'func') size + (lowcaseStream upToAll: 'func') size.
+	goCode := stream next: bytes.
+	self class
+		compile:
+			('goCode
+	^ ''{1}''' format: {goCode})
+		classified: #generated
+]
+
+{ #category : #generated }
+FogVMPush class >> goCode [
+	^ 'func makePush(size uint64, pushByteSize int) executionFunc {
+	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+		codeLen := len(contract.Code)
+
+		startMin := codeLen
+		if int(*pc+1) < startMin {
+			startMin = int(*pc + 1)
+		}
+
+		endMin := codeLen
+		if startMin+pushByteSize < endMin {
+			endMin = startMin + pushByteSize
+		}
+
+		integer := interpreter.intPool.get()
+		stack.push(integer.SetBytes(common.RightPadBytes(contract.Code[startMin:endMin], pushByteSize)))
+
+		*pc += size
+		return nil, nil
+	}
+}
+
+// '
 ]
 
 { #category : #generated }

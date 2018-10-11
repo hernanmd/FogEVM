@@ -13,6 +13,11 @@ FogVMMul class >> byteCode [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+FogVMMul class >> description [ 
+	^ 'Multiplication operation'
+]
+
 { #category : #generated }
 FogVMMul class >> expectedPops [
 		^2.
@@ -23,6 +28,23 @@ FogVMMul class >> expectedPops [
 FogVMMul class >> expectedPushes [
 		^1.
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogVMMul class >> gas [
+		^ self gasTable at: #GasFastStep.
+
+]
+
+{ #category : #generated }
+FogVMMul class >> goCode [
+	^ 'func opMul(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	x, y := stack.pop(), stack.pop()
+	stack.push(math.U256(x.Mul(x, y)))
+
+	interpreter.intPool.put(y)
+
+	return ni'
 ]
 
 { #category : #generated }
