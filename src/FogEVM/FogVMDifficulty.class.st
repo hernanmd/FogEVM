@@ -1,5 +1,5 @@
 "
-Get the block's difficulty
+Get the blocks difficulty
 "
 Class {
 	#name : #FogVMDifficulty,
@@ -15,7 +15,7 @@ FogVMDifficulty class >> byteCode [
 
 { #category : #'as yet unclassified' }
 FogVMDifficulty class >> description [ 
-	^ 'Get the block's difficulty'
+	^ 'Get the blocks difficulty'
 ]
 
 { #category : #generated }

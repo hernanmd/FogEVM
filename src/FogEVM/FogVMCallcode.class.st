@@ -1,5 +1,5 @@
 "
-Message-call into this account with an alternative account's code
+Message-call into this account with an alternative accounts code
 "
 Class {
 	#name : #FogVMCallcode,
@@ -15,7 +15,7 @@ FogVMCallcode class >> byteCode [
 
 { #category : #'as yet unclassified' }
 FogVMCallcode class >> description [ 
-	^ 'Message-call into this account with an alternative account's code'
+	^ 'Message-call into this account with an alternative accounts code'
 ]
 
 { #category : #generated }

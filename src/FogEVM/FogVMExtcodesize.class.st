@@ -1,5 +1,5 @@
 "
-Get size of an account's code
+Get size of an accounts code
 "
 Class {
 	#name : #FogVMExtcodesize,
@@ -15,7 +15,7 @@ FogVMExtcodesize class >> byteCode [
 
 { #category : #'as yet unclassified' }
 FogVMExtcodesize class >> description [ 
-	^ 'Get size of an account's code'
+	^ 'Get size of an accounts code'
 ]
 
 { #category : #generated }

@@ -1,5 +1,5 @@
 "
-Get the block's number
+Get the blocks number
 "
 Class {
 	#name : #FogVMNumber,
@@ -15,7 +15,7 @@ FogVMNumber class >> byteCode [
 
 { #category : #'as yet unclassified' }
 FogVMNumber class >> description [ 
-	^ 'Get the block's number'
+	^ 'Get the blocks number'
 ]
 
 { #category : #generated }

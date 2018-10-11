@@ -1,5 +1,5 @@
 "
-Get the block's beneficiary address
+Get the blocks beneficiary address
 "
 Class {
 	#name : #FogVMCoinbase,
@@ -15,7 +15,7 @@ FogVMCoinbase class >> byteCode [
 
 { #category : #'as yet unclassified' }
 FogVMCoinbase class >> description [ 
-	^ 'Get the block's beneficiary address'
+	^ 'Get the blocks beneficiary address'
 ]
 
 { #category : #generated }

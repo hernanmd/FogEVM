@@ -1,5 +1,5 @@
 "
-Get the block's gas limit
+Get the blocks gas limit
 "
 Class {
 	#name : #FogVMGaslimit,
@@ -15,7 +15,7 @@ FogVMGaslimit class >> byteCode [
 
 { #category : #'as yet unclassified' }
 FogVMGaslimit class >> description [ 
-	^ 'Get the block's gas limit'
+	^ 'Get the blocks gas limit'
 ]
 
 { #category : #generated }

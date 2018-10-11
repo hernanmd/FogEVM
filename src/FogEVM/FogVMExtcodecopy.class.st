@@ -1,5 +1,5 @@
 "
-Copy an account's code to memory
+Copy an accounts code to memory
 "
 Class {
 	#name : #FogVMExtcodecopy,
@@ -15,7 +15,7 @@ FogVMExtcodecopy class >> byteCode [
 
 { #category : #'as yet unclassified' }
 FogVMExtcodecopy class >> description [ 
-	^ 'Copy an account's code to memory'
+	^ 'Copy an accounts code to memory'
 ]
 
 { #category : #generated }

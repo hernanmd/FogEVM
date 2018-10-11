@@ -15,7 +15,7 @@ FogVMTimestamp class >> byteCode [
 
 { #category : #'as yet unclassified' }
 FogVMTimestamp class >> description [ 
-	^ 'Get the block's timestamp'
+	^ 'Get the blocks timestamp'
 ]
 
 { #category : #generated }
