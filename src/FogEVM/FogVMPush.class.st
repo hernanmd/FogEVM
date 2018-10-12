@@ -142,3 +142,8 @@ FogVMPush >> printOn: aStream [
 FogVMPush >> pushable [
 	^ parameter 
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMPush >> size [
+	^ super size + bytes
+]

@@ -8,21 +8,21 @@ Class {
 }
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForADD [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opAdd(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	math.U256(y.Add(x, y))
-
-	interpreter.intPool.put(x)
-	return ni"
-		
-		^ bytecode.
-		
-		
+FogEVMUnitaryTest >> createBytecodeForADD: aValue plus: oValue [
+	| bytecode stream |
+	bytecode := FogEVMByteCode
+		new.
+	stream := bytecode
+		writeStream.
+	stream
+		nextPutPush3: aValue.
+	stream
+		nextPutPush3: oValue.
+	stream
+		nextPutAdd.
+	stream
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -42,7 +42,7 @@ FogEVMUnitaryTest >> createBytecodeForADDMOD [
 	}
 	interpreter.intPool.put(y, z)
 	return"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -57,7 +57,7 @@ FogEVMUnitaryTest >> createBytecodeForADDRESS [
 		func opAddress(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(contract.Address().Big())
 	retur"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -75,7 +75,7 @@ FogEVMUnitaryTest >> createBytecodeForAND [
 
 	interpreter.intPool.put(y)
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -91,7 +91,7 @@ FogEVMUnitaryTest >> createBytecodeForBALANCE [
 	slot := stack.peek()
 	slot.Set(interpreter.evm.StateDB.GetBalance(common.BigToAddress(slot)))
 	retur"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -114,7 +114,7 @@ FogEVMUnitaryTest >> createBytecodeForBLOCKHASH [
 	}
 	interpreter.intPool.put(num, n)
 	ret"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -136,7 +136,7 @@ FogEVMUnitaryTest >> createBytecodeForBYTE [
 	}
 	interpreter.intPool.put(th)
 	return n"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -151,7 +151,7 @@ FogEVMUnitaryTest >> createBytecodeForCALL [
 		func opCaller(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(contract.Caller().Big())
 	return n"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -190,7 +190,7 @@ FogEVMUnitaryTest >> createBytecodeForCALLCODE [
 
 	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
 	retu"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -212,7 +212,7 @@ FogEVMUnitaryTest >> createBytecodeForCALLDATACOPY [
 
 	interpreter.intPool.put(memOffset, dataOffset, length)
 	"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -227,7 +227,7 @@ FogEVMUnitaryTest >> createBytecodeForCALLDATALOAD [
 		func opCallDataLoad(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetBytes(getDataBig(contract.Input, stack.pop(), big32)))
 	"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -242,7 +242,7 @@ FogEVMUnitaryTest >> createBytecodeForCALLDATASIZE [
 		func opCallDataSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetInt64(int64(len(contract.Input))))
 	"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -257,7 +257,7 @@ FogEVMUnitaryTest >> createBytecodeForCALLER [
 		func opCaller(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(contract.Caller().Big())
 	return"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -272,7 +272,7 @@ FogEVMUnitaryTest >> createBytecodeForCALLVALUE [
 		func opCallValue(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().Set(contract.value))
 	ret"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -295,7 +295,7 @@ FogEVMUnitaryTest >> createBytecodeForCODECOPY [
 
 	interpreter.intPool.put(memOffset, codeOffset, length)
 	retu"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -312,7 +312,7 @@ FogEVMUnitaryTest >> createBytecodeForCODESIZE [
 	stack.push(l)
 
 	retu"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -327,7 +327,7 @@ FogEVMUnitaryTest >> createBytecodeForCOINBASE [
 		func opCoinbase(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.evm.Coinbase.Big())
 	retu"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -370,7 +370,7 @@ FogEVMUnitaryTest >> createBytecodeForCREATE [
 		return res, nil
 	}
 	return"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -408,7 +408,7 @@ FogEVMUnitaryTest >> createBytecodeForCREATE2 [
 		return res, nil
 	}
 	retur"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -443,7 +443,7 @@ FogEVMUnitaryTest >> createBytecodeForDELEGATECALL [
 
 	interpreter.intPool.put(addr, inOffset, inSize, retOffset, retSize)
 	"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -458,7 +458,7 @@ FogEVMUnitaryTest >> createBytecodeForDIFFICULTY [
 		func opDifficulty(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.Difficulty)))
 	re"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -479,7 +479,7 @@ FogEVMUnitaryTest >> createBytecodeForDIV [
 	}
 	interpreter.intPool.put(x)
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -499,7 +499,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP1 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -519,7 +519,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP10 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -539,7 +539,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP11 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -559,7 +559,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP12 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -579,7 +579,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP13 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -599,7 +599,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP14 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -619,7 +619,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP15 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -639,7 +639,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP16 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -659,7 +659,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP2 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -679,7 +679,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP3 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -699,7 +699,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP4 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -719,7 +719,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP5 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -739,7 +739,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP6 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -759,7 +759,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP7 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -779,7 +779,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP8 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -799,7 +799,7 @@ FogEVMUnitaryTest >> createBytecodeForDUP9 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -820,7 +820,7 @@ FogEVMUnitaryTest >> createBytecodeForEQ [
 	}
 	interpreter.intPool.put(x)
 	return nil"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -839,7 +839,7 @@ FogEVMUnitaryTest >> createBytecodeForEXP [
 	interpreter.intPool.put(base, exponent)
 
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -867,7 +867,7 @@ FogEVMUnitaryTest >> createBytecodeForEXTCODECOPY [
 
 // opExtCodeHash returns the code hash of a specified account.
 // There are sever"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -883,7 +883,7 @@ FogEVMUnitaryTest >> createBytecodeForEXTCODEHASH [
 	slot := stack.peek()
 	slot.SetBytes(interpreter.evm.StateDB.GetCodeHash(common.BigToAddress(slot)).Bytes())
 	r"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -900,7 +900,7 @@ FogEVMUnitaryTest >> createBytecodeForEXTCODESIZE [
 	slot.SetUint64(uint64(interpreter.evm.StateDB.GetCodeSize(common.BigToAddress(slot))))
 
 	r"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -915,7 +915,7 @@ FogEVMUnitaryTest >> createBytecodeForGAS [
 		func opGasprice(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().Set(interpreter.evm.GasPrice))
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -930,7 +930,7 @@ FogEVMUnitaryTest >> createBytecodeForGASLIMIT [
 		func opGasLimit(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(math.U256(interpreter.intPool.get().SetUint64(interpreter.evm.GasLimit)))
 	retu"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -945,7 +945,7 @@ FogEVMUnitaryTest >> createBytecodeForGASPRICE [
 		func opGasprice(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().Set(interpreter.evm.GasPrice))
 	retu"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -966,7 +966,7 @@ FogEVMUnitaryTest >> createBytecodeForGT [
 	}
 	interpreter.intPool.put(x)
 	return nil"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -979,7 +979,7 @@ FogEVMUnitaryTest >> createBytecodeForINVALID [
 		stream := bytecode writeStream. 
 		"should test over 
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -999,7 +999,7 @@ FogEVMUnitaryTest >> createBytecodeForISZERO [
 		x.SetUint64(1)
 	}
 	return"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1021,7 +1021,7 @@ FogEVMUnitaryTest >> createBytecodeForJUMP [
 
 	interpreter.intPool.put(pos)
 	return n"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1035,7 +1035,7 @@ FogEVMUnitaryTest >> createBytecodeForJUMPDEST [
 		"should test over 
 		func opJumpdest(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	retu"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1061,7 +1061,7 @@ FogEVMUnitaryTest >> createBytecodeForJUMPI [
 
 	interpreter.intPool.put(pos, cond)
 	return "
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1097,7 +1097,7 @@ FogEVMUnitaryTest >> createBytecodeForLOG0 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1133,7 +1133,7 @@ FogEVMUnitaryTest >> createBytecodeForLOG1 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1169,7 +1169,7 @@ FogEVMUnitaryTest >> createBytecodeForLOG2 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1205,7 +1205,7 @@ FogEVMUnitaryTest >> createBytecodeForLOG3 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1241,7 +1241,7 @@ FogEVMUnitaryTest >> createBytecodeForLOG4 [
 }
 
 // ma"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1262,7 +1262,7 @@ FogEVMUnitaryTest >> createBytecodeForLT [
 	}
 	interpreter.intPool.put(x)
 	return nil"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1281,7 +1281,7 @@ FogEVMUnitaryTest >> createBytecodeForMLOAD [
 
 	interpreter.intPool.put(offset)
 	return "
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1302,7 +1302,7 @@ FogEVMUnitaryTest >> createBytecodeForMOD [
 	}
 	interpreter.intPool.put(y)
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1317,7 +1317,7 @@ FogEVMUnitaryTest >> createBytecodeForMSIZE [
 		func opMsize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetInt64(int64(memory.Len())))
 	return "
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1336,7 +1336,7 @@ FogEVMUnitaryTest >> createBytecodeForMSTORE [
 
 	interpreter.intPool.put(mStart, val)
 	return"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1353,7 +1353,7 @@ FogEVMUnitaryTest >> createBytecodeForMSTORE8 [
 	memory.store[off] = byte(val & 0xff)
 
 	retur"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1372,7 +1372,7 @@ FogEVMUnitaryTest >> createBytecodeForMUL [
 	interpreter.intPool.put(y)
 
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1400,7 +1400,7 @@ FogEVMUnitaryTest >> createBytecodeForMULMOD [
 // opSHL implements Shift Left
 // The SHL instruction (shift left) pops 2 values from the stack, first arg1 and then arg2,
 // and pushes on the stack arg2 shifted to the left by arg1 num"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1416,7 +1416,7 @@ FogEVMUnitaryTest >> createBytecodeForNOT [
 	x := stack.peek()
 	math.U256(x.Not(x))
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1431,7 +1431,7 @@ FogEVMUnitaryTest >> createBytecodeForNUMBER [
 		func opNumber(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.BlockNumber)))
 	return"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1449,7 +1449,7 @@ FogEVMUnitaryTest >> createBytecodeForOR [
 
 	interpreter.intPool.put(x)
 	return nil"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1464,7 +1464,7 @@ FogEVMUnitaryTest >> createBytecodeForORIGIN [
 		func opOrigin(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.evm.Origin.Big())
 	return"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1479,7 +1479,7 @@ FogEVMUnitaryTest >> createBytecodeForPC [
 		func opPc(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetUint64(*pc))
 	return nil"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1494,7 +1494,7 @@ FogEVMUnitaryTest >> createBytecodeForPOP [
 		func opPop(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	interpreter.intPool.put(stack.pop())
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1509,7 +1509,7 @@ FogEVMUnitaryTest >> createBytecodeForRETURN [
 		func opReturnDataSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetUint64(uint64(len(interpreter.returnData))))
 	return"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1536,7 +1536,7 @@ FogEVMUnitaryTest >> createBytecodeForRETURNDATACOPY [
 	}
 	memory.Set(memOffset.Uint64(), length.Uint64(), interpreter.returnData[dataOffset.Uint64():end.Uint64()])
 "
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1550,7 +1550,7 @@ FogEVMUnitaryTest >> createBytecodeForRETURNDATASIZE [
 		"should test over 
 		func opReturnDataSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetUint64(uint64(len(interpreter.returnData))))"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1571,7 +1571,7 @@ FogEVMUnitaryTest >> createBytecodeForREVERT [
 	return ret, nil
 }
 	"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1602,7 +1602,7 @@ FogEVMUnitaryTest >> createBytecodeForSAR [
 	stack.push(math.U256(value))
 
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1631,7 +1631,7 @@ FogEVMUnitaryTest >> createBytecodeForSDIV [
 	}
 	interpreter.intPool.put(x, y)
 	return n"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1650,7 +1650,7 @@ FogEVMUnitaryTest >> createBytecodeForSELFDESTRUCT [
 	interpreter.evm.StateDB.Suicide(contract.Address())
 	return nil, nil
 }"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1684,7 +1684,7 @@ FogEVMUnitaryTest >> createBytecodeForSGT [
 	}
 	interpreter.intPool.put(x)
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1716,7 +1716,7 @@ FogEVMUnitaryTest >> createBytecodeForSHA3 [
 
 	interpreter.intPool.put(offset, size)
 	return n"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1746,7 +1746,7 @@ FogEVMUnitaryTest >> createBytecodeForSHL [
 // opSHR implements Logical Shift Right
 // The SHR instruction (logical shift right) pops 2 values from the stack, first arg1 and then arg2,
 // and pushes on the stack arg2 shifted to the right by arg1 number of bits with z"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1776,7 +1776,7 @@ FogEVMUnitaryTest >> createBytecodeForSHR [
 // opSAR implements Arithmetic Shift Right
 // The SAR instruction (arithmetic shift right) pops 2 values from the stack, first arg1 and then arg2,
 // and pushes on the stack arg2 shifted to the right by arg1 number of bits with sign e"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1806,7 +1806,7 @@ FogEVMUnitaryTest >> createBytecodeForSIGNEXTEND [
 
 	interpreter.intPool.put(back)
 	re"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1823,7 +1823,7 @@ FogEVMUnitaryTest >> createBytecodeForSLOAD [
 	val := interpreter.evm.StateDB.GetState(contract.Address(), common.BigToHash(loc))
 	loc.SetBytes(val.Bytes())
 	return "
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1857,7 +1857,7 @@ FogEVMUnitaryTest >> createBytecodeForSLT [
 	}
 	interpreter.intPool.put(x)
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1886,7 +1886,7 @@ FogEVMUnitaryTest >> createBytecodeForSMOD [
 	}
 	interpreter.intPool.put(x, y)
 	return n"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1905,7 +1905,7 @@ FogEVMUnitaryTest >> createBytecodeForSSTORE [
 
 	interpreter.intPool.put(val)
 	return"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1940,7 +1940,7 @@ FogEVMUnitaryTest >> createBytecodeForSTATICCALL [
 
 	interpreter.intPool.put(addr, inOffset, inSize, retOffset, retSize)
 	re"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1954,7 +1954,7 @@ FogEVMUnitaryTest >> createBytecodeForSTOP [
 		"should test over 
 		func opStop(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	return n"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1972,7 +1972,7 @@ FogEVMUnitaryTest >> createBytecodeForSUB [
 
 	interpreter.intPool.put(x)
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -1990,7 +1990,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP1 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2008,7 +2008,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP10 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2026,7 +2026,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP11 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2044,7 +2044,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP12 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2062,7 +2062,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP13 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2080,7 +2080,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP14 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2098,7 +2098,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP15 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2116,7 +2116,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP16 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2134,7 +2134,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP2 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2152,7 +2152,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP3 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2170,7 +2170,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP4 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2188,7 +2188,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP5 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2206,7 +2206,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP6 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2224,7 +2224,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP7 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2242,7 +2242,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP8 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2260,7 +2260,7 @@ FogEVMUnitaryTest >> createBytecodeForSWAP9 [
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2275,7 +2275,7 @@ FogEVMUnitaryTest >> createBytecodeForTIMESTAMP [
 		func opTimestamp(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.Time)))
 	ret"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2288,7 +2288,7 @@ FogEVMUnitaryTest >> createBytecodeForUNKNOWN [
 		stream := bytecode writeStream. 
 		"should test over 
 		"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
@@ -2306,30 +2306,32 @@ FogEVMUnitaryTest >> createBytecodeForXOR [
 
 	interpreter.intPool.put(x)
 	return ni"
-		
+		self shouldBeImplemented.
 		^ bytecode.
 		
 		
 ]
 
+{ #category : #running }
+FogEVMUnitaryTest >> setUp [
+	super setUp.
+	interpreter := FogEVMTestInterpreter new. 
+]
+
 { #category : #test }
 FogEVMUnitaryTest >> testADD [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opAdd(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := stack.pop(), stack.peek()
 	math.U256(y.Add(x, y))
 
 	interpreter.intPool.put(x)
 	return ni"
-		bytecode := self createBytecodeForADD.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForADD: 1 plus: 2.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter stack pop asBKNumber equals: 3
 ]
 
 { #category : #test }

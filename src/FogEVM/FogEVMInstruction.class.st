@@ -893,3 +893,8 @@ FogEVMInstruction >> printOn: aStream [
 FogEVMInstruction >> printableByteCode [
 	^ self byteCode copyReplaceAll: '0x' with: ''
 ]
+
+{ #category : #'as yet unclassified' }
+FogEVMInstruction >> size [
+	^ 1 " So far the byte code is 0~256"
+]

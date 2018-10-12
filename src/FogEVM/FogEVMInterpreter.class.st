@@ -176,8 +176,7 @@ FogEVMInterpreter >> interpret [
 	programFinished := false.
 	self setInstructionPointerToByte: executableMemory first byteNumber.
 	[ self programHasFinished ]
-		whileFalse: [ "self haltIf: [ self peekNextNextInstruction isKindOf: FogVMSwap ]."
-			i := self fetchNextInstruction.
+		whileFalse: [ i := self fetchNextInstruction.
 			trace add: i.
 			i accept: self with: nil ]
 ]
@@ -497,6 +496,11 @@ FogEVMInterpreter >> visitSstore: aFogVMSstore [
 	storageAddress := stack pop.
 	value := stack pop.
 	value := (self storageFor: self contractAddress) atStorage: storageAddress put: value
+]
+
+{ #category : #'visiti stop' }
+FogEVMInterpreter >> visitStop: aFogVMStop [
+	programFinished := true
 ]
 
 { #category : #'visit - arithmetics' }

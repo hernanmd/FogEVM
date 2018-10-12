@@ -2,23 +2,23 @@
 Stream with utilities to split code 
 "
 Class {
-	#name : #FogEVMByteCodeStream,
+	#name : #FogEVMByteCodeReadStream,
 	#superclass : #ReadStream,
-	#category : 'FogEVM-ByteCode'
+	#category : #'FogEVM-ByteCode'
 }
 
 { #category : #'as yet unclassified' }
-FogEVMByteCodeStream >> indexOfConstructor [
+FogEVMByteCodeReadStream >> indexOfConstructor [
 	self shouldBeImplemented.
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMByteCodeStream >> nextConstructor [
+FogEVMByteCodeReadStream >> nextConstructor [
 	^ self upToInstructions: self privateConstructorBoundaries
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMByteCodeStream >> nextMethod [
+FogEVMByteCodeReadStream >> nextMethod [
 	| content boundaries |
 	content := self next: 4.
 	boundaries := self privateMethodBoundaries.
@@ -30,21 +30,21 @@ FogEVMByteCodeStream >> nextMethod [
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMByteCodeStream >> nextMethodLookup [
+FogEVMByteCodeReadStream >> nextMethodLookup [
 	^ self
 		upToInstructions:
 			self privateMethodLookupBoundaries
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMByteCodeStream >> privateConstructorBoundaries [
+FogEVMByteCodeReadStream >> privateConstructorBoundaries [
 	^ {FogVMCodecopy instance.
 	FogVMPush1 instance0x00.
 	FogVMReturn instance}
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMByteCodeStream >> privateMethodBoundaries [
+FogEVMByteCodeReadStream >> privateMethodBoundaries [
 	^ {
 	FogVMJumpdest instance.
 	FogVMCallvalue instance.
@@ -53,7 +53,7 @@ FogEVMByteCodeStream >> privateMethodBoundaries [
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMByteCodeStream >> privateMethodLookupBoundaries [
+FogEVMByteCodeReadStream >> privateMethodLookupBoundaries [
 	^ {FogVMJump instance.
 	FogVMJumpdest instance.
 	FogVMPush2 instance0x0002.
@@ -61,7 +61,7 @@ FogEVMByteCodeStream >> privateMethodLookupBoundaries [
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMByteCodeStream >> upToCondition: aCondition [
+FogEVMByteCodeReadStream >> upToCondition: aCondition [
 	(position max: 1) to: readLimit do: [ :idx | 
 		(aCondition value: (collection at: idx))
 			ifTrue: [ ^ self next: idx - position ] ].
@@ -69,7 +69,7 @@ FogEVMByteCodeStream >> upToCondition: aCondition [
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMByteCodeStream >> upToInstructions: anArrayOfInstructions [
+FogEVMByteCodeReadStream >> upToInstructions: anArrayOfInstructions [
 	| first |
 	first := anArrayOfInstructions first.
 	(position max: 1) to: readLimit do: [ :idx | 
@@ -81,7 +81,7 @@ FogEVMByteCodeStream >> upToInstructions: anArrayOfInstructions [
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMByteCodeStream >> upToInstructionsNotIncluded: anArrayOfInstructions [
+FogEVMByteCodeReadStream >> upToInstructionsNotIncluded: anArrayOfInstructions [
 	| first |
 	first := anArrayOfInstructions first.
 	(position max: 1) to: readLimit do: [ :idx | 

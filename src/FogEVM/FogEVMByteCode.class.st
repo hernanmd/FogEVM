@@ -42,6 +42,16 @@ FogEVMByteCode >> accept: anInterpreter [
 	^ content do: [ :e | e accept: anInterpreter with: content ]
 ]
 
+{ #category : #collection }
+FogEVMByteCode >> at: anIdx [
+	^ content at: anIdx
+]
+
+{ #category : #collection }
+FogEVMByteCode >> at: anIdx put: aValue [
+	content at: anIdx put: aValue
+]
+
 { #category : #accessing }
 FogEVMByteCode >> content [
 	^ content
@@ -50,6 +60,12 @@ FogEVMByteCode >> content [
 { #category : #accessing }
 FogEVMByteCode >> content: aCollection [
 	content := aCollection
+]
+
+{ #category : #collection }
+FogEVMByteCode >> grownBy: anInteger [
+	content := content grownBy: anInteger.
+	^ self
 ]
 
 { #category : #converting }
@@ -63,6 +79,12 @@ FogEVMByteCode >> hasConstructor [
 	shouldBeReturn := shouldByPush10x0 + 1.
 	^ (content at: shouldByPush10x0) instruction = FogVMPush1 instance0x00
 		and: [ (content at: shouldBeReturn) instruction = FogVMReturn instance ]
+]
+
+{ #category : #initialization }
+FogEVMByteCode >> initialize [
+	super initialize.
+	content := OrderedCollection new
 ]
 
 { #category : #converting }
@@ -82,12 +104,23 @@ FogEVMByteCode >> isRuntime [
 
 { #category : #converting }
 FogEVMByteCode >> printOn: aStream [
+	aStream nextPutAll: 'ByteCode- '.
 	content printOn: aStream
 ]
 
 { #category : #converting }
 FogEVMByteCode >> readStream [
-	^ FogEVMByteCodeStream on: content
+	^ FogEVMByteCodeReadStream on: content
+]
+
+{ #category : #accessing }
+FogEVMByteCode >> sequence [
+	^ content
+]
+
+{ #category : #converting }
+FogEVMByteCode >> size [
+	^ content size 
 ]
 
 { #category : #converting }
@@ -114,5 +147,5 @@ FogEVMByteCode >> toHexa [
 
 { #category : #converting }
 FogEVMByteCode >> writeStream [
-	^ FogEVMByteCodeWriteStream on: content
+	^ FogEVMByteCodeWriteStream on: self
 ]
