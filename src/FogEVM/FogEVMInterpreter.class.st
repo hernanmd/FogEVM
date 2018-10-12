@@ -251,6 +251,21 @@ FogEVMInterpreter >> visitAdd: aFogVMAdd [
 	stack push: (a + b) asBKHexa
 ]
 
+{ #category : #visit }
+FogEVMInterpreter >> visitAddmod: aFogVMAddmod [ 
+	| x y z module |
+	x := stack pop asBKNumber .
+	y := stack pop asBKNumber .
+	z := stack pop asBKNumber .
+	module := (x + y) \\ z. 
+	stack push: module asBKHexa.  
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitAddress: aFogVMAddress [ 
+	stack push: self contractAddress 
+]
+
 { #category : #'visit - boolean alebra' }
 FogEVMInterpreter >> visitAnd: aFogVMAnd [
 	| a b |

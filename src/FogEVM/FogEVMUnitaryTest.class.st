@@ -26,41 +26,32 @@ FogEVMUnitaryTest >> createBytecodeForADD: aValue plus: oValue [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForADDMOD [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opAddmod(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y, z := stack.pop(), stack.pop(), stack.pop()
-	if z.Cmp(bigZero) > 0 {
-		x.Add(x, y)
-		x.Mod(x, z)
-		stack.push(math.U256(x))
-	} else {
-		stack.push(x.SetUint64(0))
-	}
-	interpreter.intPool.put(y, z)
-	return"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+FogEVMUnitaryTest >> createBytecodeForADDMOD: x and: y and: z [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream
+		nextPutPush3: x;
+		nextPutPush3: y;
+		nextPutPush3: z;
+		nextPutAddmod;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForADDRESS [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opAddress(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(contract.Address().Big())
 	retur"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutAddress;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -2315,7 +2306,8 @@ FogEVMUnitaryTest >> createBytecodeForXOR [
 { #category : #running }
 FogEVMUnitaryTest >> setUp [
 	super setUp.
-	interpreter := FogEVMTestInterpreter new. 
+	interpreter := FogEVMTestInterpreter new.
+	interpreter call: FogEVMInterpreter exampleCall
 ]
 
 { #category : #test }
@@ -2332,13 +2324,16 @@ FogEVMUnitaryTest >> testADD [
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self assert: interpreter stack pop asBKNumber equals: 3
+	
+
+
+
 ]
 
 { #category : #test }
 FogEVMUnitaryTest >> testADDMOD [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opAddmod(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y, z := stack.pop(), stack.pop(), stack.pop()
 	if z.Cmp(bigZero) > 0 {
@@ -2350,13 +2345,10 @@ FogEVMUnitaryTest >> testADDMOD [
 	}
 	interpreter.intPool.put(y, z)
 	return"
-		bytecode := self createBytecodeForADDMOD.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForADDMOD: 1 and: 3 and: 4.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter stack pop asBKNumber equals: (1 + 3) \\ 4
 ]
 
 { #category : #test }
@@ -2371,7 +2363,7 @@ FogEVMUnitaryTest >> testADDRESS [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter stack pop = interpreter contractAddress .
 		
 
 ]
