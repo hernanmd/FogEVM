@@ -493,310 +493,90 @@ FogEVMUnitaryTest >> createBytecodeForDIV: aValue plus: oValue [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP1 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 1 
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP10 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 10
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP11 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 11
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP12 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 12
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP13 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 13
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP14 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 14
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP15 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 15
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP16 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 16
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP2 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 2
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP3 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 3
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP4 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 4
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP5 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 5
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP6 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 6
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP7 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 7
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP8 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForDUP: 8
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP9 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	^ self createBytecodeForDUP: 9
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForDUP: anNumber [
+	| bytecode stream selector |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func makeDup(size int64) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.dup(interpreter.intPool, int(size))
@@ -805,10 +585,15 @@ FogEVMUnitaryTest >> createBytecodeForDUP9 [
 }
 
 // ma"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	selector := ('nextPutDup' , anNumber asString) asSymbol.
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		"
+	anNumber + 1 to: 1 by: -1 do: [ :idx | stream nextPutPush1: idx ].
+	stream perform: selector.
+	stream nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -995,12 +780,12 @@ FogEVMUnitaryTest >> createBytecodeForINVALID [
 		
 ]
 
-{ #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForISZERO [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForISZERO: anInteger [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opIszero(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x := stack.peek()
 	if x.Sign() > 0 {
@@ -1009,10 +794,11 @@ FogEVMUnitaryTest >> createBytecodeForISZERO [
 		x.SetUint64(1)
 	}
 	return"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush3: anInteger;
+		nextPutIszero;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1995,290 +1781,104 @@ FogEVMUnitaryTest >> createBytecodeForSUB: aValue and: oValue [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP1 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 1
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP10 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 10
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP11 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 11
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP12 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 12
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP13 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 13
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP14 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 14
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP15 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 15
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP16 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 16
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP2 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 2
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP3 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 3
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP4 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 4
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP5 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 5
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP6 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 6
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP7 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 7
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP8 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	^ self createBytecodeForSWAP: 8
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSWAP9 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	^ self createBytecodeForSWAP: 9
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForSWAP: anAmount [
+	"should test over 
 		func makeSwap(size int64) executionFunc {
 	// switch n + 1 otherwise n would be swapped with n
 	size++
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.swap(int(size))
 		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+
+	| bytecode stream selector |
+	selector := ('nextPutSwap' , anAmount asString) asSymbol.
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		"
+	anAmount + 1 to: 1 by: -1 do: [ :idx | stream nextPutPush1: idx ].
+	stream perform: selector.
+	stream nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }

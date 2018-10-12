@@ -546,7 +546,7 @@ FogEVMInterpreter >> visitSub: aFogVMAdd [
 
 { #category : #'visit - stack' }
 FogEVMInterpreter >> visitSwap: aFogVMSwap [
-	stack swap: 1 with: aFogVMSwap expectedPops + 1
+	stack swap: 1 with: aFogVMSwap expectedPops 
 ]
 
 { #category : #visiting }

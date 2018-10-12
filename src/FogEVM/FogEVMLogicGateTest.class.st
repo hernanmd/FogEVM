@@ -34,9 +34,8 @@ FogEVMLogicGateTest >> testAND [
 
 { #category : #test }
 FogEVMLogicGateTest >> testISZERO [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opIszero(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x := stack.peek()
 	if x.Sign() > 0 {
@@ -45,13 +44,14 @@ FogEVMLogicGateTest >> testISZERO [
 		x.SetUint64(1)
 	}
 	return"
-		bytecode := self createBytecodeForISZERO.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForISZERO: 1.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter stack pop asBKNumber equals: 0.
+	bytecode := self createBytecodeForISZERO: 0.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter stack pop asBKNumber equals: 1
 ]
 
 { #category : #test }
