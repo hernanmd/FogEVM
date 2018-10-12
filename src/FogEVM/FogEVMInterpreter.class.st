@@ -16,7 +16,7 @@ Class {
 		'return',
 		'trace'
 	],
-	#category : 'FogEVM-Interpreter'
+	#category : #'FogEVM-ByteCode-Interpreter'
 }
 
 { #category : #test }

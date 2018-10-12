@@ -111,3 +111,8 @@ FogEVMByteCode >> toHexa [
 					each printHexaOn: acc.
 					acc ]) contents
 ]
+
+{ #category : #converting }
+FogEVMByteCode >> writeStream [
+	^ FogEVMByteCodeWriteStream on: content
+]
