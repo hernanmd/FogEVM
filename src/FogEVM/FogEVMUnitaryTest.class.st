@@ -1,6 +1,6 @@
 Class {
 	#name : #FogEVMUnitaryTest,
-	#superclass : #TestCase,
+	#superclass : #ParametrizedTestCase,
 	#instVars : [
 		'interpreter'
 	],
@@ -10,18 +10,12 @@ Class {
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForADD: aValue plus: oValue [
 	| bytecode stream |
-	bytecode := FogEVMByteCode
-		new.
-	stream := bytecode
-		writeStream.
-	stream
-		nextPutPush3: aValue.
-	stream
-		nextPutPush3: oValue.
-	stream
-		nextPutAdd.
-	stream
-		nextPutStop.
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutAdd.
+	stream nextPutStop.
 	^ bytecode
 ]
 
@@ -31,9 +25,9 @@ FogEVMUnitaryTest >> createBytecodeForADDMOD: x and: y and: z [
 	bytecode := FogEVMByteCode new.
 	stream := bytecode writeStream.
 	stream
+		nextPutPush3: z;
 		nextPutPush3: x;
 		nextPutPush3: y;
-		nextPutPush3: z;
 		nextPutAddmod;
 		nextPutStop.
 	^ bytecode
@@ -56,20 +50,29 @@ FogEVMUnitaryTest >> createBytecodeForADDRESS [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForAND [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opAnd(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.pop()
-	stack.push(x.And(x, y))
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
 
-	interpreter.intPool.put(y)
-	return ni"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush1: 1;
+		nextPutPush1: 1;
+		nextPutAnd;
+		nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForAND: a and:b [ 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream
+		nextPutPush1: a;
+		nextPutPush1: b;
+		nextPutAnd;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -477,6 +480,18 @@ FogEVMUnitaryTest >> createBytecodeForDIV [
 ]
 
 { #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForDIV: aValue plus: oValue [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutDiv.
+	stream nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDUP1 [
 		| bytecode stream |
 		bytecode :=	FogEVMByteCode new .
@@ -797,11 +812,11 @@ FogEVMUnitaryTest >> createBytecodeForDUP9 [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForEQ [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+FogEVMUnitaryTest >> createBytecodeForEQ: anInteger and: anInteger2 [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opEq(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := stack.pop(), stack.peek()
 	if x.Cmp(y) == 0 {
@@ -811,10 +826,12 @@ FogEVMUnitaryTest >> createBytecodeForEQ [
 	}
 	interpreter.intPool.put(x)
 	return nil"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush3: anInteger2;
+		nextPutPush3: anInteger;
+		nextPutEq;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -943,24 +960,26 @@ FogEVMUnitaryTest >> createBytecodeForGASPRICE [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForGT [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opGt(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+FogEVMUnitaryTest >> createBytecodeForGT: anInteger and: anInteger2 [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opEq(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := stack.pop(), stack.peek()
-	if x.Cmp(y) > 0 {
+	if x.Cmp(y) == 0 {
 		y.SetUint64(1)
 	} else {
 		y.SetUint64(0)
 	}
 	interpreter.intPool.put(x)
 	return nil"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush3: anInteger2;
+		nextPutPush3: anInteger;
+		nextPutGt;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1239,23 +1258,26 @@ FogEVMUnitaryTest >> createBytecodeForLOG4 [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForLT [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opLt(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+FogEVMUnitaryTest >> createBytecodeForLT: anInteger and: anInteger2 [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opEq(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := stack.pop(), stack.peek()
-	if x.Cmp(y) < 0 {
+	if x.Cmp(y) == 0 {
 		y.SetUint64(1)
 	} else {
 		y.SetUint64(0)
 	}
 	interpreter.intPool.put(x)
 	return nil"
-		self shouldBeImplemented.
-		^ bytecode.
-		
+	stream
+		nextPutPush3: anInteger2;
+		nextPutPush3: anInteger;
+		nextPutLt;
+		nextPutStop.
+	^ bytecode
 		
 ]
 
@@ -1279,23 +1301,15 @@ FogEVMUnitaryTest >> createBytecodeForMLOAD [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForMOD [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opMod(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.pop()
-	if y.Sign() == 0 {
-		stack.push(x.SetUint64(0))
-	} else {
-		stack.push(math.U256(x.Mod(x, y)))
-	}
-	interpreter.intPool.put(y)
-	return ni"
-		self shouldBeImplemented.
-		^ bytecode.
-		
+FogEVMUnitaryTest >> createBytecodeForMOD: aValue and: oValue [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutMod.
+	stream nextPutStop.
+	^ bytecode
 		
 ]
 
@@ -1351,22 +1365,15 @@ FogEVMUnitaryTest >> createBytecodeForMSTORE8 [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForMUL [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opMul(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.pop()
-	stack.push(math.U256(x.Mul(x, y)))
-
-	interpreter.intPool.put(y)
-
-	return ni"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+FogEVMUnitaryTest >> createBytecodeForMUL: aValue and: oValue [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutMul.
+	stream nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1398,19 +1405,29 @@ FogEVMUnitaryTest >> createBytecodeForMULMOD [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForNOT [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opNot(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x := stack.peek()
-	math.U256(x.Not(x))
-	return ni"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+FogEVMUnitaryTest >> createBytecodeForMULMOD: x and: y and: z [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream
+		nextPutPush3: z;
+		nextPutPush3: x;
+		nextPutPush3: y;
+		nextPutMulmod;
+		nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForNOT: a [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream
+		nextPutPush1: a;
+		nextPutNot;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1429,21 +1446,16 @@ FogEVMUnitaryTest >> createBytecodeForNUMBER [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForOR [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opOr(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	y.Or(x, y)
-
-	interpreter.intPool.put(x)
-	return nil"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+FogEVMUnitaryTest >> createBytecodeForOR: a and:b [ 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream
+		nextPutPush1: a;
+		nextPutPush1: b;
+		nextPutOr;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1476,19 +1488,18 @@ FogEVMUnitaryTest >> createBytecodeForPC [
 		
 ]
 
-{ #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForPOP [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForPOP: anInteger [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opPop(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	interpreter.intPool.put(stack.pop())
 	return ni"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	anInteger timesRepeat: [ stream nextPutPush3: anInteger ].
+	stream nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1599,33 +1610,16 @@ FogEVMUnitaryTest >> createBytecodeForSAR [
 		
 ]
 
-{ #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForSDIV [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opSdiv(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := math.S256(stack.pop()), math.S256(stack.pop())
-	res := interpreter.intPool.getZero()
-
-	if y.Sign() == 0 || x.Sign() == 0 {
-		stack.push(res)
-	} else {
-		if x.Sign() != y.Sign() {
-			res.Div(x.Abs(x), y.Abs(y))
-			res.Neg(res)
-		} else {
-			res.Div(x.Abs(x), y.Abs(y))
-		}
-		stack.push(math.U256(res))
-	}
-	interpreter.intPool.put(x, y)
-	return n"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForSDIV: aValue and: oValue [ 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutSdiv.
+	stream nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1679,6 +1673,18 @@ FogEVMUnitaryTest >> createBytecodeForSGT [
 		^ bytecode.
 		
 		
+]
+
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForSGT: aValue and: oValue [ 
+		| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutSgt.
+	stream nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1854,6 +1860,18 @@ FogEVMUnitaryTest >> createBytecodeForSLT [
 		
 ]
 
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForSLT: aValue and: oValue [ 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutSlt.
+	stream nextPutStop.
+	^ bytecode
+]
+
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSMOD [
 		| bytecode stream |
@@ -1951,22 +1969,16 @@ FogEVMUnitaryTest >> createBytecodeForSTOP [
 		
 ]
 
-{ #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForSUB [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opSub(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	math.U256(y.Sub(x, y))
-
-	interpreter.intPool.put(x)
-	return ni"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForSUB: aValue and: oValue [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutSub.
+	stream nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -2286,21 +2298,16 @@ FogEVMUnitaryTest >> createBytecodeForUNKNOWN [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForXOR [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opXor(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	y.Xor(x, y)
-
-	interpreter.intPool.put(x)
-	return ni"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+FogEVMUnitaryTest >> createBytecodeForXOR: a and:b [ 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream
+		nextPutPush1: a;
+		nextPutPush1: b;
+		nextPutXor;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #running }
@@ -2311,81 +2318,16 @@ FogEVMUnitaryTest >> setUp [
 ]
 
 { #category : #test }
-FogEVMUnitaryTest >> testADD [
-	| bytecode |
-	"should test over 
-		func opAdd(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	math.U256(y.Add(x, y))
-
-	interpreter.intPool.put(x)
-	return ni"
-	bytecode := self createBytecodeForADD: 1 plus: 2.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 3
-	
-
-
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testADDMOD [
-	| bytecode |
-	"should test over 
-		func opAddmod(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y, z := stack.pop(), stack.pop(), stack.pop()
-	if z.Cmp(bigZero) > 0 {
-		x.Add(x, y)
-		x.Mod(x, z)
-		stack.push(math.U256(x))
-	} else {
-		stack.push(x.SetUint64(0))
-	}
-	interpreter.intPool.put(y, z)
-	return"
-	bytecode := self createBytecodeForADDMOD: 1 and: 3 and: 4.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: (1 + 3) \\ 4
-]
-
-{ #category : #test }
 FogEVMUnitaryTest >> testADDRESS [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opAddress(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(contract.Address().Big())
 	retur"
-		bytecode := self createBytecodeForADDRESS.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: interpreter stack pop = interpreter contractAddress .
-		
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testAND [
-		|  bytecode  |
-		
-		"should test over 
-		func opAnd(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.pop()
-	stack.push(x.And(x, y))
-
-	interpreter.intPool.put(y)
-	return ni"
-		bytecode := self createBytecodeForAND.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForADDRESS.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter stack pop equals: interpreter contractAddress
 ]
 
 { #category : #test }
@@ -3181,29 +3123,6 @@ FogEVMUnitaryTest >> testDUP9 [
 ]
 
 { #category : #test }
-FogEVMUnitaryTest >> testEQ [
-		|  bytecode  |
-		
-		"should test over 
-		func opEq(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	if x.Cmp(y) == 0 {
-		y.SetUint64(1)
-	} else {
-		y.SetUint64(0)
-	}
-	interpreter.intPool.put(x)
-	return nil"
-		bytecode := self createBytecodeForEQ.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
 FogEVMUnitaryTest >> testEXP [
 		|  bytecode  |
 		
@@ -3334,29 +3253,6 @@ FogEVMUnitaryTest >> testGASPRICE [
 	stack.push(interpreter.intPool.get().Set(interpreter.evm.GasPrice))
 	retu"
 		bytecode := self createBytecodeForGASPRICE.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testGT [
-		|  bytecode  |
-		
-		"should test over 
-		func opGt(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	if x.Cmp(y) > 0 {
-		y.SetUint64(1)
-	} else {
-		y.SetUint64(0)
-	}
-	interpreter.intPool.put(x)
-	return nil"
-		bytecode := self createBytecodeForGT.
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
@@ -3661,29 +3557,6 @@ FogEVMUnitaryTest >> testLOG4 [
 ]
 
 { #category : #test }
-FogEVMUnitaryTest >> testLT [
-		|  bytecode  |
-		
-		"should test over 
-		func opLt(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	if x.Cmp(y) < 0 {
-		y.SetUint64(1)
-	} else {
-		y.SetUint64(0)
-	}
-	interpreter.intPool.put(x)
-	return nil"
-		bytecode := self createBytecodeForLT.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
 FogEVMUnitaryTest >> testMLOAD [
 		|  bytecode  |
 		
@@ -3696,29 +3569,6 @@ FogEVMUnitaryTest >> testMLOAD [
 	interpreter.intPool.put(offset)
 	return "
 		bytecode := self createBytecodeForMLOAD.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testMOD [
-		|  bytecode  |
-		
-		"should test over 
-		func opMod(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.pop()
-	if y.Sign() == 0 {
-		stack.push(x.SetUint64(0))
-	} else {
-		stack.push(math.U256(x.Mod(x, y)))
-	}
-	interpreter.intPool.put(y)
-	return ni"
-		bytecode := self createBytecodeForMOD.
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
@@ -3785,75 +3635,6 @@ FogEVMUnitaryTest >> testMSTORE8 [
 ]
 
 { #category : #test }
-FogEVMUnitaryTest >> testMUL [
-		|  bytecode  |
-		
-		"should test over 
-		func opMul(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.pop()
-	stack.push(math.U256(x.Mul(x, y)))
-
-	interpreter.intPool.put(y)
-
-	return ni"
-		bytecode := self createBytecodeForMUL.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testMULMOD [
-		|  bytecode  |
-		
-		"should test over 
-		func opMulmod(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y, z := stack.pop(), stack.pop(), stack.pop()
-	if z.Cmp(bigZero) > 0 {
-		x.Mul(x, y)
-		x.Mod(x, z)
-		stack.push(math.U256(x))
-	} else {
-		stack.push(x.SetUint64(0))
-	}
-	interpreter.intPool.put(y, z)
-	return nil, nil
-}
-
-// opSHL implements Shift Left
-// The SHL instruction (shift left) pops 2 values from the stack, first arg1 and then arg2,
-// and pushes on the stack arg2 shifted to the left by arg1 num"
-		bytecode := self createBytecodeForMULMOD.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testNOT [
-		|  bytecode  |
-		
-		"should test over 
-		func opNot(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x := stack.peek()
-	math.U256(x.Not(x))
-	return ni"
-		bytecode := self createBytecodeForNOT.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
 FogEVMUnitaryTest >> testNUMBER [
 		|  bytecode  |
 		
@@ -3862,26 +3643,6 @@ FogEVMUnitaryTest >> testNUMBER [
 	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.BlockNumber)))
 	return"
 		bytecode := self createBytecodeForNUMBER.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testOR [
-		|  bytecode  |
-		
-		"should test over 
-		func opOr(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	y.Or(x, y)
-
-	interpreter.intPool.put(x)
-	return nil"
-		bytecode := self createBytecodeForOR.
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
@@ -3916,23 +3677,6 @@ FogEVMUnitaryTest >> testPC [
 	stack.push(interpreter.intPool.get().SetUint64(*pc))
 	return nil"
 		bytecode := self createBytecodeForPC.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testPOP [
-		|  bytecode  |
-		
-		"should test over 
-		func opPop(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	interpreter.intPool.put(stack.pop())
-	return ni"
-		bytecode := self createBytecodeForPOP.
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
@@ -4060,37 +3804,6 @@ FogEVMUnitaryTest >> testSAR [
 ]
 
 { #category : #test }
-FogEVMUnitaryTest >> testSDIV [
-		|  bytecode  |
-		
-		"should test over 
-		func opSdiv(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := math.S256(stack.pop()), math.S256(stack.pop())
-	res := interpreter.intPool.getZero()
-
-	if y.Sign() == 0 || x.Sign() == 0 {
-		stack.push(res)
-	} else {
-		if x.Sign() != y.Sign() {
-			res.Div(x.Abs(x), y.Abs(y))
-			res.Neg(res)
-		} else {
-			res.Div(x.Abs(x), y.Abs(y))
-		}
-		stack.push(math.U256(res))
-	}
-	interpreter.intPool.put(x, y)
-	return n"
-		bytecode := self createBytecodeForSDIV.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
 FogEVMUnitaryTest >> testSELFDESTRUCT [
 		|  bytecode  |
 		
@@ -4103,42 +3816,6 @@ FogEVMUnitaryTest >> testSELFDESTRUCT [
 	return nil, nil
 }"
 		bytecode := self createBytecodeForSELFDESTRUCT.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testSGT [
-		|  bytecode  |
-		
-		"should test over 
-		func opSgt(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-
-	xSign := x.Cmp(tt255)
-	ySign := y.Cmp(tt255)
-
-	switch {
-	case xSign >= 0 && ySign < 0:
-		y.SetUint64(0)
-
-	case xSign < 0 && ySign >= 0:
-		y.SetUint64(1)
-
-	default:
-		if x.Cmp(y) > 0 {
-			y.SetUint64(1)
-		} else {
-			y.SetUint64(0)
-		}
-	}
-	interpreter.intPool.put(x)
-	return ni"
-		bytecode := self createBytecodeForSGT.
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
@@ -4297,73 +3974,6 @@ FogEVMUnitaryTest >> testSLOAD [
 ]
 
 { #category : #test }
-FogEVMUnitaryTest >> testSLT [
-		|  bytecode  |
-		
-		"should test over 
-		func opSlt(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-
-	xSign := x.Cmp(tt255)
-	ySign := y.Cmp(tt255)
-
-	switch {
-	case xSign >= 0 && ySign < 0:
-		y.SetUint64(1)
-
-	case xSign < 0 && ySign >= 0:
-		y.SetUint64(0)
-
-	default:
-		if x.Cmp(y) < 0 {
-			y.SetUint64(1)
-		} else {
-			y.SetUint64(0)
-		}
-	}
-	interpreter.intPool.put(x)
-	return ni"
-		bytecode := self createBytecodeForSLT.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testSMOD [
-		|  bytecode  |
-		
-		"should test over 
-		func opSmod(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := math.S256(stack.pop()), math.S256(stack.pop())
-	res := interpreter.intPool.getZero()
-
-	if y.Sign() == 0 {
-		stack.push(res)
-	} else {
-		if x.Sign() < 0 {
-			res.Mod(x.Abs(x), y.Abs(y))
-			res.Neg(res)
-		} else {
-			res.Mod(x.Abs(x), y.Abs(y))
-		}
-		stack.push(math.U256(res))
-	}
-	interpreter.intPool.put(x, y)
-	return n"
-		bytecode := self createBytecodeForSMOD.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
 FogEVMUnitaryTest >> testSSTORE [
 		|  bytecode  |
 		
@@ -4429,26 +4039,6 @@ FogEVMUnitaryTest >> testSTOP [
 		func opStop(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	return n"
 		bytecode := self createBytecodeForSTOP.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testSUB [
-		|  bytecode  |
-		
-		"should test over 
-		func opSub(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	math.U256(y.Sub(x, y))
-
-	interpreter.intPool.put(x)
-	return ni"
-		bytecode := self createBytecodeForSUB.
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
@@ -4801,26 +4391,6 @@ FogEVMUnitaryTest >> testUNKNOWN [
 		"should test over 
 		"
 		bytecode := self createBytecodeForUNKNOWN.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
-FogEVMUnitaryTest >> testXOR [
-		|  bytecode  |
-		
-		"should test over 
-		func opXor(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	y.Xor(x, y)
-
-	interpreter.intPool.put(x)
-	return ni"
-		bytecode := self createBytecodeForXOR.
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		

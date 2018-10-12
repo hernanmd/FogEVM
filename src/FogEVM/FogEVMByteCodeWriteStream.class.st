@@ -9,7 +9,7 @@ Class {
 
 { #category : #'#generated - put' }
 FogEVMByteCodeWriteStream >> assert: aBKHexaValue pushes: aByteLength [
-	^ self assert: aBKHexaValue size < (aByteLength * 2)
+	^ self assert: aBKHexaValue asHeadlessHexa size < (aByteLength * 2)
 ]
 
 { #category : #accessing }

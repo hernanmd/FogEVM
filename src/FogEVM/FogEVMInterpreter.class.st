@@ -252,13 +252,13 @@ FogEVMInterpreter >> visitAdd: aFogVMAdd [
 ]
 
 { #category : #visit }
-FogEVMInterpreter >> visitAddmod: aFogVMAddmod [ 
+FogEVMInterpreter >> visitAddmod: aFogVMAddmod [
 	| x y z module |
-	x := stack pop asBKNumber .
-	y := stack pop asBKNumber .
-	z := stack pop asBKNumber .
-	module := (x + y) \\ z. 
-	stack push: module asBKHexa.  
+	x := stack pop asBKNumber.
+	y := stack pop asBKNumber.
+	z := stack pop asBKNumber.
+	module := (x + y) \\ z.
+	stack push: module asBKHexa
 ]
 
 { #category : #visiting }
@@ -425,6 +425,14 @@ FogEVMInterpreter >> visitMload: aFogVMMload [
 	stack push: (memory fetchFrom: fromAddress to: toAddress)
 ]
 
+{ #category : #visiting }
+FogEVMInterpreter >> visitMod: aFogVMMod [
+	| x y |
+	x := stack pop asBKNumber.
+	y := stack pop asBKNumber.
+	stack push: (x \\ y)
+]
+
 { #category : #'visit - memory' }
 FogEVMInterpreter >> visitMstore: aFogVMMstore [ 
 	| address value |
@@ -439,6 +447,16 @@ FogEVMInterpreter >> visitMul: aFogVMMul [
 	numberA := stack pop asBKNumber.
 	numberB := stack pop asBKNumber.
 	stack push: (numberA * numberB) asBKHexa
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitMulmod: aFogVMMulmod [
+	| x y z module |
+	x := stack pop asBKNumber.
+	y := stack pop asBKNumber.
+	z := stack pop asBKNumber.
+	module := (x * y) \\ z.
+	stack push: module asBKHexa
 ]
 
 { #category : #'visit - boolean alebra' }
@@ -529,4 +547,12 @@ FogEVMInterpreter >> visitSub: aFogVMAdd [
 { #category : #'visit - stack' }
 FogEVMInterpreter >> visitSwap: aFogVMSwap [
 	stack swap: 1 with: aFogVMSwap expectedPops + 1
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitXor: aFogVMXor [
+	| a b |
+	a := self hexaToBoolean: stack pop.
+	b := self hexaToBoolean: stack pop.
+	stack push: (self booleanToHexa: (a xor: b))
 ]
