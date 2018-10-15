@@ -274,6 +274,14 @@ FogEVMInterpreter >> visitAnd: aFogVMAnd [
 	stack push: (self booleanToHexa: a & b)
 ]
 
+{ #category : #visiting }
+FogEVMInterpreter >> visitByte: aFogVMByte [
+	| chunk position |
+	chunk := stack pop asHeadlessHexa.
+	position := stack pop asBKNumber * 2.
+	stack push: ('0x{1}' format: {(chunk copyFrom: position - 1 to: position)})
+]
+
 { #category : #'visit - call' }
 FogEVMInterpreter >> visitCalldataload: aFogVMCalldataload [
 	| id |
@@ -493,6 +501,27 @@ FogEVMInterpreter >> visitReturn: aFogVMReturn [
 	self finishComputation
 ]
 
+{ #category : #visiting }
+FogEVMInterpreter >> visitSar: aFogVMSar [
+	| shift value push |
+	shift := stack pop asBKNumber.
+	value := stack pop asBKNumber.
+	push := shift < 256
+		ifTrue: [ value >> shift ]
+		ifFalse: [ value sign = -1
+				ifTrue: [ -1 ]
+				ifFalse: [ 0 ] ].
+	stack push: push
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMInterpreter >> visitSdiv: aFogVMSdiv [
+	| x y |
+	x := stack pop asBKNumber.
+	y := stack pop asBKNumber.
+	stack push: y sign * x sign * (x abs // y abs)
+]
+
 { #category : #'visit - hashing' }
 FogEVMInterpreter >> visitSha3: aFogVMSha3 [
 	| fromAddress toAddress kck |
@@ -500,6 +529,22 @@ FogEVMInterpreter >> visitSha3: aFogVMSha3 [
 	toAddress := stack pop.
 	kck := self keccack256: (memory fetchFrom: fromAddress to: toAddress).
 	stack push: kck.
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitShl: aFogVMShl [ 
+	| shift value |
+	shift := stack pop asBKNumber.
+	value := stack pop asBKNumber.
+	stack push: value << shift
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitShr: aFogVMShr [
+	| shift value |
+	shift := stack pop asBKNumber.
+	value := stack pop asBKNumber.
+	stack push: value >> shift
 ]
 
 { #category : #'visit - storage' }

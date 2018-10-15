@@ -101,7 +101,7 @@ FogEVMRandomizedTest >> testDIV [
 	bytecode := self createBytecodeForDIV: x and: (y max: 1).
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x / (y max: 1)
+	self assert: interpreter stack pop asBKNumber equals: x // (y max: 1)
 ]
 
 { #category : #test }
@@ -129,9 +129,8 @@ FogEVMRandomizedTest >> testEQ [
 
 { #category : #test }
 FogEVMRandomizedTest >> testEXP [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opExp(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	base, exponent := stack.pop(), stack.pop()
 	stack.push(math.Exp(base, exponent))
@@ -139,13 +138,10 @@ FogEVMRandomizedTest >> testEXP [
 	interpreter.intPool.put(base, exponent)
 
 	return ni"
-		bytecode := self createBytecodeForEXP.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForEXP: x and: y.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter stack pop asBKNumber equals: x ** y
 ]
 
 { #category : #test }
@@ -295,9 +291,8 @@ FogEVMRandomizedTest >> testPOP [
 
 { #category : #test }
 FogEVMRandomizedTest >> testSAR [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opSAR(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// Note, S256 returns (potentially) a new bigint, so were popping, not peeking this one
 	shift, value := math.U256(stack.pop()), math.S256(stack.pop())
@@ -317,13 +312,19 @@ FogEVMRandomizedTest >> testSAR [
 	stack.push(math.U256(value))
 
 	return ni"
-		bytecode := self createBytecodeForSAR.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	y < 256
+		ifTrue: [ bytecode := self createBytecodeForSAR: y and: x.
+			interpreter bytecode: bytecode.
+			interpreter run.
+			self assert: interpreter stack pop asBKNumber equals: x >> y ]
+		ifFalse: [ bytecode := self createBytecodeForSAR: y and: x.
+			interpreter bytecode: bytecode.
+			interpreter run.
+			self assert: interpreter stack pop asBKNumber equals: 0.
+			bytecode := self createBytecodeForSAR: y and: x negated.
+			interpreter bytecode: bytecode.
+			interpreter run.
+			self assert: interpreter stack pop asBKNumber equals: -1 ]
 ]
 
 { #category : #test }
@@ -351,17 +352,17 @@ FogEVMRandomizedTest >> testSDIV [
  	bytecode := self createBytecodeForSDIV: x and: (y max:1).
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x / (y max:1) .
+	self assert: interpreter stack pop asBKNumber equals: x // (y max:1) .
 	
 	bytecode := self createBytecodeForSDIV: x negated and: (y max:1).
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x negated / (y max:1) .
+	self assert: interpreter stack pop asBKNumber equals: (x negated) // (y max:1) .
 	
 	bytecode := self createBytecodeForSDIV: x and: (y max:1) negated.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x / ((y max:1) negated)
+	self assert: interpreter stack pop asBKNumber equals: x // ((y max:1) negated)
 		
 
 ]
@@ -468,7 +469,7 @@ FogEVMRandomizedTest >> testSHL [
 // opSHR implements Logical Shift Right
 // The SHR instruction (logical shift right) pops 2 values from the stack, first arg1 and then arg2,
 // and pushes on the stack arg2 shifted to the right by arg1 number of bits with z"
-	bytecode := self createBytecodeForSHL: x and: y.
+	bytecode := self createBytecodeForSHL: y and: x.
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self assert: interpreter stack pop asBKNumber equals: x << y
@@ -496,7 +497,7 @@ FogEVMRandomizedTest >> testSHR [
 // opSAR implements Arithmetic Shift Right
 // The SAR instruction (arithmetic shift right) pops 2 values from the stack, first arg1 and then arg2,
 // and pushes on the stack arg2 shifted to the right by arg1 number of bits with sign e"
-	bytecode := self createBytecodeForSHR: x and: y.
+	bytecode := self createBytecodeForSHR: y and: x.
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self assert: interpreter stack pop asBKNumber equals: x >> y

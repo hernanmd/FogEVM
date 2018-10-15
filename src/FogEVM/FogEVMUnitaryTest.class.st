@@ -136,6 +136,19 @@ FogEVMUnitaryTest >> createBytecodeForBYTE [
 		
 ]
 
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForBYTE: aChunk at: aPosition [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream
+		nextPutPush4: aPosition;
+		nextPutPush3: aChunk;
+		nextPutByte;
+		nextPutStop.
+	^ bytecode
+]
+
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForCALL [
 		| bytecode stream |
@@ -479,8 +492,8 @@ FogEVMUnitaryTest >> createBytecodeForDIV [
 		
 ]
 
-{ #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForDIV: aValue plus: oValue [
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForDIV: aValue and: oValue [
 	| bytecode stream |
 	bytecode := FogEVMByteCode new.
 	stream := bytecode writeStream.
@@ -636,6 +649,19 @@ FogEVMUnitaryTest >> createBytecodeForEXP [
 		^ bytecode.
 		
 		
+]
+
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForEXP: aValue and: oValue [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream
+		nextPutPush1: oValue;
+		nextPutPush1: aValue;
+		nextPutExp;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1397,6 +1423,18 @@ FogEVMUnitaryTest >> createBytecodeForSAR [
 ]
 
 { #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForSAR: aValue and: oValue [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutSar.
+	stream nextPutStop.
+	^ bytecode
+]
+
+{ #category : #creating }
 FogEVMUnitaryTest >> createBytecodeForSDIV: aValue and: oValue [ 
 	| bytecode stream |
 	bytecode := FogEVMByteCode new.
@@ -1535,6 +1573,18 @@ FogEVMUnitaryTest >> createBytecodeForSHL [
 		
 ]
 
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForSHL: aValue and: oValue [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutShl.
+	stream nextPutStop.
+	^ bytecode
+]
+
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSHR [
 		| bytecode stream |
@@ -1563,6 +1613,18 @@ FogEVMUnitaryTest >> createBytecodeForSHR [
 		^ bytecode.
 		
 		
+]
+
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForSHR: aValue and: oValue [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutShr.
+	stream nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
