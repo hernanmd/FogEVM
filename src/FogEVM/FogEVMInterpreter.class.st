@@ -206,9 +206,19 @@ FogEVMInterpreter >> peekNextNextInstruction [
 	^ (executableMemory at: instructionPointer + 1) instruction
 ]
 
+{ #category : #accessing }
+FogEVMInterpreter >> pop [
+	^ stack pop 
+]
+
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> programHasFinished [
 	^ programFinished ifNil: [ programFinished := executableMemory size < instructionPointer ]
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMInterpreter >> push: aFogVMPush [
+	stack push: (FogEVMRegistry for: aFogVMPush)
 ]
 
 { #category : #'as yet unclassified' }
@@ -246,148 +256,144 @@ FogEVMInterpreter >> storageFor: aContractAddress state: aStateHash [
 { #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitAdd: aFogVMAdd [
 	| a b |
-	a := stack pop asBKNumber.
-	b := stack pop asBKNumber.
-	stack push: (a + b) asBKHexa
+	a := self pop.
+	b := self pop.
+	self push: a + b
 ]
 
 { #category : #visit }
 FogEVMInterpreter >> visitAddmod: aFogVMAddmod [
 	| x y z module |
-	x := stack pop asBKNumber.
-	y := stack pop asBKNumber.
-	z := stack pop asBKNumber.
+	x := self pop .
+	y := self pop .
+	z := self pop .
 	module := (x + y) \\ z.
-	stack push: module asBKHexa
+	self push: module 
 ]
 
 { #category : #visiting }
 FogEVMInterpreter >> visitAddress: aFogVMAddress [ 
-	stack push: self contractAddress 
+	self push: self contractAddress 
 ]
 
 { #category : #'visit - boolean alebra' }
 FogEVMInterpreter >> visitAnd: aFogVMAnd [
 	| a b |
-	a := self hexaToBoolean: stack pop.
-	b := self hexaToBoolean: stack pop.
-	stack push: (self booleanToHexa: a & b)
+	a := self pop.
+	b := self pop.
+	self push: a & b
 ]
 
 { #category : #visiting }
 FogEVMInterpreter >> visitByte: aFogVMByte [
 	| chunk position |
-	chunk := stack pop asHeadlessHexa.
-	position := stack pop asBKNumber * 2.
-	stack push: ('0x{1}' format: {(chunk copyFrom: position - 1 to: position)})
+	chunk := self pop.
+	position := self pop.
+	self push: (chunk byteAt: position)
 ]
 
 { #category : #'visit - call' }
 FogEVMInterpreter >> visitCalldataload: aFogVMCalldataload [
 	| id |
-	id := stack pop asBKNumber.
-	stack push: (self accessCallFrom0BaseIndex: id)
+	id := self pop.
+	self push: (self accessCallFrom0BaseIndex: id)
 ]
 
 { #category : #'visit - call' }
-FogEVMInterpreter >> visitCalldatasize: aFogVMCalldatasize [ 
-	stack push: call size asBKNumber
+FogEVMInterpreter >> visitCalldatasize: aFogVMCalldatasize [
+	self push: call size
 ]
 
 { #category : #'visit - call' }
 FogEVMInterpreter >> visitCaller: aFogVMCaller [ 
-	stack push: self callerAddress
+	self push: self callerAddress
 ]
 
 { #category : #'visit - call' }
 FogEVMInterpreter >> visitCallvalue: aFogVMCallvalue [
-	stack push: self callValue
+	self push: self callValue
 ]
 
 { #category : #visiting }
 FogEVMInterpreter >> visitCodecopy: aFogVMCodecopy [
 	| loadingArea fromInstruction amountOfInstructions hexa |
-	loadingArea := stack pop.
-	fromInstruction := stack pop asBKNumber * 2 + 1.
-	amountOfInstructions := stack pop asBKNumber * 2.
+	loadingArea := self pop.
+	fromInstruction := self pop.
+	amountOfInstructions := self pop.
+	self stageAt: loadingArea aCopyProgramFromByte: fromInstruction counting: amountOfInstructions
+	"
 	hexa := program toHexa.
 	hexa := hexa copyFrom: 3 to: hexa size.
 	hexa := hexa copyFrom: fromInstruction to: fromInstruction + amountOfInstructions - 1.
-	memory storeChunck: hexa startingAt: loadingArea ensureBytes: amountOfInstructions / 2
+	memory storeChunck: hexa startingAt: loadingArea ensureBytes: amountOfInstructions / 2"
 	"0 to: amountOfInstructions - 1 do: [ :i | memory store: (self hexa at: fromInstruction + i) at: (loadingArea + i) asBKHexa ]"
 ]
 
 { #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitDiv: aFogVMDiv [
 	| numerator denom |
-	numerator := stack pop asBKNumber.
-	denom := stack pop asBKNumber.
-	stack
+	numerator := self pop.
+	denom := self pop.
+	self
 		push:
 			(numerator isZero
 				ifTrue: [ 0 ]
-				ifFalse: [ numerator // denom ]) asBKHexa
+				ifFalse: [ numerator // denom ])
 ]
 
 { #category : #'visit - stack' }
 FogEVMInterpreter >> visitDup: aFogVMDup [
-	| element | 
-	element := stack at: aFogVMDup expectedPops.
-	stack push: element copy
+	| element |
+	element := self copyElement: aFogVMDup expectedPops
+	"	self push: element copy"
 ]
 
 { #category : #'visit - comparision' }
 FogEVMInterpreter >> visitEq: aFogVMEq [
-	| element1 element2 max |
-	element1 := stack pop.
-	element2 := stack pop.
-	max := element1 size max: element2 size.
+	| element1 element2 |
+	element1 := self pop.
+	element2 := self pop.
+	"	max := element1 size max: element2 size.
 	element1 := element1 padRightTo: max with: $0.
-	element2 := element2 padRightTo: max with: $0.
-	stack
-		push:
-			(element1 = element2
-				ifTrue: [ 1 ]
-				ifFalse: [ 0 ]) asBKHexa
+	element2 := element2 padRightTo: max with: $0."
+	self push: element1 = element2
+	"ifTrue: [ 1 ]
+				ifFalse: [ 0 ]"
 ]
 
 { #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitExp: aFogVMExp [
 	| value exponent |
-	value := stack pop asBKNumber.
-	exponent := stack pop asBKNumber.
-	stack push: (value ** exponent) asBKHexa
+	value := self pop.
+	exponent := self pop.
+	self push: value ** exponent
 ]
 
 { #category : #'visit - comparision' }
 FogEVMInterpreter >> visitGt: aFogVMGt [
 	| element1 element2 |
-	element1 := stack pop asBKNumber.
-	element2 := stack pop asBKNumber.
-	stack
-		push:
-			(element1 > element2
-				ifTrue: [ 1 ]
-				ifFalse: [ 0 ]) asBKHexa
+	element1 := self pop.
+	element2 := self pop.
+	self push: (element1 unsignedGT: element2)
 ]
 
 { #category : #'visit - boolean alebra' }
 FogEVMInterpreter >> visitIszero: aFogVMIszero [
-	stack push: (self booleanToHexa: stack pop asBKNumber = 0)
+	self push: self pop isZero
 ]
 
 { #category : #'visit - flow' }
 FogEVMInterpreter >> visitJump: aFogVMJump [
 	| newInstructionPointer jumpDestInstruction |
-	newInstructionPointer := stack pop.
+	newInstructionPointer := self pop.
 	jumpDestInstruction := self peekInstruction: newInstructionPointer.
-	self
+	"self
 		assert: jumpDestInstruction isValidJumpDestination
 		description:
 			('{1} is not a valid JUMP destination. {2} instruction founded'
 				format:
 					{newInstructionPointer.
-					jumpDestInstruction}).
+					jumpDestInstruction}). should move to setInstruction "
 	self setInstructionPointerToByte: newInstructionPointer
 ]
 
@@ -399,180 +405,181 @@ FogEVMInterpreter >> visitJumpdest: aFogVMJumpdest [
 { #category : #'visit - flow' }
 FogEVMInterpreter >> visitJumpi: aFogVMJumpi [
 	| condition newInstructionPointer jumpDestInstruction |
-	newInstructionPointer := stack pop.
+	newInstructionPointer := self pop.
 	jumpDestInstruction := self peekInstruction: newInstructionPointer.
-	condition := self hexaToBoolean: stack pop.
+	condition := self pop.
 	condition
-		ifTrue: [ self
+		ifTrue: [ "self
 				assert: jumpDestInstruction isValidJumpDestination
 				description:
 					('{1} is not a valid JUMPI (Conditional JUMP) destination. {2} Instruction founded'
 						format:
 							{newInstructionPointer.
-							jumpDestInstruction}).
-			self setInstructionPointerToByte: newInstructionPointer ]
+							jumpDestInstruction}). move this " self setInstructionPointerToByte: newInstructionPointer ]
 ]
 
 { #category : #'visit - comparision' }
 FogEVMInterpreter >> visitLt: aFogVMGt [
 	| element1 element2 |
-	element1 := stack pop asBKNumber.
-	element2 := stack pop asBKNumber.
-	stack
-		push:
-			(element1 < element2
-				ifTrue: [ 1 ]
-				ifFalse: [ 0 ]) asBKHexa
+	element1 := self pop.
+	element2 := self pop.
+	self push: (element1 unsignedLesserThan: element2)
 ]
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> visitMload: aFogVMMload [
 	| fromAddress toAddress |
-	fromAddress := stack pop.
-	toAddress := (fromAddress asBKNumber + FogEVMInterpreter wordSize) asBKHexa.
-	stack push: (memory fetchFrom: fromAddress to: toAddress)
+	fromAddress := self pop.
+	toAddress := fromAddress + FogEVMInterpreter wordSize.
+	self push: (self copyMemoryFrom: fromAddress to: toAddress)
 ]
 
 { #category : #visiting }
 FogEVMInterpreter >> visitMod: aFogVMMod [
 	| x y |
-	x := stack pop asBKNumber.
-	y := stack pop asBKNumber.
-	stack push: (x \\ y)
+	x := self pop.
+	y := self pop.
+	self push: x \\ y
 ]
 
 { #category : #'visit - memory' }
 FogEVMInterpreter >> visitMstore: aFogVMMstore [ 
 	| address value |
-	address := stack pop.
-	value := stack pop.
-	self memory store: value at: address
+	address := self pop.
+	value := self pop.
+	self memoryStore: value at: address
 ]
 
 { #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitMul: aFogVMMul [
 	| numberA numberB |
-	numberA := stack pop asBKNumber.
-	numberB := stack pop asBKNumber.
-	stack push: (numberA * numberB) asBKHexa
+	numberA := self pop.
+	numberB := self pop.
+	self push: numberA * numberB
 ]
 
 { #category : #visiting }
 FogEVMInterpreter >> visitMulmod: aFogVMMulmod [
 	| x y z module |
-	x := stack pop asBKNumber.
-	y := stack pop asBKNumber.
-	z := stack pop asBKNumber.
-	module := (x * y) \\ z.
-	stack push: module asBKHexa
+	x := self pop.
+	y := self pop.
+	z := self pop.
+	module := x * y \\ z.
+	self push: module
 ]
 
 { #category : #'visit - boolean alebra' }
 FogEVMInterpreter >> visitNot: aFogVMNot [
 	| value |
-	value := self hexaToBoolean: stack pop.
-	stack push: (self booleanToHexa: value not)
+	value := self pop.
+	self push: value not
 ]
 
 { #category : #'visit - boolean alebra' }
 FogEVMInterpreter >> visitOr: aFogVMOr [
 	| a b |
-	a := self hexaToBoolean: stack pop.
-	b := self hexaToBoolean: stack pop.
-	stack push: (self booleanToHexa: a | b)
+	a := self pop.
+	b := self pop.
+	self push: a | b
 ]
 
 { #category : #'visit - stack' }
 FogEVMInterpreter >> visitPop: aFogVMPop [
-	stack pop
+	self pop
 ]
 
 { #category : #'visit - stack' }
-FogEVMInterpreter >> visitPush: aFogVMPush [ 
-	stack push: aFogVMPush pushable
+FogEVMInterpreter >> visitPush: aFogVMPush [
+	self push: aFogVMPush
 ]
 
 { #category : #'visit - flow' }
 FogEVMInterpreter >> visitReturn: aFogVMReturn [
 	| from to |
-	from := stack pop.
-	to := stack pop.
-	return := memory fetchFrom: from to: to.
+	from := self pop.
+	to := self pop.
+	return := self fetchMemoryFrom: from to: to.
 	self finishComputation
 ]
 
 { #category : #visiting }
 FogEVMInterpreter >> visitSar: aFogVMSar [
 	| shift value push |
-	shift := stack pop asBKNumber.
-	value := stack pop asBKNumber.
-	push := shift < 256
+	shift := self pop.
+	value := self pop.
+	"	push := shift < 256
 		ifTrue: [ value >> shift ]
 		ifFalse: [ value sign = -1
 				ifTrue: [ -1 ]
-				ifFalse: [ 0 ] ].
-	stack push: push
+				ifFalse: [ 0 ] ]."
+	push := value signedRightShift: shift.
+	self push: push
 ]
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> visitSdiv: aFogVMSdiv [
 	| x y |
-	x := stack pop asBKNumber.
-	y := stack pop asBKNumber.
-	stack push: y sign * x sign * (x abs // y abs)
+	x := self pop.
+	y := self pop.
+	self push: (x signedDivision: y)	"y sign * x sign * (x abs // y abs)"
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitSgt: aFogVMSgt [
+	" Signed Greater than"
+
+	| x y |
+	x := self pop.
+	y := self pop.
+	self push: (x signedGreaterThan: y)
 ]
 
 { #category : #'visit - hashing' }
 FogEVMInterpreter >> visitSha3: aFogVMSha3 [
 	| fromAddress toAddress kck |
-	fromAddress := stack pop.
-	toAddress := stack pop.
-	kck := self keccack256: (memory fetchFrom: fromAddress to: toAddress).
-	stack push: kck.
+	fromAddress := self pop.
+	toAddress := self pop.
+	kck := self keccack256: (self fetchMemoryFrom: fromAddress to: toAddress).
+	self push: kck
 ]
 
 { #category : #visiting }
-FogEVMInterpreter >> visitShl: aFogVMShl [ 
+FogEVMInterpreter >> visitShl: aFogVMShl [
 	| shift value |
-	shift := stack pop asBKNumber.
-	value := stack pop asBKNumber.
-	stack push: value << shift
+	shift := self pop.
+	value := self pop.
+	self push: value << shift
 ]
 
 { #category : #visiting }
 FogEVMInterpreter >> visitShr: aFogVMShr [
 	| shift value |
-	shift := stack pop asBKNumber.
-	value := stack pop asBKNumber.
-	stack push: value >> shift
+	shift := self pop.
+	value := self pop.
+	self push: value >> shift
 ]
 
 { #category : #'visit - storage' }
 FogEVMInterpreter >> visitSload: aFogVMSload [ 
 	| storageAddress value | 
-	storageAddress := stack pop.
+	storageAddress := self pop.
 	value := (self storageFor: self contractAddress) getStorageAt: storageAddress. 
-	stack push: value. 
+	self push: value. 
 ]
 
 { #category : #'visit - comparision' }
 FogEVMInterpreter >> visitSlt: aFogVMSlt [
-	| element1 element2 pkr |
-	pkr := FogHexadecimalPacker new.
-	element1 := pkr unpackInt256: stack pop.
-	element2 := pkr unpackInt256: stack pop.
-	stack
-		push:
-			(element1 < element2
-				ifTrue: [ 1 ]
-				ifFalse: [ 0 ]) asBKHexa
+	| element1 element2 |
+	element1 := self pop.
+	element2 := self pop.
+	self push: (element1 signedLesserThan: element2)
 ]
 
 { #category : #'visit - storage' }
 FogEVMInterpreter >> visitSstore: aFogVMSstore [
 	| storageAddress value |
-	storageAddress := stack pop.
-	value := stack pop.
+	storageAddress := self pop.
+	value := self pop.
 	value := (self storageFor: self contractAddress) atStorage: storageAddress put: value
 ]
 
@@ -584,20 +591,20 @@ FogEVMInterpreter >> visitStop: aFogVMStop [
 { #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitSub: aFogVMAdd [
 	| a b |
-	a := stack pop asBKNumber.
-	b := stack pop asBKNumber.
-	stack push: (a - b) asBKHexa
+	a := self pop.
+	b := self pop.
+	self push: a - b
 ]
 
 { #category : #'visit - stack' }
 FogEVMInterpreter >> visitSwap: aFogVMSwap [
-	stack swap: 1 with: aFogVMSwap expectedPops 
+	self swapStackRegistry: 1 with: aFogVMSwap expectedPops 
 ]
 
 { #category : #visiting }
 FogEVMInterpreter >> visitXor: aFogVMXor [
 	| a b |
-	a := self hexaToBoolean: stack pop.
-	b := self hexaToBoolean: stack pop.
-	stack push: (self booleanToHexa: (a xor: b))
+	a := self hexaToBoolean: self pop.
+	b := self hexaToBoolean: self pop.
+	self push: (a xor: b)
 ]

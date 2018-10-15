@@ -96,6 +96,11 @@ FogVMPush class >> instance0x0002 [
 		yourself
 ]
 
+{ #category : #accessing }
+FogVMPush >> bytes [
+	^ bytes
+]
+
 { #category : #testing }
 FogVMPush >> isPush [
 	^ true
