@@ -661,44 +661,40 @@ FogEVMByteCodeWriteStream >> nextPutPop [
 			
 ]
 
-{ #category : #'#generated - put' }
-FogEVMByteCodeWriteStream >> nextPutPush10: aNumber [
-	| value bytecode |
-	value := aNumber isNumber
-		ifTrue: [ aNumber asBKHexa ]
-		ifFalse: [ aNumber ].
-	self assert: value pushes: 10.
-	bytecode := FogVMPush10 instance
-		parameter: value;
-		yourself.
-	self
-		nextPut:
+{ #category : #generated }
+FogEVMByteCodeWriteStream >> nextPutPush10: aNumber [  
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 10.
+		self assert: value pushes: 10.
+		bytecode := FogVMPush10 instance parameter: value; 
+					  yourself. 
+		self nextPut:
 			(FogEVMMnemonicExecutableMemoryEntry new
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
+			
+
 ]
 
-{ #category : #'#generated - put' }
-FogEVMByteCodeWriteStream >> nextPutPush11: aNumber [
-	| value bytecode |
-	value := aNumber isNumber
-		ifTrue: [ aNumber asBKHexa ]
-		ifFalse: [ aNumber ].
-	self assert: value pushes: 11.
-	bytecode := FogVMPush11 instance
-		parameter: value;
-		yourself.
-	self
-		nextPut:
+{ #category : #generated }
+FogEVMByteCodeWriteStream >> nextPutPush11: aNumber [  
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 11.
+		self assert: value pushes: 11.
+		bytecode := FogVMPush11 instance parameter: value; 
+					  yourself. 
+		self nextPut:
 			(FogEVMMnemonicExecutableMemoryEntry new
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
+			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush12: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 12.
 		self assert: value pushes: 12.
 		bytecode := FogVMPush12 instance parameter: value; 
 					  yourself. 
@@ -707,12 +703,13 @@ FogEVMByteCodeWriteStream >> nextPutPush12: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush13: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 13.
 		self assert: value pushes: 13.
 		bytecode := FogVMPush13 instance parameter: value; 
 					  yourself. 
@@ -721,12 +718,13 @@ FogEVMByteCodeWriteStream >> nextPutPush13: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush14: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 14.
 		self assert: value pushes: 14.
 		bytecode := FogVMPush14 instance parameter: value; 
 					  yourself. 
@@ -735,12 +733,13 @@ FogEVMByteCodeWriteStream >> nextPutPush14: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush15: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 15.
 		self assert: value pushes: 15.
 		bytecode := FogVMPush15 instance parameter: value; 
 					  yourself. 
@@ -749,12 +748,13 @@ FogEVMByteCodeWriteStream >> nextPutPush15: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush16: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 16.
 		self assert: value pushes: 16.
 		bytecode := FogVMPush16 instance parameter: value; 
 					  yourself. 
@@ -763,12 +763,13 @@ FogEVMByteCodeWriteStream >> nextPutPush16: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush17: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 17.
 		self assert: value pushes: 17.
 		bytecode := FogVMPush17 instance parameter: value; 
 					  yourself. 
@@ -777,12 +778,13 @@ FogEVMByteCodeWriteStream >> nextPutPush17: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush18: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 18.
 		self assert: value pushes: 18.
 		bytecode := FogVMPush18 instance parameter: value; 
 					  yourself. 
@@ -791,12 +793,13 @@ FogEVMByteCodeWriteStream >> nextPutPush18: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush19: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 19.
 		self assert: value pushes: 19.
 		bytecode := FogVMPush19 instance parameter: value; 
 					  yourself. 
@@ -805,12 +808,13 @@ FogEVMByteCodeWriteStream >> nextPutPush19: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush1: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 1.
 		self assert: value pushes: 1.
 		bytecode := FogVMPush1 instance parameter: value; 
 					  yourself. 
@@ -819,12 +823,13 @@ FogEVMByteCodeWriteStream >> nextPutPush1: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush20: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 20.
 		self assert: value pushes: 20.
 		bytecode := FogVMPush20 instance parameter: value; 
 					  yourself. 
@@ -833,12 +838,13 @@ FogEVMByteCodeWriteStream >> nextPutPush20: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush21: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 21.
 		self assert: value pushes: 21.
 		bytecode := FogVMPush21 instance parameter: value; 
 					  yourself. 
@@ -847,12 +853,13 @@ FogEVMByteCodeWriteStream >> nextPutPush21: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush22: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 22.
 		self assert: value pushes: 22.
 		bytecode := FogVMPush22 instance parameter: value; 
 					  yourself. 
@@ -861,12 +868,13 @@ FogEVMByteCodeWriteStream >> nextPutPush22: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush23: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 23.
 		self assert: value pushes: 23.
 		bytecode := FogVMPush23 instance parameter: value; 
 					  yourself. 
@@ -875,12 +883,13 @@ FogEVMByteCodeWriteStream >> nextPutPush23: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush24: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 24.
 		self assert: value pushes: 24.
 		bytecode := FogVMPush24 instance parameter: value; 
 					  yourself. 
@@ -889,12 +898,13 @@ FogEVMByteCodeWriteStream >> nextPutPush24: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush25: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 25.
 		self assert: value pushes: 25.
 		bytecode := FogVMPush25 instance parameter: value; 
 					  yourself. 
@@ -903,12 +913,13 @@ FogEVMByteCodeWriteStream >> nextPutPush25: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush26: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 26.
 		self assert: value pushes: 26.
 		bytecode := FogVMPush26 instance parameter: value; 
 					  yourself. 
@@ -917,12 +928,13 @@ FogEVMByteCodeWriteStream >> nextPutPush26: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush27: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 27.
 		self assert: value pushes: 27.
 		bytecode := FogVMPush27 instance parameter: value; 
 					  yourself. 
@@ -931,12 +943,13 @@ FogEVMByteCodeWriteStream >> nextPutPush27: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush28: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 28.
 		self assert: value pushes: 28.
 		bytecode := FogVMPush28 instance parameter: value; 
 					  yourself. 
@@ -945,12 +958,13 @@ FogEVMByteCodeWriteStream >> nextPutPush28: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush29: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 29.
 		self assert: value pushes: 29.
 		bytecode := FogVMPush29 instance parameter: value; 
 					  yourself. 
@@ -959,12 +973,13 @@ FogEVMByteCodeWriteStream >> nextPutPush29: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush2: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 2.
 		self assert: value pushes: 2.
 		bytecode := FogVMPush2 instance parameter: value; 
 					  yourself. 
@@ -973,12 +988,13 @@ FogEVMByteCodeWriteStream >> nextPutPush2: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush30: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 30.
 		self assert: value pushes: 30.
 		bytecode := FogVMPush30 instance parameter: value; 
 					  yourself. 
@@ -987,12 +1003,13 @@ FogEVMByteCodeWriteStream >> nextPutPush30: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush31: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 31.
 		self assert: value pushes: 31.
 		bytecode := FogVMPush31 instance parameter: value; 
 					  yourself. 
@@ -1001,12 +1018,13 @@ FogEVMByteCodeWriteStream >> nextPutPush31: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush32: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 32.
 		self assert: value pushes: 32.
 		bytecode := FogVMPush32 instance parameter: value; 
 					  yourself. 
@@ -1015,12 +1033,13 @@ FogEVMByteCodeWriteStream >> nextPutPush32: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush3: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 3.
 		self assert: value pushes: 3.
 		bytecode := FogVMPush3 instance parameter: value; 
 					  yourself. 
@@ -1029,12 +1048,13 @@ FogEVMByteCodeWriteStream >> nextPutPush3: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush4: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 4.
 		self assert: value pushes: 4.
 		bytecode := FogVMPush4 instance parameter: value; 
 					  yourself. 
@@ -1043,12 +1063,13 @@ FogEVMByteCodeWriteStream >> nextPutPush4: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush5: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 5.
 		self assert: value pushes: 5.
 		bytecode := FogVMPush5 instance parameter: value; 
 					  yourself. 
@@ -1057,12 +1078,13 @@ FogEVMByteCodeWriteStream >> nextPutPush5: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush6: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 6.
 		self assert: value pushes: 6.
 		bytecode := FogVMPush6 instance parameter: value; 
 					  yourself. 
@@ -1071,12 +1093,13 @@ FogEVMByteCodeWriteStream >> nextPutPush6: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush7: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 7.
 		self assert: value pushes: 7.
 		bytecode := FogVMPush7 instance parameter: value; 
 					  yourself. 
@@ -1085,12 +1108,13 @@ FogEVMByteCodeWriteStream >> nextPutPush7: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush8: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 8.
 		self assert: value pushes: 8.
 		bytecode := FogVMPush8 instance parameter: value; 
 					  yourself. 
@@ -1099,12 +1123,13 @@ FogEVMByteCodeWriteStream >> nextPutPush8: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
-{ #category : #'#generated - put' }
+{ #category : #generated }
 FogEVMByteCodeWriteStream >> nextPutPush9: aNumber [  
-		| value bytecode |
-		value := aNumber isNumber ifTrue: [ aNumber asBKHexa ] ifFalse: [ aNumber ].
+| value bytecode |
+		value := self signAwareConversion: aNumber forBytesLength: 9.
 		self assert: value pushes: 9.
 		bytecode := FogVMPush9 instance parameter: value; 
 					  yourself. 
@@ -1113,6 +1138,7 @@ FogEVMByteCodeWriteStream >> nextPutPush9: aNumber [
 				byteNumber: self currentByteNumber;
 				instruction: bytecode)
 			
+
 ]
 
 { #category : #'#generated - put' }
@@ -1446,4 +1472,9 @@ FogEVMByteCodeWriteStream >> nextPutXor [
 				byteNumber: self currentByteNumber;
 				instruction: FogVMXor instance)
 			
+]
+
+{ #category : #generated }
+FogEVMByteCodeWriteStream >> signAwareConversion: aNumber forBytesLength: aBytesLength [
+	^ (FogEVMRegistry forValue: aNumber bytesLength: aBytesLength) unsignedValue
 ]

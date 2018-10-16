@@ -217,8 +217,8 @@ FogEVMInterpreter >> programHasFinished [
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMInterpreter >> push: aFogVMPush [
-	stack push: (FogEVMRegistry for: aFogVMPush)
+FogEVMInterpreter >> push: aPushableObject [
+	stack push: aPushableObject asPushableRegistry
 ]
 
 { #category : #'as yet unclassified' }
@@ -353,12 +353,7 @@ FogEVMInterpreter >> visitEq: aFogVMEq [
 	| element1 element2 |
 	element1 := self pop.
 	element2 := self pop.
-	"	max := element1 size max: element2 size.
-	element1 := element1 padRightTo: max with: $0.
-	element2 := element2 padRightTo: max with: $0."
-	self push: element1 = element2
-	"ifTrue: [ 1 ]
-				ifFalse: [ 0 ]"
+	self push: (element1 isEqualsTo: element2)
 ]
 
 { #category : #'visit - arithmetics' }
@@ -507,11 +502,6 @@ FogEVMInterpreter >> visitSar: aFogVMSar [
 	| shift value push |
 	shift := self pop.
 	value := self pop.
-	"	push := shift < 256
-		ifTrue: [ value >> shift ]
-		ifFalse: [ value sign = -1
-				ifTrue: [ -1 ]
-				ifFalse: [ 0 ] ]."
 	push := value signedRightShift: shift.
 	self push: push
 ]

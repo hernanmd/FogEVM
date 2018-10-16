@@ -37,11 +37,7 @@ FogEVMRandomizedTest >> testADD [
 	bytecode := self createBytecodeForADD: x plus: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x + y 
-	
-
-
-
+	self assert: interpreter stack pop unsignedValue equals: x + y
 ]
 
 { #category : #test }
@@ -62,7 +58,7 @@ FogEVMRandomizedTest >> testADDMOD [
 	bytecode := self createBytecodeForADDMOD: x and: y and: z.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: (x + y) \\ z
+	self assert: interpreter stack pop unsignedValue equals: (x + y) \\ z
 ]
 
 { #category : #test }
@@ -101,7 +97,7 @@ FogEVMRandomizedTest >> testDIV [
 	bytecode := self createBytecodeForDIV: x and: (y max: 1).
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x // (y max: 1)
+	self assert: interpreter stack pop unsignedValue equals: x // (y max: 1)
 ]
 
 { #category : #test }
@@ -120,11 +116,11 @@ FogEVMRandomizedTest >> testEQ [
 	bytecode := self createBytecodeForEQ: x and: x.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 1.
+	self assert: interpreter stack pop unsignedValue equals: 1.
 	bytecode := self createBytecodeForEQ: x and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 0
+	self assert: interpreter stack pop unsignedValue equals: 0
 ]
 
 { #category : #test }
@@ -141,7 +137,7 @@ FogEVMRandomizedTest >> testEXP [
 	bytecode := self createBytecodeForEXP: x and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x ** y
+	self assert: interpreter stack pop unsignedValue equals: x ** y
 ]
 
 { #category : #test }
@@ -161,7 +157,7 @@ FogEVMRandomizedTest >> testGT [
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self
-		assert: interpreter stack pop asBKNumber
+		assert: interpreter stack pop unsignedValue
 		equals:
 			(x > y
 				ifTrue: [ 1 ]
@@ -170,7 +166,7 @@ FogEVMRandomizedTest >> testGT [
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self
-		assert: interpreter stack pop asBKNumber
+		assert: interpreter stack pop unsignedValue
 		equals:
 			(y > x
 				ifTrue: [ 1 ]
@@ -195,7 +191,7 @@ FogEVMRandomizedTest >> testLT [
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self
-		assert: interpreter stack pop asBKNumber
+		assert: interpreter stack pop unsignedValue
 		equals:
 			(x < y
 				ifTrue: [ 1 ]
@@ -204,7 +200,7 @@ FogEVMRandomizedTest >> testLT [
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self
-		assert: interpreter stack pop asBKNumber
+		assert: interpreter stack pop unsignedValue
 		equals:
 			(y < x
 				ifTrue: [ 1 ]
@@ -227,7 +223,7 @@ FogEVMRandomizedTest >> testMOD [
 	bytecode := self createBytecodeForMOD: x and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x \\ y
+	self assert: interpreter stack pop unsignedValue equals: x \\ y
 ]
 
 { #category : #test }
@@ -245,7 +241,7 @@ FogEVMRandomizedTest >> testMUL [
 	bytecode := self createBytecodeForMUL: x and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x * y 
+	self assert: interpreter stack pop unsignedValue equals: x * y 
 		
 
 ]
@@ -273,7 +269,7 @@ FogEVMRandomizedTest >> testMULMOD [
 	bytecode := self createBytecodeForMULMOD: x and: y and: z.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x * y \\ z
+	self assert: interpreter stack pop unsignedValue equals: x * y \\ z
 ]
 
 { #category : #test }
@@ -282,11 +278,11 @@ FogEVMRandomizedTest >> testPOP [
 	"should test over 
 		func opPop(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	interpreter.intPool.put(stack.pop())
-	return ni" 
+	return ni"
 	bytecode := self createBytecodeForPOP: x.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack size asBKNumber equals: x
+	self assert: interpreter stack size equals: x
 ]
 
 { #category : #test }
@@ -316,22 +312,21 @@ FogEVMRandomizedTest >> testSAR [
 		ifTrue: [ bytecode := self createBytecodeForSAR: y and: x.
 			interpreter bytecode: bytecode.
 			interpreter run.
-			self assert: interpreter stack pop asBKNumber equals: x >> y ]
+			self assert: interpreter stack pop unsignedValue equals: x >> y ]
 		ifFalse: [ bytecode := self createBytecodeForSAR: y and: x.
 			interpreter bytecode: bytecode.
 			interpreter run.
-			self assert: interpreter stack pop asBKNumber equals: 0.
+			self assert: interpreter stack pop unsignedValue equals: 0.
 			bytecode := self createBytecodeForSAR: y and: x negated.
 			interpreter bytecode: bytecode.
 			interpreter run.
-			self assert: interpreter stack pop asBKNumber equals: -1 ]
+			self assert: interpreter stack pop unsignedValue equals: -1 ]
 ]
 
 { #category : #test }
 FogEVMRandomizedTest >> testSDIV [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opSdiv(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := math.S256(stack.pop()), math.S256(stack.pop())
 	res := interpreter.intPool.getZero()
@@ -349,22 +344,19 @@ FogEVMRandomizedTest >> testSDIV [
 	}
 	interpreter.intPool.put(x, y)
 	return n"
- 	bytecode := self createBytecodeForSDIV: x and: (y max:1).
+	y := y max: 1.
+	bytecode := self createBytecodeForSDIV: x and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x // (y max:1) .
-	
-	bytecode := self createBytecodeForSDIV: x negated and: (y max:1).
+	self assert: interpreter stack pop signedValue equals: x // y.
+	bytecode := self createBytecodeForSDIV: x negated and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: (x negated) // (y max:1) .
-	
-	bytecode := self createBytecodeForSDIV: x and: (y max:1) negated.
+	self assert: interpreter stack pop signedValue equals: (x // y) negated.
+	bytecode := self createBytecodeForSDIV: x and: y negated.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x // ((y max:1) negated)
-		
-
+	self assert: interpreter stack pop signedValue equals: (x // y) negated
 ]
 
 { #category : #test }
@@ -397,7 +389,7 @@ FogEVMRandomizedTest >> testSGT [
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self
-		assert: interpreter stack pop asBKNumber
+		assert: interpreter stack pop unsignedValue
 		equals:
 			(x negated > x
 				ifTrue: [ 1 ]
@@ -406,7 +398,7 @@ FogEVMRandomizedTest >> testSGT [
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self
-		assert: interpreter stack pop asBKNumber
+		assert: interpreter stack pop unsignedValue
 		equals:
 			(y > y negated
 				ifTrue: [ 1 ]
@@ -472,7 +464,7 @@ FogEVMRandomizedTest >> testSHL [
 	bytecode := self createBytecodeForSHL: y and: x.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x << y
+	self assert: interpreter stack pop unsignedValue equals: x << y
 ]
 
 { #category : #test }
@@ -500,7 +492,7 @@ FogEVMRandomizedTest >> testSHR [
 	bytecode := self createBytecodeForSHR: y and: x.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x >> y
+	self assert: interpreter stack pop unsignedValue equals: x >> y
 ]
 
 { #category : #test }
@@ -575,7 +567,7 @@ FogEVMRandomizedTest >> testSLT [
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self
-		assert: interpreter stack pop asBKNumber
+		assert: interpreter stack pop unsignedValue
 		equals:
 			(y < y negated 
 				ifTrue: [ 1 ]
@@ -607,12 +599,12 @@ FogEVMRandomizedTest >> testSMOD [
 	bytecode := self createBytecodeForSMOD: x negated and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x negated \\ y.
+	self assert: interpreter stack pop unsignedValue equals: x negated \\ y.
 	
 	bytecode := self createBytecodeForSMOD: x and: y negated.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x \\ y negated
+	self assert: interpreter stack pop unsignedValue equals: x \\ y negated
 ]
 
 { #category : #test }
@@ -629,7 +621,7 @@ FogEVMRandomizedTest >> testSUB [
 	bytecode := self createBytecodeForSUB: x and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: x - y 
+	self assert: interpreter stack pop unsignedValue equals: x - y 
 	
 
 

@@ -96,6 +96,11 @@ FogVMPush class >> instance0x0002 [
 		yourself
 ]
 
+{ #category : #converting }
+FogVMPush >> asPushableRegistry [
+	^ FogEVMRegistry forPush: self 
+]
+
 { #category : #accessing }
 FogVMPush >> bytes [
 	^ bytes
