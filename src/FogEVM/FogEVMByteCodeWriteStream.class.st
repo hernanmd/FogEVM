@@ -1476,5 +1476,7 @@ FogEVMByteCodeWriteStream >> nextPutXor [
 
 { #category : #generated }
 FogEVMByteCodeWriteStream >> signAwareConversion: aNumber forBytesLength: aBytesLength [
-	^ (FogEVMRegistry forValue: aNumber bytesLength: aBytesLength) unsignedValue
+	^ aNumber isString
+		ifTrue: [ aNumber ]
+		ifFalse: [ (FogEVMRegistry forValue: aNumber bytesLength: aBytesLength) unsignedValue ]
 ]

@@ -1578,8 +1578,8 @@ FogEVMUnitaryTest >> createBytecodeForSHL: aValue and: oValue [
 	| bytecode stream |
 	bytecode := FogEVMByteCode new.
 	stream := bytecode writeStream.
-	stream nextPutPush3: oValue.
-	stream nextPutPush3: aValue.
+	stream nextPutPush32: oValue.
+	stream nextPutPush32: aValue.
 	stream nextPutShl.
 	stream nextPutStop.
 	^ bytecode

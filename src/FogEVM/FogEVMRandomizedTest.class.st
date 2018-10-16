@@ -75,10 +75,10 @@ FogEVMRandomizedTest >> testBYTE [
 	}
 	interpreter.intPool.put(th)
 	return n"
-	bytecode := self createBytecodeForBYTE: '0x00FFAA' at: 3.
+	bytecode := self createBytecodeForBYTE: '0xFF00AA' at: 3.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop equals: '0xAA'
+	self assert: interpreter stack pop unsignedValue equals: 16rAA
 ]
 
 { #category : #test }
@@ -558,7 +558,7 @@ FogEVMRandomizedTest >> testSLT [
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self
-		assert: interpreter stack pop asBKNumber
+		assert: interpreter stack pop unsignedValue
 		equals:
 			(x negated < x
 				ifTrue: [ 1 ]
@@ -599,12 +599,12 @@ FogEVMRandomizedTest >> testSMOD [
 	bytecode := self createBytecodeForSMOD: x negated and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: x negated \\ y.
+	self assert: interpreter stack pop signedValue equals: x negated \\ y.
 	
 	bytecode := self createBytecodeForSMOD: x and: y negated.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: x \\ y negated
+	self assert: interpreter stack pop signedValue equals: x \\ y negated
 ]
 
 { #category : #test }
@@ -621,7 +621,7 @@ FogEVMRandomizedTest >> testSUB [
 	bytecode := self createBytecodeForSUB: x and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: x - y 
+	self assert: interpreter stack pop signedValue equals: x - y 
 	
 
 

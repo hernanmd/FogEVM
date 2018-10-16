@@ -131,6 +131,11 @@ FogEVMInterpreter >> contractAddress [
 	^ call at: 5
 ]
 
+{ #category : #convenience }
+FogEVMInterpreter >> copyElement: anInteger [
+	self push: (stack at: anInteger) copy
+]
+
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> fetchNextInstruction [
 	| instruction |
@@ -343,8 +348,7 @@ FogEVMInterpreter >> visitDiv: aFogVMDiv [
 
 { #category : #'visit - stack' }
 FogEVMInterpreter >> visitDup: aFogVMDup [
-	| element |
-	element := self copyElement: aFogVMDup expectedPops
+	 self copyElement: aFogVMDup expectedPops
 	"	self push: element copy"
 ]
 
@@ -563,6 +567,14 @@ FogEVMInterpreter >> visitSlt: aFogVMSlt [
 	element1 := self pop.
 	element2 := self pop.
 	self push: (element1 signedLesserThan: element2)
+]
+
+{ #category : #visit }
+FogEVMInterpreter >> visitSmod: aFogVMSmod [
+	| x y |
+	x := self pop.
+	y := self pop.
+	self push: (x smod: y)
 ]
 
 { #category : #'visit - storage' }

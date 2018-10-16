@@ -122,8 +122,18 @@ FogEVMRegistry >> + aFogEVMRegistry [
 ]
 
 { #category : #arithmetics }
+FogEVMRegistry >> - aFogEVMRegistry [
+	^ FogEVMRegistry forValue: self unsignedValue - aFogEVMRegistry unsignedValue maskedAs: aFogEVMRegistry
+]
+
+{ #category : #arithmetics }
 FogEVMRegistry >> // aFogEVMRegistry [
 	^ FogEVMRegistry forValue: self unsignedValue // aFogEVMRegistry unsignedValue maskedAs: aFogEVMRegistry
+]
+
+{ #category : #bit }
+FogEVMRegistry >> << aFogEVMRegistry [
+	^ FogEVMRegistry forValue: self unsignedValue << aFogEVMRegistry unsignedValue maskedAs: self
 ]
 
 { #category : #'bit manipulation' }
@@ -139,6 +149,16 @@ FogEVMRegistry >> \\ aFogEVMRegistry [
 { #category : #conversion }
 FogEVMRegistry >> asPushableRegistry [
 	^ self 
+]
+
+{ #category : #converying }
+FogEVMRegistry >> byteArray [
+	^ self unsignedValue asByteArray
+]
+
+{ #category : #accessing }
+FogEVMRegistry >> byteAt: aFogEVMRegistry [
+	^ FogEVMRegistry forValue: (self byteArray at: aFogEVMRegistry unsignedValue) bytesLength: 1
 ]
 
 { #category : #testing }
@@ -194,6 +214,20 @@ FogEVMRegistry >> signedDivision: aFogEVMRegistry [
 	^ FogEVMRegistry forValue: self signedValue abs // aFogEVMRegistry signedValue abs * sign maskedAs: aFogEVMRegistry
 ]
 
+{ #category : #comparing }
+FogEVMRegistry >> signedGreaterThan: aFogEVMRegistry [
+	^ self signedValue > aFogEVMRegistry signedValue
+		ifTrue: [ FogEVMRegistry true ]
+		ifFalse: [ FogEVMRegistry false ]
+]
+
+{ #category : #comparing }
+FogEVMRegistry >> signedLesserThan: aFogEVMRegistry [
+	^ self signedValue < aFogEVMRegistry signedValue
+		ifTrue: [ FogEVMRegistry true ]
+		ifFalse: [ FogEVMRegistry false ]
+]
+
 { #category : #'bit manipulation' }
 FogEVMRegistry >> signedRightShift: aFogEVMRegistry [
 	^ aFogEVMRegistry unsignedValue < 256
@@ -208,6 +242,17 @@ FogEVMRegistry >> signedValue [
 	^ self isPositive
 		ifTrue: [ value ]
 		ifFalse: [ ^ ((mask >> 1 bitXor: mask) bitXor: value) * -1 ]
+]
+
+{ #category : #arithsmetics }
+FogEVMRegistry >> smod: aFogEVMRegistry [
+	| x y val |
+	y := aFogEVMRegistry signedValue.
+	val := y = 0
+		ifTrue: [ 0 ]
+		ifFalse: [ x := self signedValue.
+			x sign * (x abs \\ y abs) ].
+	^ FogEVMRegistry forValue: val maskedAs: self
 ]
 
 { #category : #comparing }

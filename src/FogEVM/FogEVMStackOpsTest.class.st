@@ -271,7 +271,7 @@ FogEVMStackOpsTest >> testDUP8 [
 	bytecode := self createBytecodeForDUP8.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 8
+	self assert: interpreter stack pop unsignedValue equals: 8
 ]
 
 { #category : #test }
