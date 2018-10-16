@@ -258,6 +258,11 @@ FogEVMInterpreter >> storageFor: aContractAddress state: aStateHash [
 	^ self storage at: aContractAddress ifAbsentPut: [ FogEVMBucketStorage new ].
 ]
 
+{ #category : #'stack operations' }
+FogEVMInterpreter >> swapStackRegistry: anInteger with: anInteger2 [
+	stack swap: anInteger with: anInteger2
+]
+
 { #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitAdd: aFogVMAdd [
 	| a b |

@@ -4,7 +4,7 @@ Class {
 	#category : #'FogEVM-ByteCode-Interpreter-Tests'
 }
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP1 [
 	| bytecode |
 	"should test over 
@@ -19,10 +19,12 @@ FogEVMStackOpsTest >> testDUP1 [
 	bytecode := self createBytecodeForDUP1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 1
+	self assert: interpreter stack pop unsignedValue equals: 1
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP10 [
 	| bytecode |
 	"should test over 
@@ -37,10 +39,12 @@ FogEVMStackOpsTest >> testDUP10 [
 	bytecode := self createBytecodeForDUP10.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 10
+	self assert: interpreter stack pop unsignedValue equals: 10
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP11 [
 	| bytecode |
 	"should test over 
@@ -55,10 +59,12 @@ FogEVMStackOpsTest >> testDUP11 [
 	bytecode := self createBytecodeForDUP11.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 11
+	self assert: interpreter stack pop unsignedValue equals: 11
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP12 [
 	| bytecode |
 	"should test over 
@@ -73,10 +79,12 @@ FogEVMStackOpsTest >> testDUP12 [
 	bytecode := self createBytecodeForDUP12.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 12
+	self assert: interpreter stack pop unsignedValue equals: 12
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP13 [
 	| bytecode |
 	"should test over 
@@ -91,10 +99,12 @@ FogEVMStackOpsTest >> testDUP13 [
 	bytecode := self createBytecodeForDUP13.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 13
+	self assert: interpreter stack pop unsignedValue equals: 13
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP14 [
 	| bytecode |
 	"should test over 
@@ -109,10 +119,12 @@ FogEVMStackOpsTest >> testDUP14 [
 	bytecode := self createBytecodeForDUP14.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 14
+	self assert: interpreter stack pop unsignedValue equals: 14
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP15 [
 	| bytecode |
 	"should test over 
@@ -127,10 +139,12 @@ FogEVMStackOpsTest >> testDUP15 [
 	bytecode := self createBytecodeForDUP15.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 15
+	self assert: interpreter stack pop unsignedValue equals: 15
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP16 [
 	| bytecode |
 	"should test over 
@@ -145,10 +159,12 @@ FogEVMStackOpsTest >> testDUP16 [
 	bytecode := self createBytecodeForDUP16.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 16
+	self assert: interpreter stack pop unsignedValue equals: 16
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP2 [
 	| bytecode |
 	"should test over 
@@ -163,10 +179,12 @@ FogEVMStackOpsTest >> testDUP2 [
 	bytecode := self createBytecodeForDUP2.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 2
+	self assert: interpreter stack pop unsignedValue equals: 2
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP3 [
 	| bytecode |
 	"should test over 
@@ -181,10 +199,12 @@ FogEVMStackOpsTest >> testDUP3 [
 	bytecode := self createBytecodeForDUP3.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 3
+	self assert: interpreter stack pop unsignedValue equals: 3
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP4 [
 	| bytecode |
 	"should test over 
@@ -199,10 +219,12 @@ FogEVMStackOpsTest >> testDUP4 [
 	bytecode := self createBytecodeForDUP4.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 4
+	self assert: interpreter stack pop unsignedValue equals: 4
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP5 [
 	| bytecode |
 	"should test over 
@@ -217,10 +239,12 @@ FogEVMStackOpsTest >> testDUP5 [
 	bytecode := self createBytecodeForDUP5.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 5
+	self assert: interpreter stack pop unsignedValue equals: 5
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP6 [
 	| bytecode |
 	"should test over 
@@ -235,10 +259,12 @@ FogEVMStackOpsTest >> testDUP6 [
 	bytecode := self createBytecodeForDUP6.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 6
+	self assert: interpreter stack pop unsignedValue equals: 6
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP7 [
 	| bytecode |
 	"should test over 
@@ -253,10 +279,12 @@ FogEVMStackOpsTest >> testDUP7 [
 	bytecode := self createBytecodeForDUP7.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 7
+	self assert: interpreter stack pop unsignedValue equals: 7
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP8 [
 	| bytecode |
 	"should test over 
@@ -272,9 +300,11 @@ FogEVMStackOpsTest >> testDUP8 [
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self assert: interpreter stack pop unsignedValue equals: 8
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testDUP9 [
 	| bytecode |
 	"should test over 
@@ -289,10 +319,12 @@ FogEVMStackOpsTest >> testDUP9 [
 	bytecode := self createBytecodeForDUP9.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 9
+	self assert: interpreter stack pop unsignedValue equals: 9
+			
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP1 [
 	| bytecode |
 	"should test over 
@@ -305,10 +337,11 @@ FogEVMStackOpsTest >> testSWAP1 [
 	bytecode := self createBytecodeForSWAP1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 2
+	self assert: interpreter stack pop unsignedValue equals: 2
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP10 [
 	| bytecode |
 	"should test over 
@@ -321,10 +354,11 @@ FogEVMStackOpsTest >> testSWAP10 [
 	bytecode := self createBytecodeForSWAP10.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 11
+	self assert: interpreter stack pop unsignedValue equals: 11
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP11 [
 	| bytecode |
 	"should test over 
@@ -337,10 +371,11 @@ FogEVMStackOpsTest >> testSWAP11 [
 	bytecode := self createBytecodeForSWAP11.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 12
+	self assert: interpreter stack pop unsignedValue equals: 12
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP12 [
 	| bytecode |
 	"should test over 
@@ -353,10 +388,11 @@ FogEVMStackOpsTest >> testSWAP12 [
 	bytecode := self createBytecodeForSWAP12.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 13
+	self assert: interpreter stack pop unsignedValue equals: 13
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP13 [
 	| bytecode |
 	"should test over 
@@ -369,10 +405,11 @@ FogEVMStackOpsTest >> testSWAP13 [
 	bytecode := self createBytecodeForSWAP13.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 14
+	self assert: interpreter stack pop unsignedValue equals: 14
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP14 [
 	| bytecode |
 	"should test over 
@@ -385,10 +422,11 @@ FogEVMStackOpsTest >> testSWAP14 [
 	bytecode := self createBytecodeForSWAP14.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 15
+	self assert: interpreter stack pop unsignedValue equals: 15
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP15 [
 	| bytecode |
 	"should test over 
@@ -401,10 +439,11 @@ FogEVMStackOpsTest >> testSWAP15 [
 	bytecode := self createBytecodeForSWAP15.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 16
+	self assert: interpreter stack pop unsignedValue equals: 16
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP16 [
 	| bytecode |
 	"should test over 
@@ -417,10 +456,11 @@ FogEVMStackOpsTest >> testSWAP16 [
 	bytecode := self createBytecodeForSWAP16.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 17
+	self assert: interpreter stack pop unsignedValue equals: 17
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP2 [
 	| bytecode |
 	"should test over 
@@ -433,10 +473,11 @@ FogEVMStackOpsTest >> testSWAP2 [
 	bytecode := self createBytecodeForSWAP2.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 3
+	self assert: interpreter stack pop unsignedValue equals: 3
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP3 [
 	| bytecode |
 	"should test over 
@@ -449,10 +490,11 @@ FogEVMStackOpsTest >> testSWAP3 [
 	bytecode := self createBytecodeForSWAP3.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 4
+	self assert: interpreter stack pop unsignedValue equals: 4
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP4 [
 	| bytecode |
 	"should test over 
@@ -465,10 +507,11 @@ FogEVMStackOpsTest >> testSWAP4 [
 	bytecode := self createBytecodeForSWAP4.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 5
+	self assert: interpreter stack pop unsignedValue equals: 5
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP5 [
 	| bytecode |
 	"should test over 
@@ -481,10 +524,11 @@ FogEVMStackOpsTest >> testSWAP5 [
 	bytecode := self createBytecodeForSWAP5.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 6
+	self assert: interpreter stack pop unsignedValue equals: 6
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP6 [
 	| bytecode |
 	"should test over 
@@ -497,10 +541,11 @@ FogEVMStackOpsTest >> testSWAP6 [
 	bytecode := self createBytecodeForSWAP6.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 7
+	self assert: interpreter stack pop unsignedValue equals: 7
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP7 [
 	| bytecode |
 	"should test over 
@@ -513,10 +558,11 @@ FogEVMStackOpsTest >> testSWAP7 [
 	bytecode := self createBytecodeForSWAP7.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 8
+	self assert: interpreter stack pop unsignedValue equals: 8
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP8 [
 	| bytecode |
 	"should test over 
@@ -529,10 +575,11 @@ FogEVMStackOpsTest >> testSWAP8 [
 	bytecode := self createBytecodeForSWAP8.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 9
+	self assert: interpreter stack pop unsignedValue equals: 9
+
 ]
 
-{ #category : #test }
+{ #category : #generated }
 FogEVMStackOpsTest >> testSWAP9 [
 	| bytecode |
 	"should test over 
@@ -545,5 +592,6 @@ FogEVMStackOpsTest >> testSWAP9 [
 	bytecode := self createBytecodeForSWAP9.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 10
+	self assert: interpreter stack pop unsignedValue equals: 10
+
 ]
