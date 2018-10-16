@@ -83,7 +83,7 @@ FogEVMRandomizedTest >> testBYTE [
 
 { #category : #test }
 FogEVMRandomizedTest >> testDIV [
-	| bytecode |
+	| bytecode pop |
 	"should test over 
 		func opDiv(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := stack.pop(), stack.peek()
@@ -94,10 +94,12 @@ FogEVMRandomizedTest >> testDIV [
 	}
 	interpreter.intPool.put(x)
 	return ni"
-	bytecode := self createBytecodeForDIV: x and: (y max: 1).
+	y := y max: 1.
+	bytecode := self createBytecodeForDIV: x and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: x // (y max: 1)
+	pop := interpreter stack pop.
+	self assert: pop unsignedValue equals: x // y
 ]
 
 { #category : #test }
@@ -125,7 +127,7 @@ FogEVMRandomizedTest >> testEQ [
 
 { #category : #test }
 FogEVMRandomizedTest >> testEXP [
-	| bytecode |
+	| bytecode pop |
 	"should test over 
 		func opExp(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	base, exponent := stack.pop(), stack.pop()
@@ -134,10 +136,12 @@ FogEVMRandomizedTest >> testEXP [
 	interpreter.intPool.put(base, exponent)
 
 	return ni"
+	y := y min: 10.
 	bytecode := self createBytecodeForEXP: x and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: x ** y
+	pop := interpreter stack pop.
+	self assert: pop unsignedValue equals: x ** y
 ]
 
 { #category : #test }
@@ -320,7 +324,7 @@ FogEVMRandomizedTest >> testSAR [
 			bytecode := self createBytecodeForSAR: y and: x negated.
 			interpreter bytecode: bytecode.
 			interpreter run.
-			self assert: interpreter stack pop unsignedValue equals: -1 ]
+			self assert: interpreter stack pop signedValue equals: -1 ]
 ]
 
 { #category : #test }
@@ -406,40 +410,6 @@ FogEVMRandomizedTest >> testSGT [
 ]
 
 { #category : #test }
-FogEVMRandomizedTest >> testSHA3 [
-		|  bytecode  |
-		
-		"should test over 
-		func opSha3(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	offset, size := stack.pop(), stack.pop()
-	data := memory.Get(offset.Int64(), size.Int64())
-
-	if interpreter.hasher == nil {
-		interpreter.hasher = sha3.NewKeccak256().(keccakState)
-	} else {
-		interpreter.hasher.Reset()
-	}
-	interpreter.hasher.Write(data)
-	interpreter.hasher.Read(interpreter.hasherBuf[:])
-
-	evm := interpreter.evm
-	if evm.vmConfig.EnablePreimageRecording {
-		evm.StateDB.AddPreimage(interpreter.hasherBuf, data)
-	}
-	stack.push(interpreter.intPool.get().SetBytes(interpreter.hasherBuf[:]))
-
-	interpreter.intPool.put(offset, size)
-	return n"
-		bytecode := self createBytecodeForSHA3.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
 FogEVMRandomizedTest >> testSHL [
 	| bytecode |
 	"should test over 
@@ -461,6 +431,7 @@ FogEVMRandomizedTest >> testSHL [
 // opSHR implements Logical Shift Right
 // The SHR instruction (logical shift right) pops 2 values from the stack, first arg1 and then arg2,
 // and pushes on the stack arg2 shifted to the right by arg1 number of bits with z"
+	y := y min: 100.
 	bytecode := self createBytecodeForSHL: y and: x.
 	interpreter bytecode: bytecode.
 	interpreter run.
@@ -599,12 +570,12 @@ FogEVMRandomizedTest >> testSMOD [
 	bytecode := self createBytecodeForSMOD: x negated and: y.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop signedValue equals: x negated \\ y.
+	self assert: interpreter stack pop signedValue equals: (x \\ y) negated.
 	
 	bytecode := self createBytecodeForSMOD: x and: y negated.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop signedValue equals: x \\ y negated
+	self assert: interpreter stack pop signedValue equals: (x \\ y)
 ]
 
 { #category : #test }

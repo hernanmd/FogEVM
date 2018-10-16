@@ -657,8 +657,8 @@ FogEVMUnitaryTest >> createBytecodeForEXP: aValue and: oValue [
 	bytecode := FogEVMByteCode new.
 	stream := bytecode writeStream.
 	stream
-		nextPutPush1: oValue;
-		nextPutPush1: aValue;
+		nextPutPush32: oValue;
+		nextPutPush32: aValue;
 		nextPutExp;
 		nextPutStop.
 	^ bytecode

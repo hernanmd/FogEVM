@@ -128,7 +128,9 @@ FogEVMRegistry >> - aFogEVMRegistry [
 
 { #category : #arithmetics }
 FogEVMRegistry >> // aFogEVMRegistry [
-	^ FogEVMRegistry forValue: self unsignedValue // aFogEVMRegistry unsignedValue maskedAs: aFogEVMRegistry
+	^ FogEVMRegistry
+		forValue: self unsignedValue // aFogEVMRegistry unsignedValue
+		maskedAs: aFogEVMRegistry
 ]
 
 { #category : #bit }
@@ -167,8 +169,10 @@ FogEVMRegistry >> hex [
 ]
 
 { #category : #flow }
-FogEVMRegistry >> ifTrue: aBlockClosure ifFalse: aBlockClosure2 [ 
-	self unsignedValue == 1 ifTrue: aBlockClosure ifFalse: aBlockClosure2 
+FogEVMRegistry >> ifTrue: aBlockClosure ifFalse: aBlockClosure2 [
+	^ self unsignedValue == 1
+		ifTrue: aBlockClosure
+		ifFalse: aBlockClosure2
 ]
 
 { #category : #testing }

@@ -83,6 +83,40 @@ FogEVMLoadStoreTest >> testMSTORE8 [
 ]
 
 { #category : #test }
+FogEVMLoadStoreTest >> testSHA3 [
+		|  bytecode  |
+		
+		"should test over 
+		func opSha3(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	offset, size := stack.pop(), stack.pop()
+	data := memory.Get(offset.Int64(), size.Int64())
+
+	if interpreter.hasher == nil {
+		interpreter.hasher = sha3.NewKeccak256().(keccakState)
+	} else {
+		interpreter.hasher.Reset()
+	}
+	interpreter.hasher.Write(data)
+	interpreter.hasher.Read(interpreter.hasherBuf[:])
+
+	evm := interpreter.evm
+	if evm.vmConfig.EnablePreimageRecording {
+		evm.StateDB.AddPreimage(interpreter.hasherBuf, data)
+	}
+	stack.push(interpreter.intPool.get().SetBytes(interpreter.hasherBuf[:]))
+
+	interpreter.intPool.put(offset, size)
+	return n"
+		bytecode := self createBytecodeForSHA3.
+		interpreter bytecode:bytecode.
+		interpreter run. 
+		
+		self assert: false.
+		
+
+]
+
+{ #category : #test }
 FogEVMLoadStoreTest >> testSLOAD [
 		|  bytecode  |
 		

@@ -343,7 +343,7 @@ FogEVMInterpreter >> visitCodecopy: aFogVMCodecopy [
 FogEVMInterpreter >> visitDiv: aFogVMDiv [
 	| numerator denom |
 	numerator := self pop.
-	denom := self pop.
+	denom := self pop. 
 	self
 		push:
 			(numerator isZero
