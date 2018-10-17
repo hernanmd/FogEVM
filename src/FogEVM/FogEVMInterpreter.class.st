@@ -14,7 +14,8 @@ Class {
 		'storage',
 		'program',
 		'return',
-		'trace'
+		'trace',
+		'reverted'
 	],
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
@@ -187,6 +188,11 @@ FogEVMInterpreter >> interpret [
 ]
 
 { #category : #'as yet unclassified' }
+FogEVMInterpreter >> isTerminated [
+	^ programFinished
+]
+
+{ #category : #'as yet unclassified' }
 FogEVMInterpreter >> keccack256: aString [
 	^ Keccak hashEncode: aString 
 ]
@@ -224,6 +230,13 @@ FogEVMInterpreter >> programHasFinished [
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> push: aPushableObject [
 	stack push: aPushableObject asPushableRegistry
+]
+
+{ #category : #business }
+FogEVMInterpreter >> revertComputation: reason [ 
+	self finishComputation.
+	self halt. 
+	reverted := true .
 ]
 
 { #category : #'as yet unclassified' }
@@ -504,6 +517,18 @@ FogEVMInterpreter >> visitReturn: aFogVMReturn [
 	to := self pop.
 	return := self fetchMemoryFrom: from to: to.
 	self finishComputation
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitRevert: aFogVMRevert [ 
+	| offset size content |
+	offset := self pop. 
+	size := self pop. 
+	
+	content := self copyMemoryFrom: offset bytes: size .
+	self revertComputation: content.  
+	
+	
 ]
 
 { #category : #visiting }

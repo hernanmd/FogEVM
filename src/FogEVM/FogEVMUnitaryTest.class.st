@@ -1385,7 +1385,8 @@ FogEVMUnitaryTest >> createBytecodeForREVERT [
 	return ret, nil
 }
 	"
-		self shouldBeImplemented.
+		stream nextPutRevert. 
+
 		^ bytecode.
 		
 		
@@ -1823,7 +1824,7 @@ FogEVMUnitaryTest >> createBytecodeForSTOP [
 		"should test over 
 		func opStop(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	return n"
-		self shouldBeImplemented.
+		stream nextPutStop.
 		^ bytecode.
 		
 		

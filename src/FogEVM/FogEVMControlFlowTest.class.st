@@ -201,7 +201,7 @@ FogEVMControlFlowTest >> testREVERT [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter isReverted .
 		
 
 ]
@@ -217,7 +217,7 @@ FogEVMControlFlowTest >> testSTOP [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter isTerminated .
 		
 
 ]
