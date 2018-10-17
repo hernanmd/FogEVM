@@ -543,8 +543,10 @@ FogEVMInterpreter >> visitSar: aFogVMSar [
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> visitSdiv: aFogVMSdiv [
 	| x y |
+
 	x := self pop.
 	y := self pop.
+
 	self push: (x signedDivision: y)	"y sign * x sign * (x abs // y abs)"
 ]
 
@@ -581,6 +583,14 @@ FogEVMInterpreter >> visitShr: aFogVMShr [
 	shift := self pop.
 	value := self pop.
 	self push: value >> shift
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitSignextend: aFogVMSignextend [
+	| length value |
+	length := self pop.
+	value := self pop.
+	self push: (value extendRepresentationTo: length)
 ]
 
 { #category : #'visit - storage' }

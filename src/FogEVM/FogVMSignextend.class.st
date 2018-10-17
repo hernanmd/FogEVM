@@ -20,8 +20,7 @@ FogVMSignextend class >> description [
 
 { #category : #generated }
 FogVMSignextend class >> expectedPops [
-		^2.
-	
+	^ 2
 ]
 
 { #category : #generated }

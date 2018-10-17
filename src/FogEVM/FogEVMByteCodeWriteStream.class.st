@@ -1141,6 +1141,11 @@ FogEVMByteCodeWriteStream >> nextPutPush9: aNumber [
 
 ]
 
+{ #category : #'variable pish' }
+FogEVMByteCodeWriteStream >> nextPutPush: aLength value: aValue [
+	^ self perform: ('nextPutPush{1}:' format: {aLength}) asSymbol withArguments: {aValue}
+]
+
 { #category : #'#generated - put' }
 FogEVMByteCodeWriteStream >> nextPutReturn [
 		self nextPut:

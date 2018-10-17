@@ -1629,33 +1629,15 @@ FogEVMUnitaryTest >> createBytecodeForSHR: aValue and: oValue [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForSIGNEXTEND [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opSignExtend(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	back := stack.pop()
-	if back.Cmp(big.NewInt(31)) < 0 {
-		bit := uint(back.Uint64()*8 + 7)
-		num := stack.pop()
-		mask := back.Lsh(common.Big1, bit)
-		mask.Sub(mask, common.Big1)
-		if num.Bit(int(bit)) > 0 {
-			num.Or(num, mask.Not(mask))
-		} else {
-			num.And(num, mask)
-		}
-
-		stack.push(math.U256(num))
-	}
-
-	interpreter.intPool.put(back)
-	re"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+FogEVMUnitaryTest >> createBytecodeForSIGNEXTEND: aNumber to: anAmountOfBytes [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush: anAmountOfBytes value: aNumber.
+	stream nextPutPush1: anAmountOfBytes.
+	stream nextPutSignextend.
+	stream nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }

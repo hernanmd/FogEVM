@@ -20,6 +20,7 @@ FogEVMRandomizedTest >> generator: aGenerator [
 	x := aGenerator nextInt: 512. 
 	y := aGenerator nextInt: 512. 
 	z := aGenerator nextInt: 512. 
+	generator := aGenerator .
 
 
 ]
@@ -468,9 +469,8 @@ FogEVMRandomizedTest >> testSHR [
 
 { #category : #test }
 FogEVMRandomizedTest >> testSIGNEXTEND [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opSignExtend(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	back := stack.pop()
 	if back.Cmp(big.NewInt(31)) < 0 {
@@ -489,12 +489,15 @@ FogEVMRandomizedTest >> testSIGNEXTEND [
 
 	interpreter.intPool.put(back)
 	re"
-		bytecode := self createBytecodeForSIGNEXTEND.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
+	z := (generator nextInt: 30) + 1.
+	bytecode := self createBytecodeForSIGNEXTEND: y negated  to: z.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter stack pop signedValue equals: y negated.
+	
+
+
+
 
 ]
 

@@ -163,6 +163,15 @@ FogEVMRegistry >> byteAt: aFogEVMRegistry [
 	^ FogEVMRegistry forValue: (self byteArray at: aFogEVMRegistry unsignedValue) bytesLength: 1
 ]
 
+{ #category : #extention }
+FogEVMRegistry >> extendRepresentationTo: aFogEVMRegistry [
+	aFogEVMRegistry unsignedValue > 31
+		ifTrue: [ ^ self ].
+	^ FogEVMRegistry
+		forValue: self signedValue
+		bytesLength: aFogEVMRegistry unsignedValue + 1
+]
+
 { #category : #testing }
 FogEVMRegistry >> hex [
 	^ value hex
@@ -245,7 +254,7 @@ FogEVMRegistry >> signedRightShift: aFogEVMRegistry [
 FogEVMRegistry >> signedValue [
 	^ self isPositive
 		ifTrue: [ value ]
-		ifFalse: [ ^ ((mask >> 1 bitXor: mask) bitXor: value) * -1 ]
+		ifFalse: [ ^ value - (mask + 1) ]
 ]
 
 { #category : #arithsmetics }
@@ -281,6 +290,6 @@ FogEVMRegistry >> unsignedValue [
 { #category : #accessing }
 FogEVMRegistry >> value: anInteger [
 	anInteger < 0
-		ifTrue: [ value := (mask >> 1 bitXor: mask) bitOr: anInteger abs ]
+		ifTrue: [ value := mask + 1 + anInteger ]
 		ifFalse: [ value := anInteger bitAnd: mask ]
 ]
