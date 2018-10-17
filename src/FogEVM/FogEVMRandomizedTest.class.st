@@ -314,15 +314,15 @@ FogEVMRandomizedTest >> testSAR [
 
 	return ni"
 	y < 256
-		ifTrue: [ bytecode := self createBytecodeForSAR: y and: x.
+		ifTrue: [ bytecode := self createBytecodeForSAR: x and: y.
 			interpreter bytecode: bytecode.
 			interpreter run.
 			self assert: interpreter stack pop unsignedValue equals: x >> y ]
-		ifFalse: [ bytecode := self createBytecodeForSAR: y and: x.
+		ifFalse: [ bytecode := self createBytecodeForSAR: x and: y negated.
 			interpreter bytecode: bytecode.
 			interpreter run.
 			self assert: interpreter stack pop unsignedValue equals: 0.
-			bytecode := self createBytecodeForSAR: y and: x negated.
+			bytecode := self createBytecodeForSAR: x negated and: y negated.
 			interpreter bytecode: bytecode.
 			interpreter run.
 			self assert: interpreter stack pop signedValue equals: -1 ]

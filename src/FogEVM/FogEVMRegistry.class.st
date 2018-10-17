@@ -243,8 +243,10 @@ FogEVMRegistry >> signedLesserThan: aFogEVMRegistry [
 
 { #category : #'bit manipulation' }
 FogEVMRegistry >> signedRightShift: aFogEVMRegistry [
-	^ aFogEVMRegistry unsignedValue < 256
-		ifTrue: [ self >> aFogEVMRegistry ]
+	^ aFogEVMRegistry signedValue abs < 256
+		ifTrue: [ FogEVMRegistry
+				forValue: self signedValue >> aFogEVMRegistry signedValue
+				maskedAs: self ]
 		ifFalse: [ self isPositive
 				ifTrue: [ FogEVMRegistry zero ]
 				ifFalse: [ FogEVMRegistry minusOne ] ]

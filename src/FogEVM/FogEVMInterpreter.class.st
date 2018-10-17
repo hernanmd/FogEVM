@@ -535,7 +535,7 @@ FogEVMInterpreter >> visitRevert: aFogVMRevert [
 FogEVMInterpreter >> visitSar: aFogVMSar [
 	| shift value push |
 	shift := self pop.
-	value := self pop.
+	value := self pop.  
 	push := value signedRightShift: shift.
 	self push: push
 ]
