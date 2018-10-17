@@ -27,19 +27,20 @@ FogEVMLoadStoreTest >> testMLOAD [
 
 { #category : #test }
 FogEVMLoadStoreTest >> testMSIZE [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opMsize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetInt64(int64(memory.Len())))
 	return "
-		bytecode := self createBytecodeForMSIZE.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForMSIZE.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter pop unsignedValue equals: 0.
+	interpreter memory
+		storeWord: (FogEVMRegistry forValue:16rABCABCABCC bytesLength: 6)
+		startingAt: (FogEVMRegistry forValue: 1 bytesLength: 32).
+	interpreter run.
+	self assert: interpreter pop unsignedValue equals: 33
 ]
 
 { #category : #test }

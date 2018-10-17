@@ -54,6 +54,11 @@ FogEVMRegistry class >> false [
 ]
 
 { #category : #creating }
+FogEVMRegistry class >> forMemoryContent: aString [ 
+	^ self forValue: aString asBKNumber bytesLength: 32. 
+]
+
+{ #category : #creating }
 FogEVMRegistry class >> forPush: aFogVMPush [
 	^ self forValue: aFogVMPush parameter asBKNumber bytesLength: aFogVMPush bytes
 ]
@@ -106,6 +111,13 @@ FogEVMRegistry class >> zero [
 				yourself ]
 ]
 
+{ #category : #'logical operations' }
+FogEVMRegistry >> & aFogEVMRegistry [
+	^ self booleanValue & aFogEVMRegistry booleanValue
+		ifTrue: [ self class true ]
+		ifFalse: [ self class false ]
+]
+
 { #category : #arithmetics }
 FogEVMRegistry >> * aFogEVMRegistry [
 	^ FogEVMRegistry forValue: self unsignedValue * aFogEVMRegistry unsignedValue maskedAs: aFogEVMRegistry
@@ -151,6 +163,21 @@ FogEVMRegistry >> \\ aFogEVMRegistry [
 { #category : #conversion }
 FogEVMRegistry >> asPushableRegistry [
 	^ self 
+]
+
+{ #category : #converting }
+FogEVMRegistry >> asWordByteArray [
+	| content wordarray delta |
+	content := self byteArray.
+	delta := FogEVMInterpreter wordSize - content size.
+	wordarray := ByteArray new: FogEVMInterpreter wordSize.
+	1 to: content size do: [ :idx | wordarray at: delta + idx put: (content at: idx) ].
+	^ wordarray 
+]
+
+{ #category : #accessing }
+FogEVMRegistry >> booleanValue [
+	^ value = 1 
 ]
 
 { #category : #converying }
@@ -211,6 +238,13 @@ FogEVMRegistry >> mask [
 { #category : #accessing }
 FogEVMRegistry >> mask: anInteger [ 
 	mask := anInteger
+]
+
+{ #category : #'logical operations' }
+FogEVMRegistry >> not [
+	^ self booleanValue not
+		ifTrue: [ self class true ]
+		ifFalse: [ self class false ]
 ]
 
 { #category : #testing }
@@ -294,4 +328,18 @@ FogEVMRegistry >> value: anInteger [
 	anInteger < 0
 		ifTrue: [ value := mask + 1 + anInteger ]
 		ifFalse: [ value := anInteger bitAnd: mask ]
+]
+
+{ #category : #'logical operations' }
+FogEVMRegistry >> xor: aFogEVMRegistry [
+	^ (self booleanValue xor: aFogEVMRegistry booleanValue)
+		ifTrue: [ self class true ]
+		ifFalse: [ self class false ]
+]
+
+{ #category : #'logical operations' }
+FogEVMRegistry >> | aFogEVMRegistry [
+	^ self booleanValue | aFogEVMRegistry booleanValue
+		ifTrue: [ self class true ]
+		ifFalse: [ self class false ]
 ]

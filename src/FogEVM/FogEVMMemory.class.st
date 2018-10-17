@@ -11,6 +11,20 @@ Class {
 	#category : 'FogEVM-Memory'
 }
 
+{ #category : #accessing }
+FogEVMMemory >> ensureAddressAvailable: anAddress [
+	| newArray |
+	anAddress > layout size
+		ifFalse: [ ^ self ].
+	newArray := ByteArray new: anAddress + FogEVMInterpreter wordSize.
+	newArray
+		replaceFrom: 1
+		to: layout size
+		with: layout
+		startingAt: 1.
+	layout := newArray
+]
+
 { #category : #'as yet unclassified' }
 FogEVMMemory >> fetchFrom: anHexaAddressFrom to: anHexaAddressTo [
 	| value |
@@ -31,19 +45,25 @@ FogEVMMemory >> fetchValue: aString [
 { #category : #initialization }
 FogEVMMemory >> initialize [
 	super initialize.
-	layout := Dictionary new 
+	layout := ByteArray new: 0. 
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMMemory >> sizeInBytes [
+	^ layout size
 ]
 
 { #category : #'as yet unclassified' }
 FogEVMMemory >> store: aValue at: anAddress [
+	self ensureAddressAvailable: anAddress. 	
 	layout at: anAddress put: aValue
+
 ]
 
 { #category : #accessing }
-FogEVMMemory >> storeChunck: anHexaChunk startingAt: anAddress ensureBytes: ammountOfBytes [
+FogEVMMemory >> storeWord: aRegistry startingAt: aRegistryAddress [
 	| address stream |
-	address := anAddress asBKNumber.
-	stream := anHexaChunk readStream.
-	self assert: anHexaChunk size / 2 = ammountOfBytes.
-	address to: ammountOfBytes  do: [ :i | self store: '0x' , (stream next: 2) at: (address + i) asBKHexa ]
+	address := aRegistryAddress unsignedValue.
+	stream := aRegistry asWordByteArray readStream.
+	address to: address + FogEVMInterpreter wordSize - 1 do: [ :i | self store: stream next at: address ]
 ]

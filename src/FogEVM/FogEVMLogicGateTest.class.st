@@ -17,19 +17,19 @@ FogEVMLogicGateTest >> testAND [
 	bytecode := self createBytecodeForAND: 1 and: 1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 1.
+	self assert: interpreter stack pop unsignedValue equals: 1.
 	bytecode := self createBytecodeForAND: 1 and: 0.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 0.
+	self assert: interpreter stack pop unsignedValue equals: 0.
 	bytecode := self createBytecodeForAND: 0 and: 1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 0.
+	self assert: interpreter stack pop unsignedValue equals: 0.
 	bytecode := self createBytecodeForAND: 0 and: 0.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 0
+	self assert: interpreter stack pop unsignedValue equals: 0
 ]
 
 { #category : #test }
@@ -47,11 +47,11 @@ FogEVMLogicGateTest >> testISZERO [
 	bytecode := self createBytecodeForISZERO: 1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 0.
+	self assert: interpreter stack pop unsignedValue equals: 0.
 	bytecode := self createBytecodeForISZERO: 0.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 1
+	self assert: interpreter stack pop unsignedValue equals: 1
 ]
 
 { #category : #test }
@@ -65,12 +65,12 @@ FogEVMLogicGateTest >> testNOT [
 	bytecode := self createBytecodeForNOT: 1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 0.
+	self assert: interpreter stack pop unsignedValue equals: 0.
 	
 	bytecode := self createBytecodeForNOT: 0.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 1
+	self assert: interpreter stack pop unsignedValue equals: 1
 ]
 
 { #category : #test }
@@ -87,22 +87,22 @@ FogEVMLogicGateTest >> testOR [
 	bytecode := self createBytecodeForOR: 1 and: 1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 1.
+	self assert: interpreter stack pop unsignedValue equals: 1.
 	
 	bytecode := self createBytecodeForOR: 1 and: 0.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 1.
+	self assert: interpreter stack pop unsignedValue equals: 1.
 	
 	bytecode := self createBytecodeForOR: 0 and: 1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 1.
+	self assert: interpreter stack pop unsignedValue equals: 1.
 	
 	bytecode := self createBytecodeForOR: 0 and: 0.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 0
+	self assert: interpreter stack pop unsignedValue equals: 0
 ]
 
 { #category : #test }
@@ -119,20 +119,20 @@ FogEVMLogicGateTest >> testXOR [
 	bytecode := self createBytecodeForXOR: 1 and: 1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 0.
+	self assert: interpreter stack pop unsignedValue equals: 0.
 	
 	bytecode := self createBytecodeForXOR: 1 and: 0.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 1.
+	self assert: interpreter stack pop unsignedValue equals: 1.
 	
 	bytecode := self createBytecodeForXOR: 0 and: 1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 1.
+	self assert: interpreter stack pop unsignedValue equals: 1.
 	
 	bytecode := self createBytecodeForXOR: 0 and: 0.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop asBKNumber equals: 0
+	self assert: interpreter stack pop unsignedValue equals: 0
 ]

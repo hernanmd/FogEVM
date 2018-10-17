@@ -27,7 +27,7 @@ FogEVMInterpreter class >> exampleCall [
 	3000000 asBKHexa.
 	'contract-hash'.
 	'0xb4ebf466889c4a0239379125a7d0f9c4e8bf2a14'.
-	'0xcontract-address'.
+	'0xc0478ac7'.
 	0.
 	'?'.
 	'?'.
@@ -129,7 +129,7 @@ FogEVMInterpreter >> contract: aFogEVMMnemonicContract [
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> contractAddress [
-	^ call at: 5
+	^ FogEVMRegistry forMemoryContent: (call at: 5)
 ]
 
 { #category : #convenience }
@@ -157,7 +157,7 @@ FogEVMInterpreter >> hexa [
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> hexaToBoolean: anInteger [
-	^ anInteger asBKNumber = 0
+	^ anInteger unsignedValue = 0
 		ifTrue: [ false ]
 		ifFalse: [ true ]
 ]
@@ -459,6 +459,11 @@ FogEVMInterpreter >> visitMod: aFogVMMod [
 	self push: x \\ y
 ]
 
+{ #category : #visiting }
+FogEVMInterpreter >> visitMsize: aFogVMMsize [ 
+	self push:( FogEVMRegistry forValue: (self memory sizeInBytes) bytesLength: 32).
+]
+
 { #category : #'visit - memory' }
 FogEVMInterpreter >> visitMstore: aFogVMMstore [ 
 	| address value |
@@ -646,7 +651,7 @@ FogEVMInterpreter >> visitSwap: aFogVMSwap [
 { #category : #visiting }
 FogEVMInterpreter >> visitXor: aFogVMXor [
 	| a b |
-	a := self hexaToBoolean: self pop.
-	b := self hexaToBoolean: self pop.
+	a := self pop.
+	b := self pop.
 	self push: (a xor: b)
 ]

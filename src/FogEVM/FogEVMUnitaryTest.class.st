@@ -1127,17 +1127,17 @@ FogEVMUnitaryTest >> createBytecodeForMOD: aValue and: oValue [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForMSIZE [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opMsize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetInt64(int64(memory.Len())))
 	return "
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutMsize;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
