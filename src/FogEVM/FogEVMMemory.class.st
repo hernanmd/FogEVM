@@ -11,12 +11,17 @@ Class {
 	#category : 'FogEVM-Memory'
 }
 
+{ #category : #getting }
+FogEVMMemory >> copyFrom: anInteger to: anInteger2 [ 
+	^ layout copyFrom: anInteger to: anInteger2 
+]
+
 { #category : #accessing }
-FogEVMMemory >> ensureAddressAvailable: anAddress [
+FogEVMMemory >> ensureAddressAvailable: anAddress size: size [
 	| newArray |
 	anAddress > layout size
 		ifFalse: [ ^ self ].
-	newArray := ByteArray new: anAddress + FogEVMInterpreter wordSize.
+	newArray := ByteArray new: anAddress + size.
 	newArray
 		replaceFrom: 1
 		to: layout size
@@ -48,16 +53,31 @@ FogEVMMemory >> initialize [
 	layout := ByteArray new: 0. 
 ]
 
+{ #category : #loading }
+FogEVMMemory >> loadWord: aFogEVMRegistry [
+	| address value |
+	address := aFogEVMRegistry unsignedValue.
+	value := self copyFrom: address to: address + FogEVMInterpreter wordSize - 1.
+	^ FogEVMRegistry forValue: value asInteger bytesLength: FogEVMInterpreter wordSize
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMMemory >> set: aValue at: anAddress [
+	layout at: anAddress put: aValue
+]
+
 { #category : #'as yet unclassified' }
 FogEVMMemory >> sizeInBytes [
 	^ layout size
 ]
 
-{ #category : #'as yet unclassified' }
-FogEVMMemory >> store: aValue at: anAddress [
-	self ensureAddressAvailable: anAddress. 	
-	layout at: anAddress put: aValue
-
+{ #category : #accessing }
+FogEVMMemory >> storeByte: aRegistry at: aRegistryAddress [
+	| address value |
+	address := aRegistryAddress unsignedValue.
+	value := FogEVMRegistry forValue: aRegistry unsignedValue bytesLength: 1.
+	self ensureAddressAvailable: address size: 1.
+	self set: value asByteArray first at: address
 ]
 
 { #category : #accessing }
@@ -65,5 +85,6 @@ FogEVMMemory >> storeWord: aRegistry startingAt: aRegistryAddress [
 	| address stream |
 	address := aRegistryAddress unsignedValue.
 	stream := aRegistry asWordByteArray readStream.
-	address to: address + FogEVMInterpreter wordSize - 1 do: [ :i | self store: stream next at: address ]
+	self ensureAddressAvailable: address size: FogEVMInterpreter wordSize.
+	address to: address + FogEVMInterpreter wordSize - 1 do: [ :i | self set: stream next at: i ]
 ]

@@ -1,14 +1,30 @@
 Class {
 	#name : #FogEVMLoadStoreTest,
 	#superclass : #FogEVMUnitaryTest,
+	#instVars : [
+		'generator',
+		'value',
+		'memoryStart'
+	],
 	#category : #'FogEVM-ByteCode-Interpreter-Tests'
 }
 
 { #category : #test }
+FogEVMLoadStoreTest class >> testParameters [
+	^ ParametrizedTestMatrix new forSelector: #generator addOptions: ((Integer primesUpTo: 512) collect: [ :p | Random seed: p ])
+]
+
+{ #category : #test }
+FogEVMLoadStoreTest >> generator: aGenerator [
+	value := 128 + (aGenerator nextInt: 256 * 31).
+	memoryStart := 1 + (aGenerator nextInt: 10).
+	generator := aGenerator
+]
+
+{ #category : #test }
 FogEVMLoadStoreTest >> testMLOAD [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opMload(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	offset := stack.pop()
 	val := interpreter.intPool.get().SetBytes(memory.Get(offset.Int64(), 32))
@@ -16,13 +32,13 @@ FogEVMLoadStoreTest >> testMLOAD [
 
 	interpreter.intPool.put(offset)
 	return "
-		bytecode := self createBytecodeForMLOAD.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForMSTORE: value at: memoryStart.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	bytecode := self createBytecodeForMLOAD: memoryStart.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter stack pop unsignedValue equals: value
 ]
 
 { #category : #test }
@@ -37,7 +53,7 @@ FogEVMLoadStoreTest >> testMSIZE [
 	interpreter run.
 	self assert: interpreter pop unsignedValue equals: 0.
 	interpreter memory
-		storeWord: (FogEVMRegistry forValue:16rABCABCABCC bytesLength: 6)
+		storeWord: (FogEVMRegistry forValue: value bytesLength: value asByteArray size )
 		startingAt: (FogEVMRegistry forValue: 1 bytesLength: 32).
 	interpreter run.
 	self assert: interpreter pop unsignedValue equals: 33
@@ -45,9 +61,8 @@ FogEVMLoadStoreTest >> testMSIZE [
 
 { #category : #test }
 FogEVMLoadStoreTest >> testMSTORE [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opMstore(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// pop value of the stack
 	mStart, val := stack.pop(), stack.pop()
@@ -55,13 +70,12 @@ FogEVMLoadStoreTest >> testMSTORE [
 
 	interpreter.intPool.put(mStart, val)
 	return"
-		bytecode := self createBytecodeForMSTORE.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForMSTORE: value at: memoryStart.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	
+	self assert: interpreter stack isEmpty.
+	self assert: interpreter memory sizeInBytes equals: memoryStart + 32 
 ]
 
 { #category : #test }
@@ -74,13 +88,13 @@ FogEVMLoadStoreTest >> testMSTORE8 [
 	memory.store[off] = byte(val & 0xff)
 
 	retur"
-		bytecode := self createBytecodeForMSTORE8.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	
+	bytecode := self createBytecodeForMSTORE8: value at: memoryStart.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	
+	self assert: interpreter stack isEmpty.
+	self assert: interpreter memory sizeInBytes equals: memoryStart + 1
 ]
 
 { #category : #test }
@@ -127,20 +141,19 @@ FogEVMLoadStoreTest >> testSLOAD [
 	val := interpreter.evm.StateDB.GetState(contract.Address(), common.BigToHash(loc))
 	loc.SetBytes(val.Bytes())
 	return "
-		bytecode := self createBytecodeForSLOAD.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForSSTORE: value at: memoryStart.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	bytecode := self createBytecodeForSLOAD: memoryStart.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter stack pop unsignedValue equals: value
 ]
 
 { #category : #test }
 FogEVMLoadStoreTest >> testSSTORE [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opSstore(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	loc := common.BigToHash(stack.pop())
 	val := stack.pop()
@@ -148,11 +161,14 @@ FogEVMLoadStoreTest >> testSSTORE [
 
 	interpreter.intPool.put(val)
 	return"
-		bytecode := self createBytecodeForSSTORE.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForSSTORE: value at: memoryStart.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter stack isEmpty.
+	self
+		assert:
+			((interpreter storageFor: interpreter contractAddress)
+				getStorageAt: (FogEVMRegistry forValue: memoryStart bytesLength: 32))
+				unsignedValue 
+		equals: value
 ]

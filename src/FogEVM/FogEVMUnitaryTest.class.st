@@ -1113,6 +1113,26 @@ FogEVMUnitaryTest >> createBytecodeForMLOAD [
 ]
 
 { #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForMLOAD: memoryStart [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opMload(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	offset := stack.pop()
+	val := interpreter.intPool.get().SetBytes(memory.Get(offset.Int64(), 32))
+	stack.push(val)
+
+	interpreter.intPool.put(offset)
+	return "
+	stream
+		nextPutPush32: memoryStart;
+		nextPutMload;
+		nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForMOD: aValue and: oValue [
 	| bytecode stream |
 	bytecode := FogEVMByteCode new.
@@ -1141,25 +1161,6 @@ FogEVMUnitaryTest >> createBytecodeForMSIZE [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForMSTORE [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opMstore(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	// pop value of the stack
-	mStart, val := stack.pop(), stack.pop()
-	memory.Set32(mStart.Uint64(), val)
-
-	interpreter.intPool.put(mStart, val)
-	return"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
-]
-
-{ #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForMSTORE8 [
 		| bytecode stream |
 		bytecode :=	FogEVMByteCode new .
@@ -1174,6 +1175,48 @@ FogEVMUnitaryTest >> createBytecodeForMSTORE8 [
 		^ bytecode.
 		
 		
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForMSTORE8: value at: memoryStart [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opMstore(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	// pop value of the stack
+	mStart, val := stack.pop(), stack.pop()
+	memory.Set32(mStart.Uint64(), val)
+
+	interpreter.intPool.put(mStart, val)
+	return"
+	stream
+		nextPutPush32: value;
+		nextPutPush2: memoryStart;
+		nextPutMstore8;
+		nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForMSTORE: value at: memoryStart [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opMstore(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	// pop value of the stack
+	mStart, val := stack.pop(), stack.pop()
+	memory.Set32(mStart.Uint64(), val)
+
+	interpreter.intPool.put(mStart, val)
+	return"
+	stream
+		nextPutPush32: value;
+		nextPutPush2: memoryStart;
+		nextPutMstore;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1658,6 +1701,26 @@ FogEVMUnitaryTest >> createBytecodeForSLOAD [
 ]
 
 { #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForSLOAD: memoryStart [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opMload(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	offset := stack.pop()
+	val := interpreter.intPool.get().SetBytes(memory.Get(offset.Int64(), 32))
+	stack.push(val)
+
+	interpreter.intPool.put(offset)
+	return "
+	stream
+		nextPutPush32: memoryStart;
+		nextPutSload;
+		nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSLT [
 		| bytecode stream |
 		bytecode :=	FogEVMByteCode new .
@@ -1761,6 +1824,27 @@ FogEVMUnitaryTest >> createBytecodeForSSTORE [
 		^ bytecode.
 		
 		
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForSSTORE: value at: memoryStart [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opMstore(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	// pop value of the stack
+	mStart, val := stack.pop(), stack.pop()
+	memory.Set32(mStart.Uint64(), val)
+
+	interpreter.intPool.put(mStart, val)
+	return"
+	stream
+		nextPutPush32: value;
+		nextPutPush2: memoryStart;
+		nextPutSstore;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }

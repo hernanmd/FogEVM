@@ -447,8 +447,7 @@ FogEVMInterpreter >> visitLt: aFogVMGt [
 FogEVMInterpreter >> visitMload: aFogVMMload [
 	| fromAddress toAddress |
 	fromAddress := self pop.
-	toAddress := fromAddress + FogEVMInterpreter wordSize.
-	self push: (self copyMemoryFrom: fromAddress to: toAddress)
+	self push: (self memory loadWord: fromAddress)
 ]
 
 { #category : #visiting }
@@ -464,12 +463,20 @@ FogEVMInterpreter >> visitMsize: aFogVMMsize [
 	self push:( FogEVMRegistry forValue: (self memory sizeInBytes) bytesLength: 32).
 ]
 
-{ #category : #'visit - memory' }
-FogEVMInterpreter >> visitMstore: aFogVMMstore [ 
+{ #category : #visiting }
+FogEVMInterpreter >> visitMstore8: aFogVMMstore8 [
 	| address value |
 	address := self pop.
 	value := self pop.
-	self memoryStore: value at: address
+	self memory storeByte: value at: address
+]
+
+{ #category : #'visit - memory' }
+FogEVMInterpreter >> visitMstore: aFogVMMstore [
+	| address value |
+	address := self pop.
+	value := self pop.
+	self memory storeWord: value startingAt: address
 ]
 
 { #category : #'visit - arithmetics' }
@@ -600,9 +607,10 @@ FogEVMInterpreter >> visitSignextend: aFogVMSignextend [
 
 { #category : #'visit - storage' }
 FogEVMInterpreter >> visitSload: aFogVMSload [ 
-	| storageAddress value | 
+	| storageAddress value address | 
 	storageAddress := self pop.
-	value := (self storageFor: self contractAddress) getStorageAt: storageAddress. 
+	address := FogEVMRegistry forValue: storageAddress unsignedValue bytesLength: 32.
+	value := (self storageFor: self contractAddress) getStorageAt: address. 
 	self push: value. 
 ]
 
@@ -624,10 +632,11 @@ FogEVMInterpreter >> visitSmod: aFogVMSmod [
 
 { #category : #'visit - storage' }
 FogEVMInterpreter >> visitSstore: aFogVMSstore [
-	| storageAddress value |
+	| storageAddress value address |
 	storageAddress := self pop.
 	value := self pop.
-	value := (self storageFor: self contractAddress) atStorage: storageAddress put: value
+	address := FogEVMRegistry forValue: storageAddress unsignedValue bytesLength: 32.
+	value := (self storageFor: self contractAddress) atStorage: address put: value
 ]
 
 { #category : #'visiti stop' }

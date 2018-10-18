@@ -1,6 +1,8 @@
 Class {
 	#name : #FogEVMRegistry,
 	#superclass : #Object,
+	#traits : 'TEquality',
+	#classTraits : 'TEquality classTrait',
 	#instVars : [
 		'value',
 		'mask'
@@ -158,6 +160,11 @@ FogEVMRegistry >> >> aFogEVMRegistry [
 { #category : #arithmetics }
 FogEVMRegistry >> \\ aFogEVMRegistry [
 	^ FogEVMRegistry forValue: self unsignedValue \\ aFogEVMRegistry unsignedValue maskedAs: aFogEVMRegistry
+]
+
+{ #category : #converying }
+FogEVMRegistry >> asByteArray [
+	^ self byteArray 
 ]
 
 { #category : #conversion }
