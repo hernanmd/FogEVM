@@ -65,7 +65,7 @@ FogEVMMemory >> loadWord: aFogEVMRegistry [
 FogEVMMemory >> loadWords: addressRegistry to: offsetRegistry [
 	| address offset value |
 	address := addressRegistry unsignedValue.
-	offset := offsetRegistry unsignedValue.
+	offset := offsetRegistry unsignedValue. 
 	^ self copyFrom: address to: address + offset
 ]
 
