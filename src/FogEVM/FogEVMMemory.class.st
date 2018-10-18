@@ -61,6 +61,14 @@ FogEVMMemory >> loadWord: aFogEVMRegistry [
 	^ FogEVMRegistry forValue: value asInteger bytesLength: FogEVMInterpreter wordSize
 ]
 
+{ #category : #load }
+FogEVMMemory >> loadWords: addressRegistry to: offsetRegistry [
+	| address offset value |
+	address := addressRegistry unsignedValue.
+	offset := offsetRegistry unsignedValue.
+	^ self copyFrom: address to: address + offset
+]
+
 { #category : #'as yet unclassified' }
 FogEVMMemory >> set: aValue at: anAddress [
 	layout at: anAddress put: aValue

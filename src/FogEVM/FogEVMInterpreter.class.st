@@ -574,10 +574,11 @@ FogEVMInterpreter >> visitSgt: aFogVMSgt [
 
 { #category : #'visit - hashing' }
 FogEVMInterpreter >> visitSha3: aFogVMSha3 [
-	| fromAddress toAddress kck |
+	| fromAddress offset kck |
 	fromAddress := self pop.
-	toAddress := self pop.
-	kck := self keccack256: (self fetchMemoryFrom: fromAddress to: toAddress).
+	offset := self pop.
+	kck := self keccack256: (self memory loadWords: fromAddress to: offset).
+	kck := FogEVMRegistry forValue: ('16r' , kck) asNumber bytesLength: 32.
 	self push: kck
 ]
 

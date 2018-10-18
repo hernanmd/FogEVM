@@ -99,9 +99,8 @@ FogEVMLoadStoreTest >> testMSTORE8 [
 
 { #category : #test }
 FogEVMLoadStoreTest >> testSHA3 [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode  |
+	"should test over 
 		func opSha3(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	offset, size := stack.pop(), stack.pop()
 	data := memory.Get(offset.Int64(), size.Int64())
@@ -122,13 +121,13 @@ FogEVMLoadStoreTest >> testSHA3 [
 
 	interpreter.intPool.put(offset, size)
 	return n"
-		bytecode := self createBytecodeForSHA3.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForMSTORE: value at: memoryStart.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	bytecode := self createBytecodeForSHA3: memoryStart+31 to: 0.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter stack pop unsignedValue equals: ('16r',(Keccak hashEncode: value)) asNumber 
 ]
 
 { #category : #test }

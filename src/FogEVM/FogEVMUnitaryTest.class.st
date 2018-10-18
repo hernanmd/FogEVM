@@ -1556,11 +1556,11 @@ FogEVMUnitaryTest >> createBytecodeForSGT: aValue and: oValue [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForSHA3 [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+FogEVMUnitaryTest >> createBytecodeForSHA3: memoryStart to: aLength [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opSha3(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	offset, size := stack.pop(), stack.pop()
 	data := memory.Get(offset.Int64(), size.Int64())
@@ -1581,10 +1581,12 @@ FogEVMUnitaryTest >> createBytecodeForSHA3 [
 
 	interpreter.intPool.put(offset, size)
 	return n"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush32: aLength;
+		nextPutPush32: memoryStart;
+		nextPutSha3;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
