@@ -26,7 +26,7 @@ FogEVMEnvironmentalInformationAccessTest >> testBALANCE [
 	slot := stack.peek()
 	slot.Set(interpreter.evm.StateDB.GetBalance(common.BigToAddress(slot)))
 	retur"
-		bytecode := self createBytecodeForBALANCE.
+		bytecode := self createBytecodeForBALANCE: '0x000'.
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
@@ -37,9 +37,8 @@ FogEVMEnvironmentalInformationAccessTest >> testBALANCE [
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testBLOCKHASH [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode blockNumber |
+	"should test over 
 		func opBlockhash(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	num := stack.pop()
 
@@ -51,13 +50,11 @@ FogEVMEnvironmentalInformationAccessTest >> testBLOCKHASH [
 	}
 	interpreter.intPool.put(num, n)
 	ret"
-		bytecode := self createBytecodeForBLOCKHASH.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	blockNumber := 4323543.
+	bytecode := self createBytecodeForBLOCKHASH: blockNumber.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter pop equals: (interpreter blockHashRegisty: blockNumber)
 ]
 
 { #category : #test }
@@ -161,19 +158,15 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLDATASIZE [
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testCALLER [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opCaller(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(contract.Caller().Big())
 	return"
-		bytecode := self createBytecodeForCALLER.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForCALLER.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter pop unsignedValue equals: interpreter callerAddress unsignedValue 
 ]
 
 { #category : #test }

@@ -88,6 +88,12 @@ FogEVMInterpreter >> binary [
 	^ program toBinary
 ]
 
+{ #category : #accessing }
+FogEVMInterpreter >> blockHashRegisty: aMinimalBlockNumber [ 
+	 " Here we could put a strategy. maybe to be able to get information from running environment "
+	^ FogEVMRegistry forMemoryContent: 16r687980987654abaca234.
+]
+
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> booleanToHexa: aBoolean [
 	^ (aBoolean
@@ -112,7 +118,7 @@ FogEVMInterpreter >> callValue [
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> callerAddress [
-	^ call at: 4
+	^ FogEVMRegistry forMemoryContent: (call at: 4)
 ]
 
 { #category : #'as yet unclassified' }
@@ -305,6 +311,13 @@ FogEVMInterpreter >> visitAnd: aFogVMAnd [
 	a := self pop.
 	b := self pop.
 	self push: a & b
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitBlockhash: aFogVMBlockhash [
+	| minimalBlockNumber |
+	minimalBlockNumber := self pop.
+	self push: (self blockHashRegisty: minimalBlockNumber)
 ]
 
 { #category : #visiting }

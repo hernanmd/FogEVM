@@ -92,11 +92,11 @@ FogEVMUnitaryTest >> createBytecodeForBALANCE [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForBLOCKHASH [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+FogEVMUnitaryTest >> createBytecodeForBLOCKHASH: aBlockNumber [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opBlockhash(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	num := stack.pop()
 
@@ -108,10 +108,11 @@ FogEVMUnitaryTest >> createBytecodeForBLOCKHASH [
 	}
 	interpreter.intPool.put(num, n)
 	ret"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush32: aBlockNumber;
+		nextPutBlockhash;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -257,17 +258,17 @@ FogEVMUnitaryTest >> createBytecodeForCALLDATASIZE [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForCALLER [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opCaller(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(contract.Caller().Big())
 	return"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutCaller;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
