@@ -7,7 +7,6 @@ Class {
 	#instVars : [
 		'stack',
 		'memory',
-		'call',
 		'executableMemory',
 		'instructionPointer',
 		'programFinished',
@@ -15,24 +14,24 @@ Class {
 		'program',
 		'return',
 		'trace',
-		'reverted'
+		'reverted',
+		'call'
 	],
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
 
 { #category : #test }
 FogEVMInterpreter class >> exampleCall [
-	^ {
-	'0xc3c5a547000000000000000000000000b4ebf466889c4a0239379125a7d0f9c4e8bf2a14' . 
-	3000000 asBKHexa.
-	'contract-hash'.
-	'0xb4ebf466889c4a0239379125a7d0f9c4e8bf2a14'.
-	'0xc0478ac7'.
-	0.
-	'?'.
-	'?'.
-	'?'.
-	'?'}
+	| call |
+	call := FogEVMCall new.
+	call contractInput: 16rc3c5a547000000000000000000000000b4ebf466889c4a0239379125a7d0f9c4e8bf2a14 asByteArray.
+	call callerAddress: (FogEVMRegistry forValue: 16rb4ebf466889c4a0239379125a7d0f9c4e8bf2a14 bytesLength: 20).
+	call contractAddress: (FogEVMRegistry forValue: 16r81bfba8301a073a010e9fb71fab514e53d1cc3f0 bytesLength: 20).
+	call callValue: (FogEVMRegistry forValue: 1980 bytesLength: 32).
+	call gas: (FogEVMRegistry forValue: 3000000 bytesLength: 32).
+	call gasPrice: (FogEVMRegistry forValue: 1 bytesLength: 32).
+	^ call
+
 	" (
             gas,
             value,
@@ -78,11 +77,6 @@ FogEVMInterpreter class >> wordSize [
 	^ 32
 ]
 
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> accessCallFrom0BaseIndex: anInteger [
-	^ call at: anInteger + 1
-]
-
 { #category : #accessing }
 FogEVMInterpreter >> binary [
 	^ program toBinary
@@ -113,12 +107,13 @@ FogEVMInterpreter >> call: aCall [
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> callValue [
-	^ call at: 6
+	^ call callValue
 ]
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> callerAddress [
-	^ FogEVMRegistry forMemoryContent: (call at: 4)
+	^ call callerAddress 
+	
 ]
 
 { #category : #'as yet unclassified' }
@@ -136,6 +131,11 @@ FogEVMInterpreter >> contract: aFogEVMMnemonicContract [
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> contractAddress [
 	^ FogEVMRegistry forMemoryContent: (call at: 5)
+]
+
+{ #category : #accessing }
+FogEVMInterpreter >> contractInput [
+	^ call at: 1
 ]
 
 { #category : #convenience }
@@ -314,6 +314,13 @@ FogEVMInterpreter >> visitAnd: aFogVMAnd [
 ]
 
 { #category : #visiting }
+FogEVMInterpreter >> visitBalance: aFogVMBalance [
+	| address |
+	address := self pop.
+	self push: (self storageFor: address state: self runtimeState) balance
+]
+
+{ #category : #visiting }
 FogEVMInterpreter >> visitBlockhash: aFogVMBlockhash [
 	| minimalBlockNumber |
 	minimalBlockNumber := self pop.
@@ -328,16 +335,27 @@ FogEVMInterpreter >> visitByte: aFogVMByte [
 	self push: (chunk byteAt: position)
 ]
 
+{ #category : #visiting }
+FogEVMInterpreter >> visitCalldatacopy: aFogVMCalldatacopy [
+	| memFrom dataFrom length loadedData |
+	memFrom := self pop.
+	dataFrom := self pop.
+	length := self pop.
+	loadedData := self contractInput copyFrom: dataFrom unsignedValue to: dataFrom unsignedValue + length unsignedValue.
+	self memory store: loadedData at: memFrom unsignedValue ensure: length unsignedValue
+]
+
 { #category : #'visit - call' }
 FogEVMInterpreter >> visitCalldataload: aFogVMCalldataload [
-	| id |
+	| id segment |
 	id := self pop.
-	self push: (self accessCallFrom0BaseIndex: id)
+	segment := ((self contractInput copyFrom: id unsignedValue to: id unsignedValue + 31) copyReplaceAll: '0x' with: '16r') asNumber.
+	self push: (FogEVMRegistry forValue: segment bytesLength: 32)
 ]
 
 { #category : #'visit - call' }
 FogEVMInterpreter >> visitCalldatasize: aFogVMCalldatasize [
-	self push: call size
+	self push: (FogEVMRegistry forValue: self contractInput size bytesLength: 32)
 ]
 
 { #category : #'visit - call' }

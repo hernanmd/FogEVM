@@ -19,20 +19,19 @@ FogEVMEnvironmentalInformationAccessTest >> testADDRESS [
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testBALANCE [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opBalance(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	slot := stack.peek()
 	slot.Set(interpreter.evm.StateDB.GetBalance(common.BigToAddress(slot)))
 	retur"
-		bytecode := self createBytecodeForBALANCE: '0x000'.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForBALANCE: interpreter contractAddress unsignedValue.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter pop unsignedValue equals: 0.
+	(interpreter storageFor: interpreter contractAddress state: interpreter runtimeState) atStorage: #balance put: (FogEVMRegistry forValue: 20 bytesLength: 32).
+	interpreter run.
+	self assert: interpreter pop unsignedValue equals: 20
 ]
 
 { #category : #test }
@@ -100,9 +99,8 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLCODE [
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testCALLDATACOPY [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opCallDataCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		memOffset  = stack.pop()
@@ -113,30 +111,23 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLDATACOPY [
 
 	interpreter.intPool.put(memOffset, dataOffset, length)
 	"
-		bytecode := self createBytecodeForCALLDATACOPY.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForCALLDATACOPY: 1 data: 3 length: 5.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: (interpreter loadBytes: 1 offset: 5) = (interpreter contractInput copyFrom: 3 to: 8)
 ]
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testCALLDATALOAD [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opCallDataLoad(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetBytes(getDataBig(contract.Input, stack.pop(), big32)))
 	"
-		bytecode := self createBytecodeForCALLDATALOAD.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForCALLDATALOAD: 1.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: (interpreter contractInput copyFrom: 1 to: 32) asBKNumber equals: interpreter stack pop unsignedValue
 ]
 
 { #category : #test }
@@ -151,7 +142,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLDATASIZE [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter contractInput size equals: interpreter pop unsignedValue .
 		
 
 ]

@@ -17,7 +17,7 @@ FogEVMMemoryLayout >> atStorage: anAddress put: aValue [
 
 { #category : #accessing }
 FogEVMMemoryLayout >> getStorageAt: anIndex [
-	^ dictionary at: anIndex ifAbsent: [ '0x0' ]
+	^ dictionary at: anIndex ifAbsent: [ FogEVMRegistry zero ]
 ]
 
 { #category : #initialization }

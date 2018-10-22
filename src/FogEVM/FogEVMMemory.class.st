@@ -80,6 +80,12 @@ FogEVMMemory >> sizeInBytes [
 ]
 
 { #category : #accessing }
+FogEVMMemory >> store: aByteArray at: anAddress ensure: aLength [
+	self ensureAddressAvailable: anAddress size: aLength.
+	1 to: aLength do: [ :idx | layout at: anAddress + idx - 1 put: (aByteArray at: idx) ]
+]
+
+{ #category : #accessing }
 FogEVMMemory >> storeByte: aRegistry at: aRegistryAddress [
 	| address value |
 	address := aRegistryAddress unsignedValue.

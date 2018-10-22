@@ -5,14 +5,20 @@ Class {
 	#name : #FogEVMBucketStorage,
 	#superclass : #Object,
 	#instVars : [
-		'storage'
+		'storage',
+		'balance'
 	],
-	#category : 'FogEVM-Storage'
+	#category : #'FogEVM-Storage'
 }
 
 { #category : #accessing }
 FogEVMBucketStorage >> atStorage: anAddress put: aValue [
 	storage atStorage: anAddress put: aValue
+]
+
+{ #category : #initialization }
+FogEVMBucketStorage >> balance [
+	^ storage getStorageAt: #balance
 ]
 
 { #category : #initialization }
@@ -22,5 +28,5 @@ FogEVMBucketStorage >> getStorageAt: anIndex [
 
 { #category : #initialization }
 FogEVMBucketStorage >> initialize [
-	storage := FogEVMMemoryLayout new
+	storage := FogEVMMemoryLayout new.
 ]

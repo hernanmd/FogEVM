@@ -92,6 +92,23 @@ FogEVMUnitaryTest >> createBytecodeForBALANCE [
 ]
 
 { #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForBALANCE: anAddress [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opBalance(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	slot := stack.peek()
+	slot.Set(interpreter.evm.StateDB.GetBalance(common.BigToAddress(slot)))
+	retur"
+	stream
+		nextPutPush32: anAddress;
+		nextPutBalance;
+		nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForBLOCKHASH: aBlockNumber [
 	| bytecode stream |
 	bytecode := FogEVMByteCode new.
@@ -155,10 +172,35 @@ FogEVMUnitaryTest >> createBytecodeForCALL [
 		| bytecode stream |
 		bytecode :=	FogEVMByteCode new .
 		stream := bytecode writeStream. 
-		"should test over 
-		func opCaller(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	stack.push(contract.Caller().Big())
-	return n"
+		"
+func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	// Pop gas. The actual gas in interpreter.evm.callGasTemp.
+	interpreter.intPool.put(stack.pop())
+	gas := interpreter.evm.callGasTemp
+	// Pop other call parameters.
+	addr, value, inOffset, inSize, retOffset, retSize := stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop()
+	toAddr := common.BigToAddress(addr)
+	value = math.U256(value)
+	// Get the arguments from the memory.
+	args := memory.Get(inOffset.Int64(), inSize.Int64())
+
+	if value.Sign() != 0 {
+		gas += params.CallStipend
+	}
+	ret, returnGas, err := interpreter.evm.Call(contract, toAddr, args, gas, value)
+	if err != nil {
+		stack.push(interpreter.intPool.getZero())
+	} else {
+		stack.push(interpreter.intPool.get().SetUint64(1))
+	}
+	if err == nil || err == errExecutionReverted {
+		memory.Set(retOffset.Uint64(), retSize.Uint64(), ret)
+	}
+	contract.Gas += returnGas
+
+	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
+	return ret, nil
+}"
 		self shouldBeImplemented.
 		^ bytecode.
 		
@@ -205,11 +247,11 @@ FogEVMUnitaryTest >> createBytecodeForCALLCODE [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForCALLDATACOPY [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+FogEVMUnitaryTest >> createBytecodeForCALLDATACOPY: atMemory data: fromData length: aLength [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opCallDataCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		memOffset  = stack.pop()
@@ -217,43 +259,46 @@ FogEVMUnitaryTest >> createBytecodeForCALLDATACOPY [
 		length     = stack.pop()
 	)
 	memory.Set(memOffset.Uint64(), length.Uint64(), getDataBig(contract.Input, dataOffset, length))
-
 	interpreter.intPool.put(memOffset, dataOffset, length)
 	"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush32: aLength;
+		nextPutPush32: fromData;
+		nextPutPush32: atMemory;
+		nextPutCalldatacopy;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForCALLDATALOAD [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+FogEVMUnitaryTest >> createBytecodeForCALLDATALOAD: fromaByte [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opCallDataLoad(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetBytes(getDataBig(contract.Input, stack.pop(), big32)))
 	"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush32: fromaByte;
+		nextPutCalldataload;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForCALLDATASIZE [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opCallDataSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetInt64(int64(len(contract.Input))))
 	"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutCalldatasize;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -273,17 +318,17 @@ FogEVMUnitaryTest >> createBytecodeForCALLER [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForCALLVALUE [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opCallValue(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().Set(contract.value))
 	ret"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutCallvalue;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -310,35 +355,63 @@ FogEVMUnitaryTest >> createBytecodeForCODECOPY [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForCODESIZE [
+FogEVMUnitaryTest >> createBytecodeForCODECOPY: atMemory data: fromCode length: aLength [
 		| bytecode stream |
 		bytecode :=	FogEVMByteCode new .
 		stream := bytecode writeStream. 
 		"should test over 
-		func opCodeSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	l := interpreter.intPool.get().SetInt64(int64(len(contract.Code)))
-	stack.push(l)
+		func opCodeCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	var (
+		memOffset  = stack.pop()
+		codeOffset = stack.pop()
+		length     = stack.pop()
+	)
+	codeCopy := getDataBig(contract.Code, codeOffset, length)
+	memory.Set(memOffset.Uint64(), length.Uint64(), codeCopy)
 
+	interpreter.intPool.put(memOffset, codeOffset, length)
 	retu"
-		self shouldBeImplemented.
+		stream
+		nextPutPush32: aLength;
+		nextPutPush32: fromCode;
+		nextPutPush32: atMemory;
+		nextPutCodecopy;
+		nextPutStop.
 		^ bytecode.
 		
 		
 ]
 
 { #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForCODESIZE [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opCodeSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	l := interpreter.intPool.get().SetInt64(int64(len(contract.Code)))
+	stack.push(l)
+
+	retu"
+	stream
+		nextPutCodesize;
+		nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForCOINBASE [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opCoinbase(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.evm.Coinbase.Big())
 	retu"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutCoinbase;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
