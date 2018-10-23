@@ -195,7 +195,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCODECOPY [
 	bytecode := self createBytecodeForCODECOPY: 1 code: 2 length: 3.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter memory loadFrom: 1 bytes: 3) = (bytecode toBinary copyFrom: 2 to: 2 + 3)
+	self assert: (interpreter memory loadFrom: 1 bytes: 3) equals: (bytecode toBinary copyFrom: 2 to: 2 + 3)
 ]
 
 { #category : #test }
@@ -236,9 +236,8 @@ FogEVMEnvironmentalInformationAccessTest >> testCOINBASE [
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testEXTCODECOPY [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opExtCodeCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		addr       = common.BigToAddress(stack.pop())
@@ -255,31 +254,28 @@ FogEVMEnvironmentalInformationAccessTest >> testEXTCODECOPY [
 
 // opExtCodeHash returns the code hash of a specified account.
 // There are sever"
-		bytecode := self createBytecodeForEXTCODECOPY.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self
+		createBytecodeForEXTCODE: interpreter contractAddress unsignedValue
+		COPY: 1
+		code: 3
+		length: 5.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: (interpreter memory loadFrom: 1 bytes: 3) equals: (bytecode toBinary copyFrom: 2 to: 2 + 3)
 ]
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testEXTCODEHASH [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opExtCodeHash(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	slot := stack.peek()
 	slot.SetBytes(interpreter.evm.StateDB.GetCodeHash(common.BigToAddress(slot)).Bytes())
 	r"
-		bytecode := self createBytecodeForEXTCODEHASH.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForEXTCODEHASH: interpreter contractAddress unsignedValue.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter pop equals: (interpreter keccack256: bytecode toBinary)
 ]
 
 { #category : #test }
@@ -292,11 +288,11 @@ FogEVMEnvironmentalInformationAccessTest >> testEXTCODESIZE [
 	slot.SetUint64(uint64(interpreter.evm.StateDB.GetCodeSize(common.BigToAddress(slot))))
 
 	r"
-		bytecode := self createBytecodeForEXTCODESIZE.
+		bytecode := self createBytecodeForEXTCODESIZE: interpreter contractAddress unsignedValue .
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter pop unsignedValue equals: bytecode bytecodeSize .
 		
 
 ]

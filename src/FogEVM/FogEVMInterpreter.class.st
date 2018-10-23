@@ -234,7 +234,10 @@ FogEVMInterpreter >> isTerminated [
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> keccack256: aString [
-	^ Keccak hashEncode: aString 
+	| kck |
+	kck := Keccak hashEncode: aString.
+	kck := FogEVMRegistry forValue: ('16r' , kck) asNumber bytesLength: 32.
+	^ kck
 ]
 
 { #category : #accessing }
@@ -469,6 +472,31 @@ FogEVMInterpreter >> visitExp: aFogVMExp [
 ]
 
 { #category : #visiting }
+FogEVMInterpreter >> visitExtcodecopy: aFogVMExtcodecopy [
+	| contractAddress loadingArea fromByte amountOfBytes loadedData |
+	contractAddress := self pop.
+	loadingArea := self pop.
+	fromByte := self pop.
+	amountOfBytes := self pop.
+	loadedData := (self binaryBytecodeFor: contractAddress) copyFrom: fromByte unsignedValue to: fromByte unsignedValue + amountOfBytes unsignedValue.
+	self memory store: loadedData at: loadingArea unsignedValue ensure: amountOfBytes unsignedValue
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitExtcodehash: aFogVMExtcodehash [
+	| address |
+	address := self pop.
+	self push: (self keccack256: (self binaryBytecodeFor: address))
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitExtcodesize: aFogVMExtcodesize [
+	| contractAddress |
+	contractAddress := self pop.
+	self push: (FogEVMRegistry forValue: (self binaryBytecodeFor: contractAddress) size bytesLength: 32)
+]
+
+{ #category : #visiting }
 FogEVMInterpreter >> visitGas: aFogVMGas [ 
 	self push: self callGas 
 ]
@@ -685,7 +713,6 @@ FogEVMInterpreter >> visitSha3: aFogVMSha3 [
 	fromAddress := self pop.
 	offset := self pop.
 	kck := self keccack256: (self memory loadWords: fromAddress to: offset).
-	kck := FogEVMRegistry forValue: ('16r' , kck) asNumber bytesLength: 32.
 	self push: kck
 ]
 

@@ -721,11 +721,11 @@ FogEVMUnitaryTest >> createBytecodeForEXP: aValue and: oValue [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForEXTCODECOPY [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+FogEVMUnitaryTest >> createBytecodeForEXTCODE: anAddress COPY: atMemory code: fromCode length: aLength [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+"should test over 
 		func opExtCodeCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		addr       = common.BigToAddress(stack.pop())
@@ -742,43 +742,56 @@ FogEVMUnitaryTest >> createBytecodeForEXTCODECOPY [
 
 // opExtCodeHash returns the code hash of a specified account.
 // There are sever"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush32: aLength;
+		nextPutPush32: fromCode;
+		nextPutPush32: atMemory;
+		nextPutPush32: anAddress ;
+		nextPutExtcodecopy;
+		nextPutStop;
+		nextPutStop;
+		nextPutStop;
+		nextPutStop;
+		nextPutStop;
+		nextPutStop;
+		nextPutStop;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForEXTCODEHASH [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+FogEVMUnitaryTest >> createBytecodeForEXTCODEHASH: aContractAddress [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opExtCodeHash(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	slot := stack.peek()
 	slot.SetBytes(interpreter.evm.StateDB.GetCodeHash(common.BigToAddress(slot)).Bytes())
 	r"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush32: aContractAddress;
+		nextPutExtcodehash;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForEXTCODESIZE [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+FogEVMUnitaryTest >> createBytecodeForEXTCODESIZE: aContractAddress [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opExtCodeSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	slot := stack.peek()
 	slot.SetUint64(uint64(interpreter.evm.StateDB.GetCodeSize(common.BigToAddress(slot))))
 
 	r"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush32: aContractAddress;
+		nextPutExtcodesize;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }

@@ -7,6 +7,12 @@ Class {
 	#category : #'FogEVM-ByteCode-Interpreter-Tests'
 }
 
+{ #category : #'as yet unclassified' }
+FogEVMTestInterpreter >> binaryBytecodeFor: aFogEVMRegistry [
+	self assert: aFogEVMRegistry unsignedValue = 740735499233530362346919405980904206194320393200.
+	^ program toBinary 
+]
+
 { #category : #accessing }
 FogEVMTestInterpreter >> blockHashRegisty: aMinimalBlockNumber [ 
 	 " Here we could put a strategy. maybe to be able to get information from running environment "
