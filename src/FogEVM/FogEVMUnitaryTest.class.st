@@ -332,11 +332,11 @@ FogEVMUnitaryTest >> createBytecodeForCALLVALUE [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForCODECOPY [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+FogEVMUnitaryTest >> createBytecodeForCODECOPY: atMemory code: fromCode length: aLength [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opCodeCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		memOffset  = stack.pop()
@@ -348,38 +348,20 @@ FogEVMUnitaryTest >> createBytecodeForCODECOPY [
 
 	interpreter.intPool.put(memOffset, codeOffset, length)
 	retu"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
-]
-
-{ #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForCODECOPY: atMemory data: fromCode length: aLength [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opCodeCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	var (
-		memOffset  = stack.pop()
-		codeOffset = stack.pop()
-		length     = stack.pop()
-	)
-	codeCopy := getDataBig(contract.Code, codeOffset, length)
-	memory.Set(memOffset.Uint64(), length.Uint64(), codeCopy)
-
-	interpreter.intPool.put(memOffset, codeOffset, length)
-	retu"
-		stream
+	stream
 		nextPutPush32: aLength;
 		nextPutPush32: fromCode;
 		nextPutPush32: atMemory;
 		nextPutCodecopy;
+		nextPutStop;
+		nextPutStop;
+		nextPutStop;
+		nextPutStop;
+		nextPutStop;
+		nextPutStop;
+		nextPutStop;
 		nextPutStop.
-		^ bytecode.
-		
-		
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1361,17 +1343,17 @@ FogEVMUnitaryTest >> createBytecodeForNOT: a [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForNUMBER [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opNumber(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.BlockNumber)))
 	return"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutNumber;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1389,17 +1371,17 @@ FogEVMUnitaryTest >> createBytecodeForOR: a and:b [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForORIGIN [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opOrigin(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.evm.Origin.Big())
 	return"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutOrigin;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -2088,30 +2070,17 @@ FogEVMUnitaryTest >> createBytecodeForSWAP: anAmount [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForTIMESTAMP [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opTimestamp(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.Time)))
 	ret"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
-]
-
-{ #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForUNKNOWN [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutTimestamp;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }

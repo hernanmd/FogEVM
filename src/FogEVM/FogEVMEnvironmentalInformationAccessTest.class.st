@@ -179,9 +179,8 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLVALUE [
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testCODECOPY [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opCodeCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		memOffset  = stack.pop()
@@ -193,13 +192,10 @@ FogEVMEnvironmentalInformationAccessTest >> testCODECOPY [
 
 	interpreter.intPool.put(memOffset, codeOffset, length)
 	retu"
-		bytecode := self createBytecodeForCODECOPY.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForCODECOPY: 1 code: 2 length: 3.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: (interpreter memory loadFrom: 1 bytes: 3) = (bytecode toBinary copyFrom: 2 to: 2 + 3)
 ]
 
 { #category : #test }
@@ -216,7 +212,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCODESIZE [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter pop unsignedValue equals: bytecode bytecodeSize .
 		
 
 ]
@@ -233,7 +229,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCOINBASE [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter pop equals: interpreter minerAddress.
 		
 
 ]
@@ -364,7 +360,7 @@ FogEVMEnvironmentalInformationAccessTest >> testNUMBER [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter pop equals: interpreter currentBlockNumber .
 		
 
 ]
@@ -381,7 +377,7 @@ FogEVMEnvironmentalInformationAccessTest >> testORIGIN [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter pop equals: interpreter originAddress .
 		
 
 ]
@@ -398,7 +394,7 @@ FogEVMEnvironmentalInformationAccessTest >> testTIMESTAMP [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter pop  equals: interpreter timestamp.
 		
 
 ]

@@ -52,6 +52,11 @@ FogEVMByteCode >> at: anIdx put: aValue [
 	content at: anIdx put: aValue
 ]
 
+{ #category : #'as yet unclassified' }
+FogEVMByteCode >> bytecodeSize [
+	^ (content reject: #isNil thenCollect: [ :c | c instruction size ]) sum
+]
+
 { #category : #accessing }
 FogEVMByteCode >> content [
 	^ content
@@ -125,9 +130,8 @@ FogEVMByteCode >> size [
 
 { #category : #converting }
 FogEVMByteCode >> toBinary [
-	^ '0x'
-		,
-			((content collect: #instruction)
+	^ 
+			((content reject:#isNil thenCollect: #instruction)
 				inject: OrderedCollection new  writeStream
 				into: [ :acc :each | 
 					each printBinaryOn: acc.
@@ -136,13 +140,11 @@ FogEVMByteCode >> toBinary [
 
 { #category : #converting }
 FogEVMByteCode >> toHexa [
-	^ '0x'
-		,
-			((content collect: #instruction)
-				inject: '' writeStream
-				into: [ :acc :each | 
-					each printHexaOn: acc.
-					acc ]) contents
+	^ ((content reject: #isNil thenCollect: #instruction)
+		inject: '' writeStream
+		into: [ :acc :each | 
+			each printHexaOn: acc.
+			acc ]) contents
 ]
 
 { #category : #converting }

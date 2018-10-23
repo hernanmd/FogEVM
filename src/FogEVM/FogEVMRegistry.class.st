@@ -206,6 +206,14 @@ FogEVMRegistry >> extendRepresentationTo: aFogEVMRegistry [
 		bytesLength: aFogEVMRegistry unsignedValue + 1
 ]
 
+{ #category : #converting }
+FogEVMRegistry >> headlessHexa [
+	| hex |
+	hex := self hex.
+	
+	^  hex copyFrom: 4 to: hex size 
+]
+
 { #category : #testing }
 FogEVMRegistry >> hex [
 	^ value hex

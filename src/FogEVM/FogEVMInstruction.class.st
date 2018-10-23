@@ -814,6 +814,14 @@ FogEVMInstruction >> accept: anInterpreter loadedAt: byteNumber of: anExecutable
 	self assert: anInterpreter stackSize = (stackSize - self expectedPops + self expectedPushes)
 ]
 
+{ #category : #accessing }
+FogEVMInstruction >> binaryBytecode [
+	| code | 
+	code := self byteCode asBKNumber asByteArray.
+	self assert: code size= 1 .
+	^ code first
+]
+
 { #category : #generated }
 FogEVMInstruction >> byteCode [
 	^ self class byteCode
@@ -875,12 +883,18 @@ FogEVMInstruction >> mnemonic [
 
 { #category : #printing }
 FogEVMInstruction >> printBinaryOn: aStream [
-	aStream nextPut: self byteCode asBKNumber
+
+	aStream nextPut: self binaryBytecode
 ]
 
 { #category : #printing }
 FogEVMInstruction >> printHexaOn: aStream [
-	aStream nextPutAll: (self byteCode copyReplaceAll: '0x' with: '')
+	| value |
+	value := self binaryBytecode hex copyReplaceAll: '16r' with: ''.
+	value size = 1
+		ifTrue: [ value := '0' , value ].
+	self assert: value size = 2.
+	aStream nextPutAll: value
 ]
 
 { #category : #printing }

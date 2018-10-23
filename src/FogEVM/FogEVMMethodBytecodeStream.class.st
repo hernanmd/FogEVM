@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'original'
 	],
-	#category : 'FogEVM-ByteCode'
+	#category : #'FogEVM-ByteCode-Interpreter'
 }
 
 { #category : #'as yet unclassified' }

@@ -130,14 +130,14 @@ FogVMPush >> parameter: aString [
 FogVMPush >> printBinaryOn: aStream [
 	| stream |
 	super printBinaryOn: aStream.
-	stream := (parameter copyReplaceAll: '0x' with: '') readStream.
-	[ stream atEnd ] whileFalse: [ aStream nextPut: (stream next: 2) asBKNumber ]
+	aStream nextPutAll: self asPushableRegistry asWordByteArray.
+	
 ]
 
 { #category : #printing }
 FogVMPush >> printHexaOn: aStream [
 	super printHexaOn: aStream.
-	aStream nextPutAll: (parameter copyReplaceAll: '0x' with: '')
+	aStream nextPutAll: self asPushableRegistry asWordByteArray hex
 ]
 
 { #category : #printing }
@@ -145,7 +145,7 @@ FogVMPush >> printOn: aStream [
 	aStream
 		nextPutAll: self mnemonic;
 		nextPutAll: ' ';
-		nextPutAll: parameter 
+		nextPutAll: self asPushableRegistry printString
 ]
 
 { #category : #'as yet unclassified' }

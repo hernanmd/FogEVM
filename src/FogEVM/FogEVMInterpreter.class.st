@@ -99,21 +99,24 @@ FogEVMInterpreter >> binary [
 ]
 
 { #category : #accessing }
-FogEVMInterpreter >> blockHashRegisty: aMinimalBlockNumber [ 
-	 " Here we could put a strategy. maybe to be able to get information from running environment "
-	^ FogEVMRegistry forMemoryContent: 16r687980987654abaca234.
+FogEVMInterpreter >> binaryBytecode [
+	^ program toBinary
 ]
 
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> booleanToHexa: aBoolean [
-	^ (aBoolean
-		ifTrue: [ 1 ]
-		ifFalse: [ 0 ]) asBKHexa
+{ #category : #accessing }
+FogEVMInterpreter >> blockHashRegisty: aMinimalBlockNumber [ 
+	 " Here we could put a strategy. maybe to be able to get information from running environment "
+	self shouldBeImplemented 
 ]
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> breakOnAddress: anAddress [
 	^ (executableMemory at: (self indexForMemoryAddress: anAddress)) breakpoint: true.
+]
+
+{ #category : #accessing }
+FogEVMInterpreter >> bytecodeSize [
+	^ program bytecodeSize
 ]
 
 { #category : #accessing }
@@ -184,7 +187,7 @@ FogEVMInterpreter >> finishComputation [
 
 { #category : #accessing }
 FogEVMInterpreter >> gasLimit [
-	^ FogEVMRegistry forValue: 999999999999999999999999 bytesLength: 32
+	^ self shouldBeImplemented 
 ]
 
 { #category : #'as yet unclassified' }
@@ -313,6 +316,12 @@ FogEVMInterpreter >> swapStackRegistry: anInteger with: anInteger2 [
 	stack swap: anInteger with: anInteger2
 ]
 
+{ #category : #accessing }
+FogEVMInterpreter >> timestamp [
+	" Must return a registry "
+	self shouldBeImplemented 
+]
+
 { #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitAdd: aFogVMAdd [
 	| a b |
@@ -401,17 +410,28 @@ FogEVMInterpreter >> visitCallvalue: aFogVMCallvalue [
 
 { #category : #visiting }
 FogEVMInterpreter >> visitCodecopy: aFogVMCodecopy [
-	| loadingArea fromInstruction amountOfInstructions hexa |
+	| loadingArea fromByte amountOfBytes loadedData |
 	loadingArea := self pop.
-	fromInstruction := self pop.
-	amountOfInstructions := self pop.
-	self stageAt: loadingArea aCopyProgramFromByte: fromInstruction counting: amountOfInstructions
+	fromByte := self pop.
+	amountOfBytes := self pop.
+	loadedData := self binaryBytecode copyFrom: fromByte unsignedValue to: fromByte unsignedValue + amountOfBytes unsignedValue.
+	self memory store: loadedData at: loadingArea unsignedValue ensure: amountOfBytes unsignedValue
 	"
 	hexa := program toHexa.
 	hexa := hexa copyFrom: 3 to: hexa size.
 	hexa := hexa copyFrom: fromInstruction to: fromInstruction + amountOfInstructions - 1.
 	memory storeChunck: hexa startingAt: loadingArea ensureBytes: amountOfInstructions / 2"
 	"0 to: amountOfInstructions - 1 do: [ :i | memory store: (self hexa at: fromInstruction + i) at: (loadingArea + i) asBKHexa ]"
+]
+
+{ #category : #visitign }
+FogEVMInterpreter >> visitCodesize: aFogVMCodesize [
+	self push: (FogEVMRegistry forValue: self bytecodeSize bytesLength: 32)
+]
+
+{ #category : #accessing }
+FogEVMInterpreter >> visitCoinbase: aFogVMCoinbase [ 
+	self push: self minerAddress
 ]
 
 { #category : #'visit - arithmetics' }
@@ -581,12 +601,22 @@ FogEVMInterpreter >> visitNot: aFogVMNot [
 	self push: value not
 ]
 
+{ #category : #visiting }
+FogEVMInterpreter >> visitNumber: aFogVMNumber [
+	self push: self currentBlockNumber
+]
+
 { #category : #'visit - boolean alebra' }
 FogEVMInterpreter >> visitOr: aFogVMOr [
 	| a b |
 	a := self pop.
 	b := self pop.
 	self push: a | b
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitOrigin: aFogVMOrigin [ 
+	self push: self originAddress
 ]
 
 { #category : #'visit - stack' }
@@ -733,6 +763,11 @@ FogEVMInterpreter >> visitSub: aFogVMAdd [
 { #category : #'visit - stack' }
 FogEVMInterpreter >> visitSwap: aFogVMSwap [
 	self swapStackRegistry: 1 with: aFogVMSwap expectedPops 
+]
+
+{ #category : #accessing }
+FogEVMInterpreter >> visitTimestamp: aFogVMTimestamp [ 
+	self push:self timestamp 
 ]
 
 { #category : #visiting }
