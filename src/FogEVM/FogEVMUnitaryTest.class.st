@@ -102,7 +102,7 @@ FogEVMUnitaryTest >> createBytecodeForBALANCE: anAddress [
 	slot.Set(interpreter.evm.StateDB.GetBalance(common.BigToAddress(slot)))
 	retur"
 	stream
-		nextPutPush32: anAddress;
+		nextPutPush20: anAddress;
 		nextPutBalance;
 		nextPutStop.
 	^ bytecode
@@ -801,47 +801,47 @@ FogEVMUnitaryTest >> createBytecodeForEXTCODESIZE [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForGAS [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opGasprice(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().Set(interpreter.evm.GasPrice))
 	return ni"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutGas;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForGASLIMIT [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opGasLimit(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(math.U256(interpreter.intPool.get().SetUint64(interpreter.evm.GasLimit)))
 	retu"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutGaslimit;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForGASPRICE [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opGasprice(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().Set(interpreter.evm.GasPrice))
 	retu"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutGasprice;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }

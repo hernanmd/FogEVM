@@ -32,7 +32,23 @@ FogEVMInterpreter class >> exampleCall [
 	call gasPrice: (FogEVMRegistry forValue: 1 bytesLength: 32).
 	^ call
 
-	" (
+
+	" 
+	type Message struct {
+		to         *common.Address
+		from       common.Address
+		nonce      uint64
+		amount     *big.Int
+		gasLimit   uint64
+		gasPrice   *big.Int
+		data       []byte
+		checkNonce bool
+	}
+	
+	
+	
+	
+	(
             gas,
             value,
             to,
@@ -105,6 +121,16 @@ FogEVMInterpreter >> call: aCall [
 	call := aCall
 ]
 
+{ #category : #accessing }
+FogEVMInterpreter >> callGas [
+	^ call gas
+]
+
+{ #category : #accessing }
+FogEVMInterpreter >> callGasPrice [
+	^ call gasPrice
+]
+
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> callValue [
 	^ call callValue
@@ -130,12 +156,12 @@ FogEVMInterpreter >> contract: aFogEVMMnemonicContract [
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> contractAddress [
-	^ FogEVMRegistry forMemoryContent: (call at: 5)
+	^ call contractAddress 
 ]
 
 { #category : #accessing }
 FogEVMInterpreter >> contractInput [
-	^ call at: 1
+	^ call contractInput 
 ]
 
 { #category : #convenience }
@@ -154,6 +180,11 @@ FogEVMInterpreter >> fetchNextInstruction [
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> finishComputation [
 	programFinished  := true. 
+]
+
+{ #category : #accessing }
+FogEVMInterpreter >> gasLimit [
+	^ FogEVMRegistry forValue: 999999999999999999999999 bytesLength: 32
 ]
 
 { #category : #'as yet unclassified' }
@@ -349,7 +380,7 @@ FogEVMInterpreter >> visitCalldatacopy: aFogVMCalldatacopy [
 FogEVMInterpreter >> visitCalldataload: aFogVMCalldataload [
 	| id segment |
 	id := self pop.
-	segment := ((self contractInput copyFrom: id unsignedValue to: id unsignedValue + 31) copyReplaceAll: '0x' with: '16r') asNumber.
+	segment := (self contractInput copyFrom: id unsignedValue to: id unsignedValue + 31) asInteger .
 	self push: (FogEVMRegistry forValue: segment bytesLength: 32)
 ]
 
@@ -415,6 +446,21 @@ FogEVMInterpreter >> visitExp: aFogVMExp [
 	value := self pop.
 	exponent := self pop.
 	self push: value ** exponent
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitGas: aFogVMGas [ 
+	self push: self callGas 
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitGaslimit: aFogVMGaslimit [
+	self push: self gasLimit
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitGasprice: aFogVMGasprice [ 
+	self push: self callGasPrice 
 ]
 
 { #category : #'visit - comparision' }

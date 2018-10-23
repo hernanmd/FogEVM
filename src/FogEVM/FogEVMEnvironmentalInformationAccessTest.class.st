@@ -114,7 +114,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLDATACOPY [
 	bytecode := self createBytecodeForCALLDATACOPY: 1 data: 3 length: 5.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter loadBytes: 1 offset: 5) = (interpreter contractInput copyFrom: 3 to: 8)
+	self assert: (interpreter memory loadFrom: 1 bytes: 5) = (interpreter contractInput copyFrom: 3 to: 8)
 ]
 
 { #category : #test }
@@ -127,7 +127,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLDATALOAD [
 	bytecode := self createBytecodeForCALLDATALOAD: 1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter contractInput copyFrom: 1 to: 32) asBKNumber equals: interpreter stack pop unsignedValue
+	self assert: (interpreter contractInput copyFrom: 1 to: 32) asInteger equals: interpreter stack pop unsignedValue
 ]
 
 { #category : #test }
@@ -172,7 +172,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLVALUE [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter pop unsignedValue equals: FogEVMInterpreter exampleCall callValue unsignedValue 
 		
 
 ]
@@ -317,26 +317,22 @@ FogEVMEnvironmentalInformationAccessTest >> testGAS [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter pop equals: interpreter callGas.
 		
 
 ]
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testGASLIMIT [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opGasLimit(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(math.U256(interpreter.intPool.get().SetUint64(interpreter.evm.GasLimit)))
 	retu"
-		bytecode := self createBytecodeForGASLIMIT.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForGASLIMIT.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter pop equals: interpreter gasLimit
 ]
 
 { #category : #test }
@@ -351,7 +347,7 @@ FogEVMEnvironmentalInformationAccessTest >> testGASPRICE [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: false.
+		self assert: interpreter pop equals: interpreter callGasPrice .
 		
 
 ]

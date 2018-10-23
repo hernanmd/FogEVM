@@ -11,7 +11,9 @@ Class {
 		'callValue',
 		'contractInput',
 		'contractAddress',
-		'callerAddress'
+		'callerAddress',
+		'gas',
+		'gasPrice'
 	],
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
@@ -54,4 +56,24 @@ FogEVMCall >> contractInput [
 { #category : #accessing }
 FogEVMCall >> contractInput: anObject [
 	contractInput := anObject
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMCall >> gas [
+	^ gas
+]
+
+{ #category : #accessing }
+FogEVMCall >> gas: aFogEVMRegistry [ 
+	gas := aFogEVMRegistry 
+]
+
+{ #category : #accessing }
+FogEVMCall >> gasPrice [
+	^ gasPrice
+]
+
+{ #category : #accessing }
+FogEVMCall >> gasPrice: aFogEVMRegistry [
+	gasPrice := aFogEVMRegistry
 ]

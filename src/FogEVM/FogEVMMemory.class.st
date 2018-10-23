@@ -53,6 +53,11 @@ FogEVMMemory >> initialize [
 	layout := ByteArray new: 0. 
 ]
 
+{ #category : #accessing }
+FogEVMMemory >> loadFrom: anAddress bytes: aSize [
+	^ layout copyFrom: anAddress to: anAddress + aSize 
+]
+
 { #category : #loading }
 FogEVMMemory >> loadWord: aFogEVMRegistry [
 	| address value |
