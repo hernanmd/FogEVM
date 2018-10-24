@@ -1169,6 +1169,45 @@ FogEVMUnitaryTest >> createBytecodeForLOG4 [
 ]
 
 { #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForLOG: size memory: at size: aLength [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func makeLog(size int) executionFunc {
+	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+		topics := make([]common.Hash, size)
+		mStart, mSize := stack.pop(), stack.pop()
+		for i := 0; i < size; i++ {
+			topics[i] = common.BigToHash(stack.pop())
+		}
+
+		d := memory.Get(mStart.Int64(), mSize.Int64())
+		interpreter.evm.StateDB.AddLog(&types.Log{
+			Address: contract.Address(),
+			Topics:  topics,
+			Data:    d,
+			// This is a non-consensus field, but assigned here because
+			// core/state doesnt know the current block number.
+			BlockNumber: interpreter.evm.BlockNumber.Uint64(),
+		})
+
+		interpreter.intPool.put(mStart, mSize)
+		return nil, nil
+	}
+}
+
+// ma"
+	(1 to: size) reverse do: [ :topic | stream nextPutPush32: topic ].
+	stream
+		nextPutPush32: aLength;
+		nextPutPush32: at;
+		nextPutLog: size;
+		nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForLT: anInteger and: anInteger2 [
 	| bytecode stream |
 	bytecode := FogEVMByteCode new.

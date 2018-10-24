@@ -55,7 +55,7 @@ FogEVMMemory >> initialize [
 
 { #category : #accessing }
 FogEVMMemory >> loadFrom: anAddress bytes: aSize [
-	^ layout copyFrom: anAddress to: anAddress + aSize 
+	^ layout copyFrom: anAddress to: anAddress + aSize - 1
 ]
 
 { #category : #loading }

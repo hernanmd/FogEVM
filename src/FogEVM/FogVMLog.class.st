@@ -51,3 +51,8 @@ FogVMLog class >> goCode [
 
 // ma'
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMLog >> logKind [
+	^ self binaryBytecode - FogVMLog0 instance binaryBytecode
+]

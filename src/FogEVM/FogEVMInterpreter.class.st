@@ -15,7 +15,8 @@ Class {
 		'return',
 		'trace',
 		'reverted',
-		'call'
+		'call',
+		'logs'
 	],
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
@@ -235,7 +236,8 @@ FogEVMInterpreter >> indexForMemoryAddress: anAddress ifNone: aBlock [
 { #category : #initialization }
 FogEVMInterpreter >> initialize [
 	super initialize.
-	stack := Stack new
+	stack := Stack new.
+	logs := OrderedCollection new.
 ]
 
 { #category : #'instruction decoding' }
@@ -262,6 +264,11 @@ FogEVMInterpreter >> keccack256: aString [
 	kck := Keccak hashEncode: aString.
 	kck := FogEVMRegistry forValue: ('16r' , kck) asNumber bytesLength: 32.
 	^ kck
+]
+
+{ #category : #accessing }
+FogEVMInterpreter >> logs [
+	^ logs
 ]
 
 { #category : #accessing }
@@ -297,6 +304,16 @@ FogEVMInterpreter >> programHasFinished [
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> push: aPushableObject [
 	stack push: aPushableObject asPushableRegistry
+]
+
+{ #category : #logs }
+FogEVMInterpreter >> registerLog: aContent topics: aCollectionOfTopics [
+	^ logs
+		add:
+			(FogEVMLogEntry new
+				content: aContent;
+				topics: aCollectionOfTopics;
+				yourself)
 ]
 
 { #category : #business }
@@ -576,6 +593,40 @@ FogEVMInterpreter >> visitJumpi: aFogVMJumpi [
 	condition booleanValue
 		ifTrue: [ self assertIsValidDestination: jumpDestInstruction at: newInstructionPointer.
 			self setInstructionPointerToByte: newInstructionPointer ]
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitLog: aFogVMLog [
+	| fromMemory upTo topics |
+	fromMemory := self pop.
+	upTo := self pop.
+	topics := OrderedCollection new.
+	aFogVMLog logKind timesRepeat: [ topics add: self pop ].
+	self registerLog: (self memory loadFrom: fromMemory unsignedValue bytes: upTo unsignedValue) topics: topics.
+	'func makeLog(size int) executionFunc {
+	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+		topics := make([]common.Hash, size)
+		mStart, mSize := stack.pop(), stack.pop()
+		for i := 0; i < size; i++ {
+			topics[i] = common.BigToHash(stack.pop())
+		}
+
+		d := memory.Get(mStart.Int64(), mSize.Int64())
+		interpreter.evm.StateDB.AddLog(&types.Log{
+			Address: contract.Address(),
+			Topics:  topics,
+			Data:    d,
+			// This is a non-consensus field, but assigned here because
+			// core/state doesnt know the current block number.
+			BlockNumber: interpreter.evm.BlockNumber.Uint64(),
+		})
+
+		interpreter.intPool.put(mStart, mSize)
+		return nil, nil
+	}
+}
+
+// ma'
 ]
 
 { #category : #'visit - comparision' }

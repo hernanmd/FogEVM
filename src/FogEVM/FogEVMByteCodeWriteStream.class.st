@@ -535,6 +535,11 @@ FogEVMByteCodeWriteStream >> nextPutLog4 [
 			
 ]
 
+{ #category : #stream }
+FogEVMByteCodeWriteStream >> nextPutLog: aLength [
+	^ self perform: ('nextPutLog{1}' format: {aLength}) asSymbol
+]
+
 { #category : #'#generated - put' }
 FogEVMByteCodeWriteStream >> nextPutLt [
 		self nextPut:

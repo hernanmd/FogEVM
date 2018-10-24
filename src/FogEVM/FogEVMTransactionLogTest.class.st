@@ -6,9 +6,8 @@ Class {
 
 { #category : #test }
 FogEVMTransactionLogTest >> testLOG0 [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func makeLog(size int) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		topics := make([]common.Hash, size)
@@ -33,20 +32,19 @@ FogEVMTransactionLogTest >> testLOG0 [
 }
 
 // ma"
-		bytecode := self createBytecodeForLOG0.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForLOG: 0 memory: 1 size: 10.
+	interpreter bytecode: bytecode.
+	interpreter memory store: 'hola mundo' asByteArray at: 1 ensure: 10.
+	interpreter run.
+	self assert: interpreter logs isNotEmpty.
+	1 to: 0 do: [ :i | self assert: (interpreter logs first topics at: i) unsignedValue equals: i ].
+	self assert: interpreter logs first content equals: 'hola mundo' asByteArray
 ]
 
 { #category : #test }
 FogEVMTransactionLogTest >> testLOG1 [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func makeLog(size int) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		topics := make([]common.Hash, size)
@@ -71,20 +69,19 @@ FogEVMTransactionLogTest >> testLOG1 [
 }
 
 // ma"
-		bytecode := self createBytecodeForLOG1.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForLOG: 1 memory: 1 size: 10.
+	interpreter bytecode: bytecode.
+	interpreter memory store: 'hola mundo' asByteArray at: 1 ensure: 10.
+	interpreter run.
+	self assert: interpreter logs isNotEmpty.
+	1 to: 1 do: [ :i | self assert: (interpreter logs first topics at: i) unsignedValue equals: i ].
+	self assert: interpreter logs first content equals: 'hola mundo' asByteArray
 ]
 
 { #category : #test }
 FogEVMTransactionLogTest >> testLOG2 [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func makeLog(size int) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		topics := make([]common.Hash, size)
@@ -109,20 +106,19 @@ FogEVMTransactionLogTest >> testLOG2 [
 }
 
 // ma"
-		bytecode := self createBytecodeForLOG2.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForLOG: 2 memory: 1 size: 10.
+	interpreter bytecode: bytecode.
+	interpreter memory store: 'hola mundo' asByteArray at: 1 ensure: 10.
+	interpreter run.
+	self assert: interpreter logs isNotEmpty.
+	1 to: 2 do: [ :i | self assert: (interpreter logs first topics at: i) unsignedValue equals: i ].
+	self assert: interpreter logs first content equals: 'hola mundo' asByteArray
 ]
 
 { #category : #test }
 FogEVMTransactionLogTest >> testLOG3 [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func makeLog(size int) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		topics := make([]common.Hash, size)
@@ -147,20 +143,19 @@ FogEVMTransactionLogTest >> testLOG3 [
 }
 
 // ma"
-		bytecode := self createBytecodeForLOG3.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForLOG: 3 memory: 1 size: 10.
+	interpreter bytecode: bytecode.
+	interpreter memory store: 'hola mundo' asByteArray at: 1 ensure: 10.
+	interpreter run.
+	self assert: interpreter logs isNotEmpty.
+	1 to: 3 do: [ :i | self assert: (interpreter logs first topics at: i) unsignedValue equals: i ].
+	self assert: interpreter logs first content equals: 'hola mundo' asByteArray
 ]
 
 { #category : #test }
 FogEVMTransactionLogTest >> testLOG4 [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func makeLog(size int) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		topics := make([]common.Hash, size)
@@ -185,11 +180,11 @@ FogEVMTransactionLogTest >> testLOG4 [
 }
 
 // ma"
-		bytecode := self createBytecodeForLOG4.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForLOG: 4 memory: 1 size: 10.
+	interpreter bytecode: bytecode.
+	interpreter memory store: 'hola mundo' asByteArray at: 1 ensure: 10.
+	interpreter run.
+	self assert: interpreter logs isNotEmpty.
+	1 to: 4 do: [ :i | self assert: (interpreter logs first topics at: i) unsignedValue equals: i ].
+	self assert: interpreter logs first content equals: 'hola mundo' asByteArray
 ]

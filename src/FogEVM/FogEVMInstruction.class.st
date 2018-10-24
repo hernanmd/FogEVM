@@ -807,6 +807,8 @@ FogEVMInstruction >> accept: anInterpreter loadedAt: byteNumber of: anExecutable
 		ifTrue: [ localMnemonic := 'DUP' ].
 	(self mnemonic beginsWith: 'SWAP')
 		ifTrue: [ localMnemonic := 'SWAP' ].
+	(self mnemonic beginsWith: 'LOG')
+		ifTrue: [ localMnemonic := 'LOG' ].
 	perform := ('visit' , localMnemonic asLowercase capitalized , ':') asSymbol.
 	stackSize := anInterpreter stackSize.
 	"self manageBreakpointFor: anExecutableMemoryReificaiton atMethod: anInterpreter class >> perform."
