@@ -29,7 +29,7 @@ FogEVMEnvironmentalInformationAccessTest >> testBALANCE [
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self assert: interpreter pop unsignedValue equals: 0.
-	(interpreter storageFor: interpreter contractAddress state: interpreter runtimeState) atStorage: #balance put: (FogEVMRegistry forValue: 20 bytesLength: 32).
+	(interpreter storageFor: interpreter contractAddress state: interpreter runtimeState) addBalance: (FogEVMRegistry forValue: 20 bytesLength: 32).
 	interpreter run.
 	self assert: interpreter pop unsignedValue equals: 20
 ]
@@ -73,7 +73,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLDATACOPY [
 	bytecode := self createBytecodeForCALLDATACOPY: 1 data: 3 length: 5.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter memory loadFrom: 1 bytes: 5) = (interpreter contractInput copyFrom: 3 to: 8)
+	self assert: (interpreter memory loadFrom: 1 bytes: 6) equals: (interpreter contractInput copyFrom: 3 to: 8)
 ]
 
 { #category : #test }
@@ -154,7 +154,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCODECOPY [
 	bytecode := self createBytecodeForCODECOPY: 1 code: 2 length: 3.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter memory loadFrom: 1 bytes: 3) equals: (bytecode toBinary copyFrom: 2 to: 2 + 3)
+	self assert: (interpreter memory loadFrom: 1 bytes: 4) equals: (bytecode toBinary copyFrom: 2 to: 2 + 3)
 ]
 
 { #category : #test }
@@ -237,7 +237,7 @@ FogEVMEnvironmentalInformationAccessTest >> testEXTCODECOPY [
 		length: 5.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter memory loadFrom: 1 bytes: 3) equals: (bytecode toBinary copyFrom: 2 to: 2 + 3)
+	self assert: (interpreter memory loadFrom: 1 bytes: 4) equals: (bytecode toBinary copyFrom: 2 to: 2 + 3)
 ]
 
 { #category : #test }
