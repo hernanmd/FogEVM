@@ -772,6 +772,14 @@ FogEVMInterpreter >> visitSdiv: aFogVMSdiv [
 ]
 
 { #category : #visiting }
+FogEVMInterpreter >> visitSelfdestruct: aFogVMSelfdestruct [
+	| withdrawTo |
+	withdrawTo := self pop.
+	(self storageFor: withdrawTo) addBalance: (self storageFor: self contractAddress) withdrawBalance.
+	(self storageFor: self contractAddress) setDestroyed.
+]
+
+{ #category : #visiting }
 FogEVMInterpreter >> visitSgt: aFogVMSgt [
 	" Signed Greater than"
 

@@ -5,11 +5,17 @@ Class {
 	#name : #FogEVMBucketStorage,
 	#superclass : #Object,
 	#instVars : [
-		'storage',
-		'balance'
+		'storage'
 	],
 	#category : #'FogEVM-Storage'
 }
+
+{ #category : #'balance adding' }
+FogEVMBucketStorage >> addBalance: aValue [
+	| currentValue |
+	currentValue := self balance + aValue.
+	storage atStorage: #'&balance' put: currentValue
+]
 
 { #category : #accessing }
 FogEVMBucketStorage >> atStorage: anAddress put: aValue [
@@ -18,7 +24,14 @@ FogEVMBucketStorage >> atStorage: anAddress put: aValue [
 
 { #category : #initialization }
 FogEVMBucketStorage >> balance [
-	^ storage getStorageAt: #balance
+	^ storage getStorageAt: #'&balance'
+]
+
+{ #category : #initialization }
+FogEVMBucketStorage >> destroyed [
+	^ (storage getStorageAt: #'&destroyed') = FogEVMRegistry zero
+		ifTrue: [ FogEVMRegistry false ]
+		ifFalse: [ FogEVMRegistry true ]
 ]
 
 { #category : #initialization }
@@ -29,4 +42,17 @@ FogEVMBucketStorage >> getStorageAt: anIndex [
 { #category : #initialization }
 FogEVMBucketStorage >> initialize [
 	storage := FogEVMMemoryLayout new.
+]
+
+{ #category : #initialization }
+FogEVMBucketStorage >> setDestroyed [
+	^ storage atStorage: #'&destroyed' put: true .
+]
+
+{ #category : #accessing }
+FogEVMBucketStorage >> withdrawBalance [
+	| balance |
+	balance := self balance.
+	self addBalance: balance * FogEVMRegistry minusOne.
+	^ balance
 ]

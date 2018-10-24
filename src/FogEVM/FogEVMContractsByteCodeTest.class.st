@@ -275,9 +275,8 @@ FogEVMContractsByteCodeTest >> testREVERT [
 
 { #category : #test }
 FogEVMContractsByteCodeTest >> testSELFDESTRUCT [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opSuicide(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	balance := interpreter.evm.StateDB.GetBalance(contract.Address())
 	interpreter.evm.StateDB.AddBalance(common.BigToAddress(stack.pop()), balance)
@@ -285,13 +284,16 @@ FogEVMContractsByteCodeTest >> testSELFDESTRUCT [
 	interpreter.evm.StateDB.Suicide(contract.Address())
 	return nil, nil
 }"
-		bytecode := self createBytecodeForSELFDESTRUCT.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	self deny: (interpreter storageFor: interpreter contractAddress) destroyed equals: FogEVMRegistry true.
+	bytecode := self createBytecodeForSELFDESTRUCT: interpreter callerAddress unsignedValue.
+	(interpreter storageFor: interpreter contractAddress) addBalance: (FogEVMRegistry forValue: 9999 bytesLength: 32).
+	self assert: (interpreter storageFor: interpreter contractAddress) balance equals: (FogEVMRegistry forValue: 9999 bytesLength: 32).
+	self assert: (interpreter storageFor: interpreter callerAddress) balance equals: FogEVMRegistry zero.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: (interpreter storageFor: interpreter contractAddress) destroyed equals: FogEVMRegistry true.
+	self assert: (interpreter storageFor: interpreter callerAddress) balance equals: (FogEVMRegistry forValue: 9999 bytesLength: 32).
+	self assert: (interpreter storageFor: interpreter contractAddress) balance equals: FogEVMRegistry zero
 ]
 
 { #category : #test }

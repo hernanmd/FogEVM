@@ -1631,10 +1631,10 @@ FogEVMUnitaryTest >> createBytecodeForSDIV: aValue and: oValue [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForSELFDESTRUCT [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opSuicide(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	balance := interpreter.evm.StateDB.GetBalance(contract.Address())
 	interpreter.evm.StateDB.AddBalance(common.BigToAddress(stack.pop()), balance)
@@ -1642,10 +1642,30 @@ FogEVMUnitaryTest >> createBytecodeForSELFDESTRUCT [
 	interpreter.evm.StateDB.Suicide(contract.Address())
 	return nil, nil
 }"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutSelfdestruct;
+		nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForSELFDESTRUCT: anAddress [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opSuicide(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	balance := interpreter.evm.StateDB.GetBalance(contract.Address())
+	interpreter.evm.StateDB.AddBalance(common.BigToAddress(stack.pop()), balance)
+
+	interpreter.evm.StateDB.Suicide(contract.Address())
+	return nil, nil
+}"
+	stream
+		nextPutPush20: anAddress;
+		nextPutSelfdestruct;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
