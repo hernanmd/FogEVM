@@ -57,47 +57,6 @@ FogEVMEnvironmentalInformationAccessTest >> testBLOCKHASH [
 ]
 
 { #category : #test }
-FogEVMEnvironmentalInformationAccessTest >> testCALLCODE [
-		|  bytecode  |
-		
-		"should test over 
-		func opCallCode(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	// Pop gas. The actual gas is in interpreter.evm.callGasTemp.
-	interpreter.intPool.put(stack.pop())
-	gas := interpreter.evm.callGasTemp
-	// Pop other call parameters.
-	addr, value, inOffset, inSize, retOffset, retSize := stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop()
-	toAddr := common.BigToAddress(addr)
-	value = math.U256(value)
-	// Get arguments from the memory.
-	args := memory.Get(inOffset.Int64(), inSize.Int64())
-
-	if value.Sign() != 0 {
-		gas += params.CallStipend
-	}
-	ret, returnGas, err := interpreter.evm.CallCode(contract, toAddr, args, gas, value)
-	if err != nil {
-		stack.push(interpreter.intPool.getZero())
-	} else {
-		stack.push(interpreter.intPool.get().SetUint64(1))
-	}
-	if err == nil || err == errExecutionReverted {
-		memory.Set(retOffset.Uint64(), retSize.Uint64(), ret)
-	}
-	contract.Gas += returnGas
-
-	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
-	retu"
-		bytecode := self createBytecodeForCALLCODE.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
-]
-
-{ #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testCALLDATACOPY [
 	| bytecode |
 	"should test over 
@@ -230,6 +189,23 @@ FogEVMEnvironmentalInformationAccessTest >> testCOINBASE [
 		interpreter run. 
 		
 		self assert: interpreter pop equals: interpreter minerAddress.
+		
+
+]
+
+{ #category : #test }
+FogEVMEnvironmentalInformationAccessTest >> testDIFFICULTY [
+		|  bytecode  |
+		
+		"should test over 
+		func opDifficulty(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.Difficulty)))
+	re"
+		bytecode := self createBytecodeForDIFFICULTY.
+		interpreter bytecode:bytecode.
+		interpreter run. 
+		
+		self assert: interpreter pop equals: interpreter blockDifficulty.
 		
 
 ]

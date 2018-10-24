@@ -59,7 +59,7 @@ FogEVMByteCode >> bytecodeSize [
 
 { #category : #accessing }
 FogEVMByteCode >> content [
-	^ content
+	^ content := content reject: #isNil
 ]
 
 { #category : #accessing }
@@ -120,7 +120,7 @@ FogEVMByteCode >> readStream [
 
 { #category : #accessing }
 FogEVMByteCode >> sequence [
-	^ content
+	^ self content
 ]
 
 { #category : #converting }

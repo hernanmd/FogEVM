@@ -514,17 +514,17 @@ FogEVMUnitaryTest >> createBytecodeForDELEGATECALL [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForDIFFICULTY [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opDifficulty(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.Difficulty)))
 	re"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutDifficulty;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -862,19 +862,6 @@ FogEVMUnitaryTest >> createBytecodeForGT: anInteger and: anInteger2 [
 	^ bytecode
 ]
 
-{ #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForINVALID [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
-]
-
 { #category : #creating }
 FogEVMUnitaryTest >> createBytecodeForISZERO: anInteger [
 	| bytecode stream |
@@ -898,10 +885,10 @@ FogEVMUnitaryTest >> createBytecodeForISZERO: anInteger [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForJUMP [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opJump(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	pos := stack.pop()
 	if !contract.validJumpdest(pos) {
@@ -912,24 +899,37 @@ FogEVMUnitaryTest >> createBytecodeForJUMP [
 
 	interpreter.intPool.put(pos)
 	return n"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush32: 3;
+		nextPutStop;
+		nextPutJumpdest;
+		nextPutStop.
+	^ bytecode
 ]
 
-{ #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForJUMPDEST [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opJumpdest(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	retu"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForJUMP: anInteger [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opJump(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	pos := stack.pop()
+	if !contract.validJumpdest(pos) {
+		nop := contract.GetOp(pos.Uint64())
+		return nil, fmt.Errorf(invalid jump destination (%v) %v, nop, pos)
+	}
+	*pc = pos.Uint64()
+
+	interpreter.intPool.put(pos)
+	return n"
+	stream
+		nextPutPush32: anInteger;
+		nextPutJump;
+		nextPutStop;
+		nextPutJumpdest;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -956,6 +956,36 @@ FogEVMUnitaryTest >> createBytecodeForJUMPI [
 		^ bytecode.
 		
 		
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForJUMPI: oneOrZero Pointer: anInteger [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opJumpi(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	pos, cond := stack.pop(), stack.pop()
+	if cond.Sign() != 0 {
+		if !contract.validJumpdest(pos) {
+			nop := contract.GetOp(pos.Uint64())
+			return nil, fmt.Errorf(invalid jump destination (%v) %v, nop, pos)
+		}
+		*pc = pos.Uint64()
+	} else {
+		*pc++
+	}
+
+	interpreter.intPool.put(pos, cond)
+	return "
+	stream
+		nextPutPush32: oneOrZero;
+		nextPutPush32: anInteger;
+		nextPutJumpi;
+		nextPutStop;
+		nextPutJumpdest;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1399,17 +1429,18 @@ FogEVMUnitaryTest >> createBytecodeForORIGIN [
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForPC [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opPc(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetUint64(*pc))
 	return nil"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush10: 1;
+		nextPutPc;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #creating }

@@ -93,6 +93,17 @@ FogEVMInterpreter class >> wordSize [
 	^ 32
 ]
 
+{ #category : #assertion }
+FogEVMInterpreter >> assertIsValidDestination: jumpDestInstruction at: newInstructionPointer [
+	jumpDestInstruction isValidJumpDestination
+		ifFalse: [ FogEVMRuntimeError
+				signal:
+					('{1} is not a valid JUMP destination. {2} instruction founded'
+						format:
+							{newInstructionPointer.
+							jumpDestInstruction}) ]
+]
+
 { #category : #accessing }
 FogEVMInterpreter >> binary [
 	^ program toBinary
@@ -172,6 +183,11 @@ FogEVMInterpreter >> copyElement: anInteger [
 	self push: (stack at: anInteger) copy
 ]
 
+{ #category : #accessing }
+FogEVMInterpreter >> currentInstructionPointer [
+	^ FogEVMRegistry forValue: instructionPointer - 1 bytesLength: 8
+]
+
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> fetchNextInstruction [
 	| instruction |
@@ -204,8 +220,16 @@ FogEVMInterpreter >> hexaToBoolean: anInteger [
 
 { #category : #accessing }
 FogEVMInterpreter >> indexForMemoryAddress: anAddress [
-	^ executableMemory
-		indexOf: (executableMemory detect: [ :i | i byteNumber = anAddress asBKNumber ])
+	^ self indexForMemoryAddress: anAddress ifNone: [  FogEVMRuntimeError signal: 'Invalid Address. Out Of Memory' ]
+]
+
+{ #category : #accessing }
+FogEVMInterpreter >> indexForMemoryAddress: anAddress ifNone: aBlock [
+	| index |
+	index := executableMemory
+		detect: [ :i | i byteNumber = anAddress unsignedValue ]
+		ifNone: [ ^ aBlock value ].
+	^ executableMemory indexOf: index
 ]
 
 { #category : #initialization }
@@ -220,7 +244,7 @@ FogEVMInterpreter >> interpret [
 	trace := OrderedCollection new.
 	stack := Stack new.
 	programFinished := false.
-	self setInstructionPointerToByte: executableMemory first byteNumber.
+	self setInstructionPointerToByte: (FogEVMRegistry forValue: executableMemory first byteNumber bytesLength: 8).
 	[ self programHasFinished ]
 		whileFalse: [ i := self fetchNextInstruction.
 			trace add: i.
@@ -290,7 +314,7 @@ FogEVMInterpreter >> runtimeState [
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> setInstructionPointerToByte: anInteger [
-	instructionPointer := executableMemory indexOf: (executableMemory detect: [ :i | i byteNumber = anInteger asBKNumber ])
+	instructionPointer := executableMemory indexOf: (executableMemory detect: [ :i | i byteNumber = anInteger unsignedValue ])
 ]
 
 { #category : #utility }
@@ -437,6 +461,11 @@ FogEVMInterpreter >> visitCoinbase: aFogVMCoinbase [
 	self push: self minerAddress
 ]
 
+{ #category : #visiting }
+FogEVMInterpreter >> visitDifficulty: aFogVMDifficulty [ 
+	self push: self blockDifficulty.
+]
+
 { #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitDiv: aFogVMDiv [
 	| numerator denom |
@@ -529,13 +558,7 @@ FogEVMInterpreter >> visitJump: aFogVMJump [
 	| newInstructionPointer jumpDestInstruction |
 	newInstructionPointer := self pop.
 	jumpDestInstruction := self peekInstruction: newInstructionPointer.
-	"self
-		assert: jumpDestInstruction isValidJumpDestination
-		description:
-			('{1} is not a valid JUMP destination. {2} instruction founded'
-				format:
-					{newInstructionPointer.
-					jumpDestInstruction}). should move to setInstruction "
+	self assertIsValidDestination: jumpDestInstruction at: newInstructionPointer .
 	self setInstructionPointerToByte: newInstructionPointer
 ]
 
@@ -550,14 +573,9 @@ FogEVMInterpreter >> visitJumpi: aFogVMJumpi [
 	newInstructionPointer := self pop.
 	jumpDestInstruction := self peekInstruction: newInstructionPointer.
 	condition := self pop.
-	condition
-		ifTrue: [ "self
-				assert: jumpDestInstruction isValidJumpDestination
-				description:
-					('{1} is not a valid JUMPI (Conditional JUMP) destination. {2} Instruction founded'
-						format:
-							{newInstructionPointer.
-							jumpDestInstruction}). move this " self setInstructionPointerToByte: newInstructionPointer ]
+	condition booleanValue
+		ifTrue: [ self assertIsValidDestination: jumpDestInstruction at: newInstructionPointer.
+			self setInstructionPointerToByte: newInstructionPointer ]
 ]
 
 { #category : #'visit - comparision' }
@@ -645,6 +663,11 @@ FogEVMInterpreter >> visitOr: aFogVMOr [
 { #category : #visiting }
 FogEVMInterpreter >> visitOrigin: aFogVMOrigin [ 
 	self push: self originAddress
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitPc: aFogVMPc [ 
+	self push: self currentInstructionPointer 
 ]
 
 { #category : #'visit - stack' }

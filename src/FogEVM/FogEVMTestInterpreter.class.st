@@ -14,6 +14,11 @@ FogEVMTestInterpreter >> binaryBytecodeFor: aFogEVMRegistry [
 ]
 
 { #category : #accessing }
+FogEVMTestInterpreter >> blockDifficulty [
+	^ FogEVMRegistry forValue: 16r00000001  bytesLength: 32
+]
+
+{ #category : #accessing }
 FogEVMTestInterpreter >> blockHashRegisty: aMinimalBlockNumber [ 
 	 " Here we could put a strategy. maybe to be able to get information from running environment "
 	^ FogEVMRegistry forMemoryContent: 16r687980987654abaca234.
