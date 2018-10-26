@@ -277,10 +277,10 @@ FogEVMEnvironmentalInformationAccessTest >> testEXTCODESIZE [
 FogEVMEnvironmentalInformationAccessTest >> testGAS [
 		|  bytecode  |
 		
-		"should test over 
-		func opGasprice(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	stack.push(interpreter.intPool.get().Set(interpreter.evm.GasPrice))
-	return ni"
+		"func opGas(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	stack.push(interpreter.intPool.get().SetUint64(contract.Gas))
+	return nil, nil
+}"
 		bytecode := self createBytecodeForGAS.
 		interpreter bytecode:bytecode.
 		interpreter run. 

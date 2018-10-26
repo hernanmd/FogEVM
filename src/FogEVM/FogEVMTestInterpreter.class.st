@@ -55,6 +55,11 @@ FogEVMTestInterpreter >> originAddress [
 	^ FogEVMRegistry forValue: 16rA3EBF466889C2A0239379125A7D0F9C4E8BF2A54 bytesLength: 20
 ]
 
+{ #category : #'as yet unclassified' }
+FogEVMTestInterpreter >> returnValues [
+	^ returnValues
+]
+
 { #category : #'running arbitrary code' }
 FogEVMTestInterpreter >> run [
 	self interpret

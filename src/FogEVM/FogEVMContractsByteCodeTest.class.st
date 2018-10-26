@@ -6,26 +6,59 @@ Class {
 
 { #category : #test }
 FogEVMContractsByteCodeTest >> testCALL [
-		|  bytecode  |
-		
-		"should test over 
-		func opCaller(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	stack.push(contract.Caller().Big())
-	return n"
-		bytecode := self createBytecodeForCALL.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
+	| bytecode retSize retOffset inSize inOffset address gas value |
+	"func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	// Pop gas. The actual gas in interpreter.evm.callGasTemp.
+	interpreter.intPool.put(stack.pop())
+	gas := interpreter.evm.callGasTemp
+	// Pop other call parameters.
+	addr, value, inOffset, inSize, retOffset, retSize := stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop()
+	toAddr := common.BigToAddress(addr)
+	value = math.U256(value)
+	// Get the arguments from the memory.
+	args := memory.Get(inOffset.Int64(), inSize.Int64())
 
+	if value.Sign() != 0 {
+		gas += params.CallStipend
+	}
+	ret, returnGas, err := interpreter.evm.Call(contract, toAddr, args, gas, value)
+	if err != nil {
+		stack.push(interpreter.intPool.getZero())
+	} else {
+		stack.push(interpreter.intPool.get().SetUint64(1))
+	}
+	if err == nil || err == errExecutionReverted {
+		memory.Set(retOffset.Uint64(), retSize.Uint64(), ret)
+	}
+	contract.Gas += returnGas
+
+	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
+	return ret, nil
+}"
+	retSize := 10.
+	retOffset := 1.
+	inSize := 0.
+	inOffset := 0.
+	address := self contractAddressForTest.
+	gas := 3000.
+	value := self contractInputForCall.
+	bytecode := self
+		createBytecodeForCALLReturn: retSize
+		at: retOffset
+		parameters: inSize
+		at: inOffset
+		value: value
+		contract: address
+		usign: gas.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: false
 ]
 
 { #category : #test }
 FogEVMContractsByteCodeTest >> testCALLCODE [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode retSize retOffset inSize inOffset address gas value |
+	"should test over 
 		func opCallCode(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// Pop gas. The actual gas is in interpreter.evm.callGasTemp.
 	interpreter.intPool.put(stack.pop())
@@ -53,13 +86,24 @@ FogEVMContractsByteCodeTest >> testCALLCODE [
 
 	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
 	retu"
-		bytecode := self createBytecodeForCALLCODE.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	retSize := 10.
+	retOffset := 1.
+	inSize := 0.
+	inOffset := 0.
+	address := self contractAddressForTest.
+	gas := 3000.
+	value := self contractInputForCall.
+	bytecode := self
+		createBytecodeForCALLCodeReturn: retSize
+		at: retOffset
+		parameters: inSize
+		at: inOffset
+		value: value
+		contract: address
+		usign: gas.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: false
 ]
 
 { #category : #test }
@@ -149,9 +193,8 @@ FogEVMContractsByteCodeTest >> testCREATE2 [
 
 { #category : #test }
 FogEVMContractsByteCodeTest >> testDELEGATECALL [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode retSize retOffset inSize inOffset address gas value |
+	"should test over 
 		func opDelegateCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// Pop gas. The actual gas is in interpreter.evm.callGasTemp.
 	interpreter.intPool.put(stack.pop())
@@ -175,20 +218,30 @@ FogEVMContractsByteCodeTest >> testDELEGATECALL [
 
 	interpreter.intPool.put(addr, inOffset, inSize, retOffset, retSize)
 	"
-		bytecode := self createBytecodeForDELEGATECALL.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	retSize := 10.
+	retOffset := 1.
+	inSize := 0.
+	inOffset := 0.
+	address := self contractAddressForTest.
+	gas := 3000.
+	value := self contractInputForCall.
+	bytecode := self
+		createBytecodeForDELEGATECALLReturn: retSize
+		at: retOffset
+		parameters: inSize
+		at: inOffset
+		value: value
+		contract: address
+		usign: gas.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: false
 ]
 
 { #category : #test }
 FogEVMContractsByteCodeTest >> testRETURN [
-		|  bytecode  |
-		
-		"
+	| bytecode |
+	"
 func opReturn(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	offset, size := stack.pop(), stack.pop()
 	ret := memory.GetPtr(offset.Int64(), size.Int64())
@@ -196,20 +249,17 @@ func opReturn(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memor
 	interpreter.intPool.put(offset, size)
 	return ret, nil
 }"
-		bytecode := self createBytecodeForRETURN.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForRETURNFrom: 1 upTo: 11.
+	interpreter bytecode: bytecode.
+	interpreter memory store: 'Hello world' asByteArray at: 1 ensure: 11.
+	interpreter run.
+	self assert: interpreter returnValues pop asString equals: 'Hello world'
 ]
 
 { #category : #test }
 FogEVMContractsByteCodeTest >> testRETURNDATACOPY [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opReturnDataCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		memOffset  = stack.pop()
@@ -224,14 +274,17 @@ FogEVMContractsByteCodeTest >> testRETURNDATACOPY [
 		return nil, errReturnDataOutOfBounds
 	}
 	memory.Set(memOffset.Uint64(), length.Uint64(), interpreter.returnData[dataOffset.Uint64():end.Uint64()])
-"
-		bytecode := self createBytecodeForRETURNDATACOPY.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
 
+	return nil, nil
+"
+	bytecode := self createBytecodeForRETURNFrom: 1 upTo: 11.
+	interpreter bytecode: bytecode.
+	interpreter memory store: 'Hello world' asByteArray at: 1 ensure: 11.
+	interpreter run.
+	bytecode := self createBytecodeForRETURNDATACOPYFrom: 1 to: 12 upTo: 11.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: (interpreter memory loadFrom: 12 bytes: 11) asString equals: 'Hello world'
 ]
 
 { #category : #test }
@@ -298,9 +351,8 @@ FogEVMContractsByteCodeTest >> testSELFDESTRUCT [
 
 { #category : #test }
 FogEVMContractsByteCodeTest >> testSTATICCALL [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode retSize retOffset inSize inOffset address gas value |
+	"should test over 
 		func opStaticCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// Pop gas. The actual gas is in interpreter.evm.callGasTemp.
 	interpreter.intPool.put(stack.pop())
@@ -324,11 +376,21 @@ FogEVMContractsByteCodeTest >> testSTATICCALL [
 
 	interpreter.intPool.put(addr, inOffset, inSize, retOffset, retSize)
 	re"
-		bytecode := self createBytecodeForSTATICCALL.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	retSize := 10.
+	retOffset := 1.
+	inSize := 0.
+	inOffset := 0.
+	address := self contractAddressForTest.
+	gas := 3000.
+	value := self contractInputForCall.
+	bytecode := self
+		createBytecodeForSTATICCALLCodeReturn: retSize
+		at: retOffset
+		parameters: inSize
+		at: inOffset
+		value: value
+		contract: address
+		usign: gas.
+	interpreter bytecode: bytecode.
+	interpreter run
 ]

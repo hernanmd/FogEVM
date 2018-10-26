@@ -16,7 +16,8 @@ Class {
 		'trace',
 		'reverted',
 		'call',
-		'logs'
+		'logs',
+		'returnValues'
 	],
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
@@ -238,6 +239,7 @@ FogEVMInterpreter >> initialize [
 	super initialize.
 	stack := Stack new.
 	logs := OrderedCollection new.
+	returnValues := Stack new. 
 ]
 
 { #category : #'instruction decoding' }
@@ -314,6 +316,11 @@ FogEVMInterpreter >> registerLog: aContent topics: aCollectionOfTopics [
 				content: aContent;
 				topics: aCollectionOfTopics;
 				yourself)
+]
+
+{ #category : #accessing }
+FogEVMInterpreter >> returnValues [
+	self shouldBeImplemented.
 ]
 
 { #category : #business }
@@ -736,8 +743,37 @@ FogEVMInterpreter >> visitReturn: aFogVMReturn [
 	| from to |
 	from := self pop.
 	to := self pop.
-	return := self fetchMemoryFrom: from to: to.
+	return := self memory loadFrom: from unsignedValue bytes: to unsignedValue .
+	returnValues push: return.
 	self finishComputation
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitReturndatacopy: aFogVMReturndatacopy [
+	| memOffset dataOffset length data |
+	"func opReturnDataCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	var (
+		memOffset  = stack.pop()
+		dataOffset = stack.pop()
+		length     = stack.pop()
+
+		end = interpreter.intPool.get().Add(dataOffset, length)
+	)
+	defer interpreter.intPool.put(memOffset, dataOffset, length, end)
+
+	if end.BitLen() > 64 || uint64(len(interpreter.returnData)) < end.Uint64() {
+		return nil, errReturnDataOutOfBounds
+	}
+	memory.Set(memOffset.Uint64(), length.Uint64(), interpreter.returnData[dataOffset.Uint64():end.Uint64()])"
+	memOffset := self pop.
+	dataOffset := self pop.
+	length := self pop.
+	returnValues top size >= (dataOffset unsignedValue + length unsignedValue - 1)
+		ifFalse: [ FogEVMRuntimeError signal: 'Memory access out of bounds' ].
+	data := returnValues top
+		copyFrom: dataOffset unsignedValue
+		to: dataOffset unsignedValue + length unsignedValue -1 .
+	self memory store: data at: memOffset unsignedValue ensure: length unsignedValue
 ]
 
 { #category : #visiting }

@@ -19,9 +19,9 @@ FogEVMMemory >> copyFrom: anInteger to: anInteger2 [
 { #category : #accessing }
 FogEVMMemory >> ensureAddressAvailable: anAddress size: size [
 	| newArray |
-	anAddress > layout size
+	(anAddress + size) >= layout size
 		ifFalse: [ ^ self ].
-	newArray := ByteArray new: anAddress + size.
+	newArray := ByteArray new: anAddress + size .
 	newArray
 		replaceFrom: 1
 		to: layout size

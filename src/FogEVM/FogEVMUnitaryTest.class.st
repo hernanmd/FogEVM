@@ -168,11 +168,11 @@ FogEVMUnitaryTest >> createBytecodeForBYTE: aChunk at: aPosition [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForCALL [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"
+FogEVMUnitaryTest >> createBytecodeForCALLCodeReturn: retSize at: retOffset parameters: inSize at: inOffset value: value contract: address usign: gas [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"
 func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// Pop gas. The actual gas in interpreter.evm.callGasTemp.
 	interpreter.intPool.put(stack.pop())
@@ -201,49 +201,17 @@ func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory 
 	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
 	return ret, nil
 }"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
-]
-
-{ #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForCALLCODE [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opCallCode(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	// Pop gas. The actual gas is in interpreter.evm.callGasTemp.
-	interpreter.intPool.put(stack.pop())
-	gas := interpreter.evm.callGasTemp
-	// Pop other call parameters.
-	addr, value, inOffset, inSize, retOffset, retSize := stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop()
-	toAddr := common.BigToAddress(addr)
-	value = math.U256(value)
-	// Get arguments from the memory.
-	args := memory.Get(inOffset.Int64(), inSize.Int64())
-
-	if value.Sign() != 0 {
-		gas += params.CallStipend
-	}
-	ret, returnGas, err := interpreter.evm.CallCode(contract, toAddr, args, gas, value)
-	if err != nil {
-		stack.push(interpreter.intPool.getZero())
-	} else {
-		stack.push(interpreter.intPool.get().SetUint64(1))
-	}
-	if err == nil || err == errExecutionReverted {
-		memory.Set(retOffset.Uint64(), retSize.Uint64(), ret)
-	}
-	contract.Gas += returnGas
-
-	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
-	retu"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutPush8: retSize;
+		nextPutPush8: retOffset;
+		nextPutPush8: inSize;
+		nextPutPush8: inOffset;
+		nextPutPush8: value;
+		nextPutPush8: address;
+		nextPutPush8: gas;
+		nextPutCallcode;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -312,6 +280,53 @@ FogEVMUnitaryTest >> createBytecodeForCALLER [
 	return"
 	stream
 		nextPutCaller;
+		nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForCALLReturn: retSize at: retOffset parameters: inSize at: inOffset value: value contract: address usign: gas [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"
+func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	// Pop gas. The actual gas in interpreter.evm.callGasTemp.
+	interpreter.intPool.put(stack.pop())
+	gas := interpreter.evm.callGasTemp
+	// Pop other call parameters.
+	addr, value, inOffset, inSize, retOffset, retSize := stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop()
+	toAddr := common.BigToAddress(addr)
+	value = math.U256(value)
+	// Get the arguments from the memory.
+	args := memory.Get(inOffset.Int64(), inSize.Int64())
+
+	if value.Sign() != 0 {
+		gas += params.CallStipend
+	}
+	ret, returnGas, err := interpreter.evm.Call(contract, toAddr, args, gas, value)
+	if err != nil {
+		stack.push(interpreter.intPool.getZero())
+	} else {
+		stack.push(interpreter.intPool.get().SetUint64(1))
+	}
+	if err == nil || err == errExecutionReverted {
+		memory.Set(retOffset.Uint64(), retSize.Uint64(), ret)
+	}
+	contract.Gas += returnGas
+
+	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
+	return ret, nil
+}"
+	stream
+		nextPutPush8: retSize;
+		nextPutPush8: retOffset;
+		nextPutPush8: inSize;
+		nextPutPush8: inOffset;
+		nextPutPush8: value;
+		nextPutPush8: address;
+		nextPutPush8: gas;
+		nextPutCall;
 		nextPutStop.
 	^ bytecode
 ]
@@ -478,22 +493,26 @@ FogEVMUnitaryTest >> createBytecodeForCREATE2 [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForDELEGATECALL [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opDelegateCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	// Pop gas. The actual gas is in interpreter.evm.callGasTemp.
+FogEVMUnitaryTest >> createBytecodeForDELEGATECALLReturn: retSize at: retOffset parameters: inSize at: inOffset value: value contract: address usign: gas [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"
+func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	// Pop gas. The actual gas in interpreter.evm.callGasTemp.
 	interpreter.intPool.put(stack.pop())
 	gas := interpreter.evm.callGasTemp
 	// Pop other call parameters.
-	addr, inOffset, inSize, retOffset, retSize := stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop()
+	addr, value, inOffset, inSize, retOffset, retSize := stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop()
 	toAddr := common.BigToAddress(addr)
-	// Get arguments from the memory.
+	value = math.U256(value)
+	// Get the arguments from the memory.
 	args := memory.Get(inOffset.Int64(), inSize.Int64())
 
-	ret, returnGas, err := interpreter.evm.DelegateCall(contract, toAddr, args, gas)
+	if value.Sign() != 0 {
+		gas += params.CallStipend
+	}
+	ret, returnGas, err := interpreter.evm.Call(contract, toAddr, args, gas, value)
 	if err != nil {
 		stack.push(interpreter.intPool.getZero())
 	} else {
@@ -504,12 +523,20 @@ FogEVMUnitaryTest >> createBytecodeForDELEGATECALL [
 	}
 	contract.Gas += returnGas
 
-	interpreter.intPool.put(addr, inOffset, inSize, retOffset, retSize)
-	"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
+	return ret, nil
+}"
+	stream
+		nextPutPush8: retSize;
+		nextPutPush8: retOffset;
+		nextPutPush8: inSize;
+		nextPutPush8: inOffset;
+		nextPutPush8: value;
+		nextPutPush8: address;
+		nextPutPush8: gas;
+		nextPutDelegatecall;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1538,6 +1565,36 @@ FogEVMUnitaryTest >> createBytecodeForRETURNDATACOPY [
 		
 ]
 
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForRETURNDATACOPYFrom: aDataOffset to: aMemoryOffset upTo: aSize [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opReturnDataCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	var (
+		memOffset  = stack.pop()
+		dataOffset = stack.pop()
+		length     = stack.pop()
+
+		end = interpreter.intPool.get().Add(dataOffset, length)
+	)
+	defer interpreter.intPool.put(memOffset, dataOffset, length, end)
+
+	if end.BitLen() > 64 || uint64(len(interpreter.returnData)) < end.Uint64() {
+		return nil, errReturnDataOutOfBounds
+	}
+	memory.Set(memOffset.Uint64(), length.Uint64(), interpreter.returnData[dataOffset.Uint64():end.Uint64()])
+"
+	stream
+		nextPutPush32: aSize;
+		nextPutPush32: aDataOffset;
+		nextPutPush32: aMemoryOffset;
+		nextPutReturndatacopy;
+		nextPutStop.
+	^ bytecode
+]
+
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForRETURNDATASIZE [
 		| bytecode stream |
@@ -1550,6 +1607,22 @@ FogEVMUnitaryTest >> createBytecodeForRETURNDATASIZE [
 		^ bytecode.
 		
 		
+]
+
+{ #category : #creating }
+FogEVMUnitaryTest >> createBytecodeForRETURNFrom: anOffset upTo: aSize [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opReturnDataSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	stack.push(interpreter.intPool.get().SetUint64(uint64(len(interpreter.returnData))))
+	return"
+	stream
+		nextPutPush32: aSize;
+		nextPutPush32: anOffset;
+		nextPutReturn.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -2009,22 +2082,26 @@ FogEVMUnitaryTest >> createBytecodeForSSTORE: value at: memoryStart [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForSTATICCALL [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opStaticCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	// Pop gas. The actual gas is in interpreter.evm.callGasTemp.
+FogEVMUnitaryTest >> createBytecodeForSTATICCALLCodeReturn: retSize at: retOffset parameters: inSize at: inOffset value: value contract: address usign: gas [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"
+func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	// Pop gas. The actual gas in interpreter.evm.callGasTemp.
 	interpreter.intPool.put(stack.pop())
 	gas := interpreter.evm.callGasTemp
 	// Pop other call parameters.
-	addr, inOffset, inSize, retOffset, retSize := stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop()
+	addr, value, inOffset, inSize, retOffset, retSize := stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop()
 	toAddr := common.BigToAddress(addr)
-	// Get arguments from the memory.
+	value = math.U256(value)
+	// Get the arguments from the memory.
 	args := memory.Get(inOffset.Int64(), inSize.Int64())
 
-	ret, returnGas, err := interpreter.evm.StaticCall(contract, toAddr, args, gas)
+	if value.Sign() != 0 {
+		gas += params.CallStipend
+	}
+	ret, returnGas, err := interpreter.evm.Call(contract, toAddr, args, gas, value)
 	if err != nil {
 		stack.push(interpreter.intPool.getZero())
 	} else {
@@ -2035,12 +2112,20 @@ FogEVMUnitaryTest >> createBytecodeForSTATICCALL [
 	}
 	contract.Gas += returnGas
 
-	interpreter.intPool.put(addr, inOffset, inSize, retOffset, retSize)
-	re"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
+	return ret, nil
+}"
+	stream
+		nextPutPush8: retSize;
+		nextPutPush8: retOffset;
+		nextPutPush8: inSize;
+		nextPutPush8: inOffset;
+		nextPutPush8: value;
+		nextPutPush8: address;
+		nextPutPush8: gas;
+		nextPutStaticcall;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
