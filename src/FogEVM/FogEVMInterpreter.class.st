@@ -7,17 +7,10 @@ Class {
 	#instVars : [
 		'stack',
 		'memory',
-		'executableMemory',
-		'instructionPointer',
-		'programFinished',
 		'storage',
-		'program',
-		'return',
-		'trace',
-		'reverted',
-		'call',
 		'logs',
-		'returnValues'
+		'activations',
+		'trace'
 	],
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
@@ -107,16 +100,6 @@ FogEVMInterpreter >> assertIsValidDestination: jumpDestInstruction at: newInstru
 ]
 
 { #category : #accessing }
-FogEVMInterpreter >> binary [
-	^ program toBinary
-]
-
-{ #category : #accessing }
-FogEVMInterpreter >> binaryBytecode [
-	^ program toBinary
-]
-
-{ #category : #accessing }
 FogEVMInterpreter >> blockHashRegisty: aMinimalBlockNumber [ 
 	 " Here we could put a strategy. maybe to be able to get information from running environment "
 	self shouldBeImplemented 
@@ -124,60 +107,17 @@ FogEVMInterpreter >> blockHashRegisty: aMinimalBlockNumber [
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> breakOnAddress: anAddress [
-	^ (executableMemory at: (self indexForMemoryAddress: anAddress)) breakpoint: true.
-]
-
-{ #category : #accessing }
-FogEVMInterpreter >> bytecodeSize [
-	^ program bytecodeSize
-]
-
-{ #category : #accessing }
-FogEVMInterpreter >> call: aCall [
-	call := aCall
-]
-
-{ #category : #accessing }
-FogEVMInterpreter >> callGas [
-	^ call gas
-]
-
-{ #category : #accessing }
-FogEVMInterpreter >> callGasPrice [
-	^ call gasPrice
-]
-
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> callValue [
-	^ call callValue
-]
-
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> callerAddress [
-	^ call callerAddress 
-	
+	^ self currentActivation breakOnAddress: anAddress
 ]
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> cancelBreakOnAddress: anAddress [
-	^ (executableMemory at: (self indexForMemoryAddress: anAddress)) breakpoint: false.
-]
-
-{ #category : #accessing }
-FogEVMInterpreter >> contract: aFogEVMMnemonicContract [
-	executableMemory := aFogEVMMnemonicContract sequence copy.
-	executableMemory do: #initialize.
-	program := aFogEVMMnemonicContract
-]
-
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> contractAddress [
-	^ call contractAddress 
+	^ self currentActivation cancelBreakOnAddress: anAddress
 ]
 
 { #category : #accessing }
 FogEVMInterpreter >> contractInput [
-	^ call contractInput 
+	^ self call contractInput 
 ]
 
 { #category : #convenience }
@@ -186,21 +126,13 @@ FogEVMInterpreter >> copyElement: anInteger [
 ]
 
 { #category : #accessing }
+FogEVMInterpreter >> currentActivation [
+	^ activations top
+]
+
+{ #category : #accessing }
 FogEVMInterpreter >> currentInstructionPointer [
-	^ FogEVMRegistry forValue: instructionPointer - 1 bytesLength: 8
-]
-
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> fetchNextInstruction [
-	| instruction |
-	instruction := (executableMemory at: instructionPointer) .
-	instructionPointer := instructionPointer + 1.
-	^ instruction
-]
-
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> finishComputation [
-	programFinished  := true. 
+	^ FogEVMRegistry forValue: self currentActivation currentInstructionPointer  bytesLength: 8
 ]
 
 { #category : #accessing }
@@ -220,26 +152,12 @@ FogEVMInterpreter >> hexaToBoolean: anInteger [
 		ifFalse: [ true ]
 ]
 
-{ #category : #accessing }
-FogEVMInterpreter >> indexForMemoryAddress: anAddress [
-	^ self indexForMemoryAddress: anAddress ifNone: [  FogEVMRuntimeError signal: 'Invalid Address. Out Of Memory' ]
-]
-
-{ #category : #accessing }
-FogEVMInterpreter >> indexForMemoryAddress: anAddress ifNone: aBlock [
-	| index |
-	index := executableMemory
-		detect: [ :i | i byteNumber = anAddress unsignedValue ]
-		ifNone: [ ^ aBlock value ].
-	^ executableMemory indexOf: index
-]
-
 { #category : #initialization }
 FogEVMInterpreter >> initialize [
 	super initialize.
 	stack := Stack new.
 	logs := OrderedCollection new.
-	returnValues := Stack new. 
+	activations := Stack new. 
 ]
 
 { #category : #'instruction decoding' }
@@ -247,17 +165,11 @@ FogEVMInterpreter >> interpret [
 	| i |
 	trace := OrderedCollection new.
 	stack := Stack new.
-	programFinished := false.
-	self setInstructionPointerToByte: (FogEVMRegistry forValue: executableMemory first byteNumber bytesLength: 8).
-	[ self programHasFinished ]
-		whileFalse: [ i := self fetchNextInstruction.
+	self currentActivation initializeInstructionPointer.
+	[ self currentActivation isFinished ]
+		whileFalse: [ i := self currentActivation fetchNextInstruction.
 			trace add: i.
 			i accept: self with: nil ]
-]
-
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> isTerminated [
-	^ programFinished
 ]
 
 { #category : #'as yet unclassified' }
@@ -278,21 +190,6 @@ FogEVMInterpreter >> memory [
 	^ memory ifNil: [ memory := FogEVMMemory new  ]
 ]
 
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> peekInstruction: anAddress [
-	^ (executableMemory at: (self indexForMemoryAddress: anAddress)) instruction
-]
-
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> peekNextInstruction [
-	^ (executableMemory at: instructionPointer ) instruction
-]
-
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> peekNextNextInstruction [
-	^ (executableMemory at: instructionPointer + 1) instruction
-]
-
 { #category : #accessing }
 FogEVMInterpreter >> pop [
 	^ stack pop 
@@ -300,12 +197,17 @@ FogEVMInterpreter >> pop [
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> programHasFinished [
-	^ programFinished ifNil: [ programFinished := executableMemory size < instructionPointer ]
+	^ activations size = 1 and: [ self currentActivation isFinished ]
 ]
 
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> push: aPushableObject [
 	stack push: aPushableObject asPushableRegistry
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMInterpreter >> pushActivation: anActivation [
+	activations push: anActivation
 ]
 
 { #category : #logs }
@@ -318,16 +220,9 @@ FogEVMInterpreter >> registerLog: aContent topics: aCollectionOfTopics [
 				yourself)
 ]
 
-{ #category : #accessing }
-FogEVMInterpreter >> returnValues [
-	self shouldBeImplemented.
-]
-
 { #category : #business }
 FogEVMInterpreter >> revertComputation: reason [ 
-	self finishComputation.
-	self halt. 
-	reverted := true .
+	self currentActivation revert.
 ]
 
 { #category : #'as yet unclassified' }
@@ -336,9 +231,35 @@ FogEVMInterpreter >> runtimeState [
 	^ 'latest'
 ]
 
-{ #category : #'as yet unclassified' }
-FogEVMInterpreter >> setInstructionPointerToByte: anInteger [
-	instructionPointer := executableMemory indexOf: (executableMemory detect: [ :i | i byteNumber = anInteger unsignedValue ])
+{ #category : #'call activation' }
+FogEVMInterpreter >> sendToAddress: aFogEVMRegistryAddress message: aFogEVMRegistrySelector contractInput: anInput returnOffset: aFogEVMRegistryReturnOffset returnSize: aFogEVMRegistryReturnSize [
+	^ self
+		sendToContract: (self resolveContractFor: aFogEVMRegistryAddress)
+		from: self contract 
+		message: aFogEVMRegistrySelector
+		contractInput: anInput 
+		returnOffset: aFogEVMRegistryReturnOffset
+		returnSize: aFogEVMRegistryReturnSize
+		gas: self gas
+		gasPrice: self gasPrice
+		transferring: 0
+]
+
+{ #category : #'call activation' }
+FogEVMInterpreter >> sendToContract: aContract from: anCallingAccount message: aFogEVMRegistrySelector contractInput: anInput returnOffset: aFogEVMRegistryReturnOffset returnSize: aFogEVMRegistryReturnSize gas: aGas gasPrice: aGasPrice transferring: aValue [
+	| activation newCall |
+	newCall := FogEVMCall new.
+	newCall contractInput: anInput.
+	newCall caller: anCallingAccount.
+	newCall contract: aContract.
+	newCall callValue: aValue.
+	newCall gas: aGas.
+	newCall gasPrice: aGasPrice.
+	activation := FogEVMActivation new.
+	activation call: newCall.
+	activation contract: aContract.
+	self pushActivation: activation.
+	self interpret
 ]
 
 { #category : #utility }
@@ -393,7 +314,7 @@ FogEVMInterpreter >> visitAddmod: aFogVMAddmod [
 
 { #category : #visiting }
 FogEVMInterpreter >> visitAddress: aFogVMAddress [ 
-	self push: self contractAddress 
+	self push: self currentActivation contractAddress  
 ]
 
 { #category : #'visit - boolean alebra' }
@@ -427,6 +348,28 @@ FogEVMInterpreter >> visitByte: aFogVMByte [
 ]
 
 { #category : #visiting }
+FogEVMInterpreter >> visitCall: aFogVMCall [
+	| gas address value inOffset inSize retOffset retSize contractInput |
+
+	gas := self pop.
+	address := self pop.
+	value := self pop.
+	inOffset := self pop.
+	inSize := self pop.
+	retOffset := self pop.
+	retSize := self pop.
+	
+	contractInput := self memory loadFrom: inOffset unsignedValue bytes: inSize unsignedValue.
+	
+	self
+		sendToAddress: address
+		message: value
+		contractInput: contractInput
+		returnOffset: retOffset
+		returnSize: retSize
+]
+
+{ #category : #visiting }
 FogEVMInterpreter >> visitCalldatacopy: aFogVMCalldatacopy [
 	| memFrom dataFrom length loadedData |
 	memFrom := self pop.
@@ -451,12 +394,12 @@ FogEVMInterpreter >> visitCalldatasize: aFogVMCalldatasize [
 
 { #category : #'visit - call' }
 FogEVMInterpreter >> visitCaller: aFogVMCaller [ 
-	self push: self callerAddress
+	self push: self currentActivation callerAddress
 ]
 
 { #category : #'visit - call' }
 FogEVMInterpreter >> visitCallvalue: aFogVMCallvalue [
-	self push: self callValue
+	self push: self currentActivation callValue
 ]
 
 { #category : #visiting }
@@ -465,7 +408,7 @@ FogEVMInterpreter >> visitCodecopy: aFogVMCodecopy [
 	loadingArea := self pop.
 	fromByte := self pop.
 	amountOfBytes := self pop.
-	loadedData := self binaryBytecode copyFrom: fromByte unsignedValue to: fromByte unsignedValue + amountOfBytes unsignedValue.
+	loadedData := self currentActivation binaryBytecode copyFrom: fromByte unsignedValue to: fromByte unsignedValue + amountOfBytes unsignedValue.
 	self memory store: loadedData at: loadingArea unsignedValue ensure: amountOfBytes unsignedValue
 	"
 	hexa := program toHexa.
@@ -477,7 +420,7 @@ FogEVMInterpreter >> visitCodecopy: aFogVMCodecopy [
 
 { #category : #visitign }
 FogEVMInterpreter >> visitCodesize: aFogVMCodesize [
-	self push: (FogEVMRegistry forValue: self bytecodeSize bytesLength: 32)
+	self push: (FogEVMRegistry forValue: self currentActivation bytecodeSize bytesLength: 32)
 ]
 
 { #category : #accessing }
@@ -550,8 +493,8 @@ FogEVMInterpreter >> visitExtcodesize: aFogVMExtcodesize [
 ]
 
 { #category : #visiting }
-FogEVMInterpreter >> visitGas: aFogVMGas [ 
-	self push: self callGas 
+FogEVMInterpreter >> visitGas: aFogVMGas [
+	self push: self currentActivation gas
 ]
 
 { #category : #visiting }
@@ -560,8 +503,8 @@ FogEVMInterpreter >> visitGaslimit: aFogVMGaslimit [
 ]
 
 { #category : #visiting }
-FogEVMInterpreter >> visitGasprice: aFogVMGasprice [ 
-	self push: self callGasPrice 
+FogEVMInterpreter >> visitGasprice: aFogVMGasprice [
+	self push: self currentActivation callGasPrice
 ]
 
 { #category : #'visit - comparision' }
@@ -581,9 +524,9 @@ FogEVMInterpreter >> visitIszero: aFogVMIszero [
 FogEVMInterpreter >> visitJump: aFogVMJump [
 	| newInstructionPointer jumpDestInstruction |
 	newInstructionPointer := self pop.
-	jumpDestInstruction := self peekInstruction: newInstructionPointer.
+	jumpDestInstruction := self currentActivation peekInstruction: newInstructionPointer.
 	self assertIsValidDestination: jumpDestInstruction at: newInstructionPointer .
-	self setInstructionPointerToByte: newInstructionPointer
+	self currentActivation setInstructionPointerToByte: newInstructionPointer
 ]
 
 { #category : #'visit - flow' }
@@ -595,11 +538,11 @@ FogEVMInterpreter >> visitJumpdest: aFogVMJumpdest [
 FogEVMInterpreter >> visitJumpi: aFogVMJumpi [
 	| condition newInstructionPointer jumpDestInstruction |
 	newInstructionPointer := self pop.
-	jumpDestInstruction := self peekInstruction: newInstructionPointer.
+	jumpDestInstruction := self currentActivation peekInstruction: newInstructionPointer.
 	condition := self pop.
 	condition booleanValue
 		ifTrue: [ self assertIsValidDestination: jumpDestInstruction at: newInstructionPointer.
-			self setInstructionPointerToByte: newInstructionPointer ]
+			self currentActivation setInstructionPointerToByte: newInstructionPointer ]
 ]
 
 { #category : #visiting }
@@ -740,12 +683,11 @@ FogEVMInterpreter >> visitPush: aFogVMPush [
 
 { #category : #'visit - flow' }
 FogEVMInterpreter >> visitReturn: aFogVMReturn [
-	| from to |
+	| from to return |
 	from := self pop.
 	to := self pop.
-	return := self memory loadFrom: from unsignedValue bytes: to unsignedValue .
-	returnValues push: return.
-	self finishComputation
+	return := self memory loadFrom: from unsignedValue bytes: to unsignedValue.
+	self currentActivation return: return.
 ]
 
 { #category : #visiting }
@@ -768,12 +710,15 @@ FogEVMInterpreter >> visitReturndatacopy: aFogVMReturndatacopy [
 	memOffset := self pop.
 	dataOffset := self pop.
 	length := self pop.
-	returnValues top size >= (dataOffset unsignedValue + length unsignedValue - 1)
+	self currentActivation return size >= (dataOffset unsignedValue + length unsignedValue - 1)
 		ifFalse: [ FogEVMRuntimeError signal: 'Memory access out of bounds' ].
-	data := returnValues top
-		copyFrom: dataOffset unsignedValue
-		to: dataOffset unsignedValue + length unsignedValue -1 .
+	data := self currentActivation return copyFrom: dataOffset unsignedValue to: dataOffset unsignedValue + length unsignedValue - 1.
 	self memory store: data at: memOffset unsignedValue ensure: length unsignedValue
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitReturndatasize: aFogVMReturndatasize [
+	self push: (FogEVMRegistry forValue: self currentActivation return size bytesLength: 8)
 ]
 
 { #category : #visiting }
@@ -811,8 +756,8 @@ FogEVMInterpreter >> visitSdiv: aFogVMSdiv [
 FogEVMInterpreter >> visitSelfdestruct: aFogVMSelfdestruct [
 	| withdrawTo |
 	withdrawTo := self pop.
-	(self storageFor: withdrawTo) addBalance: (self storageFor: self contractAddress) withdrawBalance.
-	(self storageFor: self contractAddress) setDestroyed.
+	(self storageFor: withdrawTo) addBalance: (self storageFor: self currentActivation contractAddress ) withdrawBalance.
+	(self storageFor: self currentActivation contractAddress ) setDestroyed.
 ]
 
 { #category : #visiting }
@@ -863,7 +808,7 @@ FogEVMInterpreter >> visitSload: aFogVMSload [
 	| storageAddress value address | 
 	storageAddress := self pop.
 	address := FogEVMRegistry forValue: storageAddress unsignedValue bytesLength: 32.
-	value := (self storageFor: self contractAddress) getStorageAt: address. 
+	value := (self storageFor: self currentActivation contractAddress ) getStorageAt: address. 
 	self push: value. 
 ]
 
@@ -889,12 +834,12 @@ FogEVMInterpreter >> visitSstore: aFogVMSstore [
 	storageAddress := self pop.
 	value := self pop.
 	address := FogEVMRegistry forValue: storageAddress unsignedValue bytesLength: 32.
-	value := (self storageFor: self contractAddress) atStorage: address put: value
+	value := (self storageFor: self currentActivation contractAddress ) atStorage: address put: value
 ]
 
 { #category : #'visiti stop' }
 FogEVMInterpreter >> visitStop: aFogVMStop [
-	programFinished := true
+	self currentActivation stop.
 ]
 
 { #category : #'visit - arithmetics' }

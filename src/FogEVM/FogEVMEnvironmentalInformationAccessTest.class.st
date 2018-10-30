@@ -14,7 +14,7 @@ FogEVMEnvironmentalInformationAccessTest >> testADDRESS [
 	bytecode := self createBytecodeForADDRESS.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop equals: interpreter contractAddress
+	self assert: interpreter stack pop equals: interpreter currentActivation contractAddress 
 ]
 
 { #category : #test }
@@ -25,11 +25,11 @@ FogEVMEnvironmentalInformationAccessTest >> testBALANCE [
 	slot := stack.peek()
 	slot.Set(interpreter.evm.StateDB.GetBalance(common.BigToAddress(slot)))
 	retur"
-	bytecode := self createBytecodeForBALANCE: interpreter contractAddress unsignedValue.
+	bytecode := self createBytecodeForBALANCE: interpreter call contractAddress  unsignedValue.
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self assert: interpreter pop unsignedValue equals: 0.
-	(interpreter storageFor: interpreter contractAddress state: interpreter runtimeState) addBalance: (FogEVMRegistry forValue: 20 bytesLength: 32).
+	(interpreter storageFor: interpreter currentActivation contractAddress  state: interpreter runtimeState) addBalance: (FogEVMRegistry forValue: 20 bytesLength: 32).
 	interpreter run.
 	self assert: interpreter pop unsignedValue equals: 20
 ]
@@ -116,7 +116,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLER [
 	bytecode := self createBytecodeForCALLER.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter pop unsignedValue equals: interpreter callerAddress unsignedValue 
+	self assert: interpreter pop unsignedValue equals: interpreter currentActivation callerAddress unsignedValue 
 ]
 
 { #category : #test }
@@ -131,7 +131,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLVALUE [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: interpreter pop unsignedValue equals: FogEVMInterpreter exampleCall callValue unsignedValue 
+		self assert: interpreter pop unsignedValue equals: interpreter currentActivation callValue unsignedValue
 		
 
 ]
@@ -231,7 +231,7 @@ FogEVMEnvironmentalInformationAccessTest >> testEXTCODECOPY [
 // opExtCodeHash returns the code hash of a specified account.
 // There are sever"
 	bytecode := self
-		createBytecodeForEXTCODE: interpreter contractAddress unsignedValue
+		createBytecodeForEXTCODE: interpreter call contractAddress  unsignedValue
 		COPY: 1
 		code: 3
 		length: 5.
@@ -248,7 +248,7 @@ FogEVMEnvironmentalInformationAccessTest >> testEXTCODEHASH [
 	slot := stack.peek()
 	slot.SetBytes(interpreter.evm.StateDB.GetCodeHash(common.BigToAddress(slot)).Bytes())
 	r"
-	bytecode := self createBytecodeForEXTCODEHASH: interpreter contractAddress unsignedValue.
+	bytecode := self createBytecodeForEXTCODEHASH: interpreter call contractAddress  unsignedValue.
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self assert: interpreter pop equals: (interpreter keccack256: bytecode toBinary)
@@ -264,7 +264,7 @@ FogEVMEnvironmentalInformationAccessTest >> testEXTCODESIZE [
 	slot.SetUint64(uint64(interpreter.evm.StateDB.GetCodeSize(common.BigToAddress(slot))))
 
 	r"
-		bytecode := self createBytecodeForEXTCODESIZE: interpreter contractAddress unsignedValue .
+		bytecode := self createBytecodeForEXTCODESIZE: interpreter call contractAddress  unsignedValue .
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
@@ -275,19 +275,15 @@ FogEVMEnvironmentalInformationAccessTest >> testEXTCODESIZE [
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testGAS [
-		|  bytecode  |
-		
-		"func opGas(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	| bytecode |
+	"func opGas(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetUint64(contract.Gas))
 	return nil, nil
 }"
-		bytecode := self createBytecodeForGAS.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: interpreter pop equals: interpreter callGas.
-		
-
+	bytecode := self createBytecodeForGAS.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter pop equals: interpreter currentActivation gas
 ]
 
 { #category : #test }
@@ -305,19 +301,15 @@ FogEVMEnvironmentalInformationAccessTest >> testGASLIMIT [
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testGASPRICE [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opGasprice(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().Set(interpreter.evm.GasPrice))
 	retu"
-		bytecode := self createBytecodeForGASPRICE.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: interpreter pop equals: interpreter callGasPrice .
-		
-
+	bytecode := self createBytecodeForGASPRICE.
+	interpreter bytecode: bytecode.
+	interpreter run.
+	self assert: interpreter pop equals: interpreter currentActivation callGasPrice
 ]
 
 { #category : #test }

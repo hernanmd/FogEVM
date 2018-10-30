@@ -2,7 +2,9 @@ Class {
 	#name : #FogEVMTestInterpreter,
 	#superclass : #FogEVMInterpreter,
 	#instVars : [
-		'startedTime'
+		'startedTime',
+		'call',
+		'contract'
 	],
 	#category : #'FogEVM-ByteCode-Interpreter-Tests'
 }
@@ -10,7 +12,7 @@ Class {
 { #category : #'as yet unclassified' }
 FogEVMTestInterpreter >> binaryBytecodeFor: aFogEVMRegistry [
 	self assert: aFogEVMRegistry unsignedValue = 740735499233530362346919405980904206194320393200.
-	^ program toBinary 
+	^ contract bytecode toBinary 
 ]
 
 { #category : #accessing }
@@ -29,6 +31,24 @@ FogEVMTestInterpreter >> bytecode: aFogEVMByteCode [
 	self contract: aFogEVMByteCode
 ]
 
+{ #category : #'as yet unclassified' }
+FogEVMTestInterpreter >> call [
+	^ call
+]
+
+{ #category : #accessing }
+FogEVMTestInterpreter >> call: aFogEVMCall [
+	call := aFogEVMCall
+]
+
+{ #category : #accessing }
+FogEVMTestInterpreter >> contract: aFogEVMByteCode [
+	contract := FogEVMContract new
+		bytecode: aFogEVMByteCode;
+		address: call contractAddress;
+		yourself
+]
+
 { #category : #accessing }
 FogEVMTestInterpreter >> currentBlockNumber [
 	^ FogEVMRegistry forValue: 9999 bytesLength: 32
@@ -37,6 +57,21 @@ FogEVMTestInterpreter >> currentBlockNumber [
 { #category : #accessing }
 FogEVMTestInterpreter >> gasLimit [
 	^ FogEVMRegistry forValue: 999999999999999999999999 bytesLength: 32
+]
+
+{ #category : #running }
+FogEVMTestInterpreter >> hackedRun [
+	| activation |
+	activation := activations size = 1
+		ifTrue: [ activation := activations top
+				setFinished: false;
+				yourself ]
+		ifFalse: [ FogEVMActivation new ].
+	activation call: call.
+	activation contract: contract.
+	activations size = 1
+		ifFalse: [ self pushActivation: activation ].
+	self interpret
 ]
 
 { #category : #accessing }
@@ -55,13 +90,13 @@ FogEVMTestInterpreter >> originAddress [
 	^ FogEVMRegistry forValue: 16rA3EBF466889C2A0239379125A7D0F9C4E8BF2A54 bytesLength: 20
 ]
 
-{ #category : #'as yet unclassified' }
-FogEVMTestInterpreter >> returnValues [
-	^ returnValues
-]
-
 { #category : #'running arbitrary code' }
 FogEVMTestInterpreter >> run [
+	| activation |
+	activation := FogEVMActivation new.
+	activation call: call.
+	activation contract: contract.
+	self pushActivation: activation.
 	self interpret
 ]
 

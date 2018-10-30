@@ -1597,16 +1597,16 @@ FogEVMUnitaryTest >> createBytecodeForRETURNDATACOPYFrom: aDataOffset to: aMemor
 
 { #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForRETURNDATASIZE [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
 		func opReturnDataSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetUint64(uint64(len(interpreter.returnData))))"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
+	stream
+		nextPutReturndatasize;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #creating }

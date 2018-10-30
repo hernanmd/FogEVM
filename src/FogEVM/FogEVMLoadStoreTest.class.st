@@ -168,7 +168,7 @@ FogEVMLoadStoreTest >> testSSTORE [
 	self assert: interpreter stack isEmpty.
 	self
 		assert:
-			((interpreter storageFor: interpreter contractAddress)
+			((interpreter storageFor: interpreter currentActivation contractAddress )
 				getStorageAt: (FogEVMRegistry forValue: memoryStart bytesLength: 32))
 				unsignedValue 
 		equals: value

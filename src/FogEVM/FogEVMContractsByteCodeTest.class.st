@@ -4,6 +4,16 @@ Class {
 	#category : #'FogEVM-ByteCode-Interpreter-Tests'
 }
 
+{ #category : #testing }
+FogEVMContractsByteCodeTest >> contractAddressForTest [
+	^ (FogEVMRegistry forValue: 16r81bfba8301a073a010e9fb71fab514e53d1cc3f5 bytesLength: 20).
+]
+
+{ #category : #testing }
+FogEVMContractsByteCodeTest >> contractInputForCall [
+	^ (FogEVMInterpreter exampleCall contractInput copyFrom: 1 to: 4) asInteger
+]
+
 { #category : #test }
 FogEVMContractsByteCodeTest >> testCALL [
 	| bytecode retSize retOffset inSize inOffset address gas value |
@@ -39,7 +49,7 @@ FogEVMContractsByteCodeTest >> testCALL [
 	retOffset := 1.
 	inSize := 0.
 	inOffset := 0.
-	address := self contractAddressForTest.
+	address := self contractAddressForTest unsignedValue.
 	gas := 3000.
 	value := self contractInputForCall.
 	bytecode := self
@@ -253,7 +263,7 @@ func opReturn(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memor
 	interpreter bytecode: bytecode.
 	interpreter memory store: 'Hello world' asByteArray at: 1 ensure: 11.
 	interpreter run.
-	self assert: interpreter returnValues pop asString equals: 'Hello world'
+	self assert: interpreter currentActivation return asString equals: 'Hello world'
 ]
 
 { #category : #test }
@@ -277,30 +287,31 @@ FogEVMContractsByteCodeTest >> testRETURNDATACOPY [
 
 	return nil, nil
 "
+	interpreter memory store: 'Hello world' asByteArray at: 1 ensure: 11.
 	bytecode := self createBytecodeForRETURNFrom: 1 upTo: 11.
 	interpreter bytecode: bytecode.
-	interpreter memory store: 'Hello world' asByteArray at: 1 ensure: 11.
 	interpreter run.
+	
 	bytecode := self createBytecodeForRETURNDATACOPYFrom: 1 to: 12 upTo: 11.
 	interpreter bytecode: bytecode.
-	interpreter run.
+	interpreter hackedRun.
 	self assert: (interpreter memory loadFrom: 12 bytes: 11) asString equals: 'Hello world'
 ]
 
 { #category : #test }
 FogEVMContractsByteCodeTest >> testRETURNDATASIZE [
-		|  bytecode  |
-		
-		"should test over 
+	| bytecode |
+	"should test over 
 		func opReturnDataSize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetUint64(uint64(len(interpreter.returnData))))"
-		bytecode := self createBytecodeForRETURNDATASIZE.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	bytecode := self createBytecodeForRETURNFrom: 1 upTo: 11.
+	interpreter bytecode: bytecode.
+	interpreter memory store: 'Hello world' asByteArray at: 1 ensure: 11.
+	interpreter run.
+	bytecode := self createBytecodeForRETURNDATASIZE.
+	interpreter bytecode: bytecode.
+	interpreter hackedRun.
+	self assert: interpreter pop unsignedValue equals: 11
 ]
 
 { #category : #test }
@@ -337,16 +348,16 @@ FogEVMContractsByteCodeTest >> testSELFDESTRUCT [
 	interpreter.evm.StateDB.Suicide(contract.Address())
 	return nil, nil
 }"
-	self deny: (interpreter storageFor: interpreter contractAddress) destroyed equals: FogEVMRegistry true.
-	bytecode := self createBytecodeForSELFDESTRUCT: interpreter callerAddress unsignedValue.
-	(interpreter storageFor: interpreter contractAddress) addBalance: (FogEVMRegistry forValue: 9999 bytesLength: 32).
-	self assert: (interpreter storageFor: interpreter contractAddress) balance equals: (FogEVMRegistry forValue: 9999 bytesLength: 32).
-	self assert: (interpreter storageFor: interpreter callerAddress) balance equals: FogEVMRegistry zero.
+	self deny: (interpreter storageFor: interpreter call contractAddress) destroyed equals: FogEVMRegistry true.
+	bytecode := self createBytecodeForSELFDESTRUCT: interpreter  call callerAddress unsignedValue.
+	(interpreter storageFor: interpreter call contractAddress) addBalance: (FogEVMRegistry forValue: 9999 bytesLength: 32).
+	self assert: (interpreter storageFor: interpreter call contractAddress) balance equals: (FogEVMRegistry forValue: 9999 bytesLength: 32).
+	self assert: (interpreter storageFor: interpreter call callerAddress) balance equals: FogEVMRegistry zero.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter storageFor: interpreter contractAddress) destroyed equals: FogEVMRegistry true.
-	self assert: (interpreter storageFor: interpreter callerAddress) balance equals: (FogEVMRegistry forValue: 9999 bytesLength: 32).
-	self assert: (interpreter storageFor: interpreter contractAddress) balance equals: FogEVMRegistry zero
+	self assert: (interpreter storageFor: interpreter currentActivation contractAddress) destroyed equals: FogEVMRegistry true.
+	self assert: (interpreter storageFor: interpreter currentActivation callerAddress) balance equals: (FogEVMRegistry forValue: 9999 bytesLength: 32).
+	self assert: (interpreter storageFor: interpreter currentActivation contractAddress) balance equals: FogEVMRegistry zero
 ]
 
 { #category : #test }

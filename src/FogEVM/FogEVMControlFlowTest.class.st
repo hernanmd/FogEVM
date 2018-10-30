@@ -84,7 +84,7 @@ FogEVMControlFlowTest >> testSTOP [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: interpreter isTerminated .
+		self assert: interpreter currentActivation isFinished .
 		
 
 ]
