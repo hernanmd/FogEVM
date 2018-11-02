@@ -106,12 +106,12 @@ FogEVMInterpreter >> blockHashRegisty: aMinimalBlockNumber [
 	self shouldBeImplemented 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #debug }
 FogEVMInterpreter >> breakOnAddress: anAddress [
 	^ self currentActivation breakOnAddress: anAddress
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #debug }
 FogEVMInterpreter >> cancelBreakOnAddress: anAddress [
 	^ self currentActivation cancelBreakOnAddress: anAddress
 ]
@@ -126,7 +126,7 @@ FogEVMInterpreter >> copyElement: anInteger [
 	self push: (stack at: anInteger) copy
 ]
 
-{ #category : #visiting }
+{ #category : #convenience }
 FogEVMInterpreter >> copyReturnAt: memOffset sinceByte: dataOffset length: length [
 	| data bytearray |
 	bytearray := self currentActivation return asByteArray.
@@ -169,12 +169,12 @@ FogEVMInterpreter >> gasLimit [
 	^ self shouldBeImplemented 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #convenience }
 FogEVMInterpreter >> hexa [
 	self shouldBeImplemented.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #convenience }
 FogEVMInterpreter >> hexaToBoolean: anInteger [
 	^ anInteger unsignedValue = 0
 		ifTrue: [ false ]
@@ -200,7 +200,7 @@ FogEVMInterpreter >> installExternalAccount: aFogEVMAccount at: anAddress [
 	(self storageFor: anAddress) externalAccount: aFogEVMAccount
 ]
 
-{ #category : #'instruction decoding' }
+{ #category : #interpret }
 FogEVMInterpreter >> interpret [
 	| i |
 	trace := OrderedCollection new.
@@ -212,7 +212,7 @@ FogEVMInterpreter >> interpret [
 			i accept: self with: nil ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #convenience }
 FogEVMInterpreter >> keccack256: aString [
 	| kck |
 	kck := Keccak hashEncode: aString.
@@ -220,7 +220,7 @@ FogEVMInterpreter >> keccack256: aString [
 	^ kck
 ]
 
-{ #category : #accessing }
+{ #category : #logs }
 FogEVMInterpreter >> logs [
 	^ logs
 ]
@@ -235,22 +235,22 @@ FogEVMInterpreter >> pop [
 	^ stack pop 
 ]
 
-{ #category : #'activation stack' }
+{ #category : #'stack operations' }
 FogEVMInterpreter >> popActivation [
 	^ activations pop
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
 FogEVMInterpreter >> programHasFinished [
 	^ activations size = 1 and: [ self currentActivation isFinished ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'stack operations' }
 FogEVMInterpreter >> push: aPushableObject [
 	stack push: aPushableObject asPushableRegistry
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'stack operations' }
 FogEVMInterpreter >> pushActivation: anActivation [
 	activations push: anActivation
 ]
@@ -294,7 +294,7 @@ FogEVMInterpreter >> registerLog: aContent topics: aCollectionOfTopics [
 				yourself)
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'contract resolving' }
 FogEVMInterpreter >> resolveAccountFor: aFogEVMRegistry [
 	^ (self
 		storageFor: aFogEVMRegistry
@@ -308,12 +308,12 @@ FogEVMInterpreter >> resolveContractFor: aContractAddress [
 	^ (self storageFor: aContractAddress state: (self runtimeState) ) contract
 ]
 
-{ #category : #business }
+{ #category : #'call activation' }
 FogEVMInterpreter >> revertComputation: reason [ 
 	self currentActivation revert.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 FogEVMInterpreter >> runtimeState [
 	" We should hash the states"
 	^ 'latest'
@@ -338,7 +338,7 @@ FogEVMInterpreter >> sendToContract: aContract contextualAccount: aContextAccoun
 	^ self popActivation return
 ]
 
-{ #category : #utility }
+{ #category : #convenience }
 FogEVMInterpreter >> stackSize [
 	^ stack size 
 ]
@@ -348,18 +348,18 @@ FogEVMInterpreter >> storage [
 	^ storage ifNil: [ storage := Dictionary new ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 FogEVMInterpreter >> storageFor: anAddress [
 	^ self storageFor: anAddress state: self runtimeState
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 FogEVMInterpreter >> storageFor: aContractAddress state: aStateHash [ 
 	self flag: #WeshouldCareAboutTheMerkelTreeState. 
 	^ self storage at: aContractAddress ifAbsentPut: [ FogEVMBucketStorage new ].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 FogEVMInterpreter >> storageFor: aContractAddress state: aStateHash ifAbsent: aBlock [
 	^ self storage at: aContractAddress ifAbsent: [ aBlock value ].
 ]
@@ -383,7 +383,7 @@ FogEVMInterpreter >> visitAdd: aFogVMAdd [
 	self push: a + b
 ]
 
-{ #category : #visit }
+{ #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitAddmod: aFogVMAddmod [
 	| x y z module |
 	x := self pop .
@@ -393,7 +393,7 @@ FogEVMInterpreter >> visitAddmod: aFogVMAddmod [
 	self push: module 
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - running variables' }
 FogEVMInterpreter >> visitAddress: aFogVMAddress [ 
 	self push: self currentActivation contractAddress  
 ]
@@ -406,21 +406,21 @@ FogEVMInterpreter >> visitAnd: aFogVMAnd [
 	self push: a & b
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - account' }
 FogEVMInterpreter >> visitBalance: aFogVMBalance [
 	| address |
 	address := self pop.
 	self push: (self storageFor: address state: self runtimeState) balance
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - running variables' }
 FogEVMInterpreter >> visitBlockhash: aFogVMBlockhash [
 	| minimalBlockNumber |
 	minimalBlockNumber := self pop.
 	self push: (self blockHashRegisty: minimalBlockNumber)
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - memory' }
 FogEVMInterpreter >> visitByte: aFogVMByte [
 	| chunk position |
 	chunk := self pop.
@@ -428,7 +428,7 @@ FogEVMInterpreter >> visitByte: aFogVMByte [
 	self push: (chunk byteAt: position)
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - call' }
 FogEVMInterpreter >> visitCall: aFogVMCall [
 	| gas address value inOffset inSize retOffset retSize contractInput |
 	gas := self pop.
@@ -451,7 +451,7 @@ FogEVMInterpreter >> visitCall: aFogVMCall [
 		transferring: value
 ]
 
-{ #category : #viisting }
+{ #category : #'visit - call' }
 FogEVMInterpreter >> visitCallcode: aFogVMCallcode [ 
 | gas address value inOffset inSize retOffset retSize contractInput |
 	gas := self pop.
@@ -474,7 +474,7 @@ FogEVMInterpreter >> visitCallcode: aFogVMCallcode [
 		transferring: value
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - call' }
 FogEVMInterpreter >> visitCalldatacopy: aFogVMCalldatacopy [
 	| memFrom dataFrom length loadedData |
 	memFrom := self pop.
@@ -507,7 +507,7 @@ FogEVMInterpreter >> visitCallvalue: aFogVMCallvalue [
 	self push: self currentActivation callValue
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - call' }
 FogEVMInterpreter >> visitCodecopy: aFogVMCodecopy [
 	| loadingArea fromByte amountOfBytes loadedData |
 	loadingArea := self pop.
@@ -523,17 +523,17 @@ FogEVMInterpreter >> visitCodecopy: aFogVMCodecopy [
 	"0 to: amountOfInstructions - 1 do: [ :i | memory store: (self hexa at: fromInstruction + i) at: (loadingArea + i) asBKHexa ]"
 ]
 
-{ #category : #visitign }
+{ #category : #'visit - call' }
 FogEVMInterpreter >> visitCodesize: aFogVMCodesize [
 	self push: (FogEVMRegistry forValue: self currentActivation bytecodeSize bytesLength: 32)
 ]
 
-{ #category : #accessing }
+{ #category : #'visit - running variables' }
 FogEVMInterpreter >> visitCoinbase: aFogVMCoinbase [ 
 	self push: self minerAddress
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - call' }
 FogEVMInterpreter >> visitDelegatecall: aFogVMDelegatecall [ 
 | gas address  inOffset inSize retOffset retSize contractInput |
 	gas := self pop.
@@ -555,7 +555,7 @@ FogEVMInterpreter >> visitDelegatecall: aFogVMDelegatecall [
 		transferring: 0
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - running variables' }
 FogEVMInterpreter >> visitDifficulty: aFogVMDifficulty [ 
 	self push: self blockDifficulty.
 ]
@@ -594,7 +594,7 @@ FogEVMInterpreter >> visitExp: aFogVMExp [
 	self push: value ** exponent
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - call' }
 FogEVMInterpreter >> visitExtcodecopy: aFogVMExtcodecopy [
 	| contractAddress loadingArea fromByte amountOfBytes loadedData |
 	contractAddress := self pop.
@@ -605,31 +605,31 @@ FogEVMInterpreter >> visitExtcodecopy: aFogVMExtcodecopy [
 	self memory store: loadedData at: loadingArea unsignedValue ensure: amountOfBytes unsignedValue
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - call' }
 FogEVMInterpreter >> visitExtcodehash: aFogVMExtcodehash [
 	| address |
 	address := self pop.
 	self push: (self keccack256: (self binaryBytecodeFor: address))
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - call' }
 FogEVMInterpreter >> visitExtcodesize: aFogVMExtcodesize [
 	| contractAddress |
 	contractAddress := self pop.
 	self push: (FogEVMRegistry forValue: (self binaryBytecodeFor: contractAddress) size bytesLength: 32)
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - running variables' }
 FogEVMInterpreter >> visitGas: aFogVMGas [
 	self push: self currentActivation gas
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - running variables' }
 FogEVMInterpreter >> visitGaslimit: aFogVMGaslimit [
 	self push: self gasLimit
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - running variables' }
 FogEVMInterpreter >> visitGasprice: aFogVMGasprice [
 	self push: self currentActivation gasPrice
 ]
@@ -672,7 +672,7 @@ FogEVMInterpreter >> visitJumpi: aFogVMJumpi [
 			self currentActivation setInstructionPointerToByte: newInstructionPointer ]
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - log' }
 FogEVMInterpreter >> visitLog: aFogVMLog [
 	| fromMemory upTo topics |
 	fromMemory := self pop.
@@ -714,14 +714,14 @@ FogEVMInterpreter >> visitLt: aFogVMGt [
 	self push: (element1 unsignedLesserThan: element2)
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'visit - memory' }
 FogEVMInterpreter >> visitMload: aFogVMMload [
 	| fromAddress toAddress |
 	fromAddress := self pop.
 	self push: (self memory loadWord: fromAddress)
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitMod: aFogVMMod [
 	| x y |
 	x := self pop.
@@ -729,12 +729,12 @@ FogEVMInterpreter >> visitMod: aFogVMMod [
 	self push: x \\ y
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - memory' }
 FogEVMInterpreter >> visitMsize: aFogVMMsize [ 
 	self push:( FogEVMRegistry forValue: (self memory sizeInBytes) bytesLength: 32).
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - memory' }
 FogEVMInterpreter >> visitMstore8: aFogVMMstore8 [
 	| address value |
 	address := self pop.
@@ -758,7 +758,7 @@ FogEVMInterpreter >> visitMul: aFogVMMul [
 	self push: numberA * numberB
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitMulmod: aFogVMMulmod [
 	| x y z module |
 	x := self pop.
@@ -775,7 +775,7 @@ FogEVMInterpreter >> visitNot: aFogVMNot [
 	self push: value not
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - running variables' }
 FogEVMInterpreter >> visitNumber: aFogVMNumber [
 	self push: self currentBlockNumber
 ]
@@ -788,12 +788,12 @@ FogEVMInterpreter >> visitOr: aFogVMOr [
 	self push: a | b
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - running variables' }
 FogEVMInterpreter >> visitOrigin: aFogVMOrigin [ 
 	self push: self originAddress
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - flow' }
 FogEVMInterpreter >> visitPc: aFogVMPc [ 
 	self push: self currentInstructionPointer 
 ]
@@ -817,7 +817,7 @@ FogEVMInterpreter >> visitReturn: aFogVMReturn [
 	self currentActivation return: return.
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - flow' }
 FogEVMInterpreter >> visitReturndatacopy: aFogVMReturndatacopy [
 	| memOffset dataOffset length |
 	"func opReturnDataCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
@@ -840,12 +840,12 @@ FogEVMInterpreter >> visitReturndatacopy: aFogVMReturndatacopy [
 	self copyReturnAt: memOffset unsignedValue sinceByte: dataOffset unsignedValue length: length unsignedValue
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - flow' }
 FogEVMInterpreter >> visitReturndatasize: aFogVMReturndatasize [
 	self push: (FogEVMRegistry forValue: self currentActivation return size bytesLength: 8)
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - flow' }
 FogEVMInterpreter >> visitRevert: aFogVMRevert [ 
 	| offset size content |
 	offset := self pop. 
@@ -857,7 +857,7 @@ FogEVMInterpreter >> visitRevert: aFogVMRevert [
 	
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - bit operators' }
 FogEVMInterpreter >> visitSar: aFogVMSar [
 	| shift value push |
 	shift := self pop.
@@ -866,7 +866,7 @@ FogEVMInterpreter >> visitSar: aFogVMSar [
 	self push: push
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitSdiv: aFogVMSdiv [
 	| x y |
 
@@ -876,7 +876,7 @@ FogEVMInterpreter >> visitSdiv: aFogVMSdiv [
 	self push: (x signedDivision: y)	"y sign * x sign * (x abs // y abs)"
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - call' }
 FogEVMInterpreter >> visitSelfdestruct: aFogVMSelfdestruct [
 	| withdrawTo |
 	withdrawTo := self pop.
@@ -884,7 +884,7 @@ FogEVMInterpreter >> visitSelfdestruct: aFogVMSelfdestruct [
 	(self storageFor: self currentActivation contractAddress ) setDestroyed.
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - comparision' }
 FogEVMInterpreter >> visitSgt: aFogVMSgt [
 	" Signed Greater than"
 
@@ -903,7 +903,7 @@ FogEVMInterpreter >> visitSha3: aFogVMSha3 [
 	self push: kck
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - bit operators' }
 FogEVMInterpreter >> visitShl: aFogVMShl [
 	| shift value |
 	shift := self pop.
@@ -911,7 +911,7 @@ FogEVMInterpreter >> visitShl: aFogVMShl [
 	self push: value << shift
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - bit operators' }
 FogEVMInterpreter >> visitShr: aFogVMShr [
 	| shift value |
 	shift := self pop.
@@ -919,7 +919,7 @@ FogEVMInterpreter >> visitShr: aFogVMShr [
 	self push: value >> shift
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - memory' }
 FogEVMInterpreter >> visitSignextend: aFogVMSignextend [
 	| length value |
 	length := self pop.
@@ -944,7 +944,7 @@ FogEVMInterpreter >> visitSlt: aFogVMSlt [
 	self push: (element1 signedLesserThan: element2)
 ]
 
-{ #category : #visit }
+{ #category : #'visit - arithmetics' }
 FogEVMInterpreter >> visitSmod: aFogVMSmod [
 	| x y |
 	x := self pop.
@@ -961,7 +961,7 @@ FogEVMInterpreter >> visitSstore: aFogVMSstore [
 	value := (self storageFor: self currentActivation contractAddress ) atStorage: address put: value
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - call' }
 FogEVMInterpreter >> visitStaticcall: aFogVMStaticcall [
 	| gas address inOffset inSize retOffset retSize contractInput |
 	gas := self pop.
@@ -982,7 +982,7 @@ FogEVMInterpreter >> visitStaticcall: aFogVMStaticcall [
 		gasPrice: self currentActivation gasPrice
 ]
 
-{ #category : #'visiti stop' }
+{ #category : #'visit - flow' }
 FogEVMInterpreter >> visitStop: aFogVMStop [
 	self currentActivation stop.
 ]
@@ -1000,12 +1000,12 @@ FogEVMInterpreter >> visitSwap: aFogVMSwap [
 	self swapStackRegistry: 1 with: aFogVMSwap expectedPops 
 ]
 
-{ #category : #accessing }
+{ #category : #'visit - running variables' }
 FogEVMInterpreter >> visitTimestamp: aFogVMTimestamp [ 
 	self push:self timestamp 
 ]
 
-{ #category : #visiting }
+{ #category : #'visit - boolean alebra' }
 FogEVMInterpreter >> visitXor: aFogVMXor [
 	| a b |
 	a := self pop.
