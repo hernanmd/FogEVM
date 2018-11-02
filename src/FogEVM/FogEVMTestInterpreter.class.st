@@ -46,7 +46,8 @@ FogEVMTestInterpreter >> contract: aFogEVMByteCode [
 	contract := FogEVMContract new
 		bytecode: aFogEVMByteCode;
 		address: call contractAddress;
-		yourself
+		yourself.
+	(self storageFor: call contractAddress ) contract: contract .
 ]
 
 { #category : #accessing }

@@ -4,14 +4,34 @@ Class {
 	#category : #'FogEVM-ByteCode-Interpreter-Tests'
 }
 
+{ #category : #creating }
+FogEVMContractsByteCodeTest >> accountForTest [
+	^ FogEVMAccount new address: interpreter call callerAddress 
+]
+
 { #category : #testing }
 FogEVMContractsByteCodeTest >> contractAddressForTest [
 	^ (FogEVMRegistry forValue: 16r81bfba8301a073a010e9fb71fab514e53d1cc3f5 bytesLength: 20).
 ]
 
 { #category : #testing }
+FogEVMContractsByteCodeTest >> contractForTest [
+	^ FogEVMContract new
+		bytecode: (self createBytecodeForADDAndPop: 1 plus: 2);
+		address: self contractAddressForTest;
+		yourself
+]
+
+{ #category : #testing }
 FogEVMContractsByteCodeTest >> contractInputForCall [
 	^ (FogEVMInterpreter exampleCall contractInput copyFrom: 1 to: 4) asInteger
+]
+
+{ #category : #testing }
+FogEVMContractsByteCodeTest >> setUp [ 	
+	super setUp. 
+	interpreter installContract: (self contractForTest) at: self contractAddressForTest.
+	interpreter installExternalAccount: (self accountForTest) at: interpreter call callerAddress.
 ]
 
 { #category : #test }
@@ -45,13 +65,15 @@ FogEVMContractsByteCodeTest >> testCALL [
 	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
 	return ret, nil
 }"
-	retSize := 10.
-	retOffset := 1.
+	retSize := 0.
+	retOffset := 0.
 	inSize := 0.
 	inOffset := 0.
 	address := self contractAddressForTest unsignedValue.
 	gas := 3000.
+	
 	value := self contractInputForCall.
+	
 	bytecode := self
 		createBytecodeForCALLReturn: retSize
 		at: retOffset
@@ -60,9 +82,11 @@ FogEVMContractsByteCodeTest >> testCALL [
 		value: value
 		contract: address
 		usign: gas.
+		
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: false
+	self assert: interpreter pop unsignedValue equals: 0.
+	
 ]
 
 { #category : #test }
@@ -96,8 +120,8 @@ FogEVMContractsByteCodeTest >> testCALLCODE [
 
 	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
 	retu"
-	retSize := 10.
-	retOffset := 1.
+	retSize := 0.
+	retOffset := 0.
 	inSize := 0.
 	inOffset := 0.
 	address := self contractAddressForTest.
@@ -109,11 +133,11 @@ FogEVMContractsByteCodeTest >> testCALLCODE [
 		parameters: inSize
 		at: inOffset
 		value: value
-		contract: address
+		contract: address unsignedValue
 		usign: gas.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: false
+	self assert: interpreter pop unsignedValue equals: 0
 ]
 
 { #category : #test }
@@ -228,8 +252,8 @@ FogEVMContractsByteCodeTest >> testDELEGATECALL [
 
 	interpreter.intPool.put(addr, inOffset, inSize, retOffset, retSize)
 	"
-	retSize := 10.
-	retOffset := 1.
+	retSize := 0.
+	retOffset := 0.
 	inSize := 0.
 	inOffset := 0.
 	address := self contractAddressForTest.
@@ -240,12 +264,11 @@ FogEVMContractsByteCodeTest >> testDELEGATECALL [
 		at: retOffset
 		parameters: inSize
 		at: inOffset
-		value: value
-		contract: address
+		contract: address unsignedValue
 		usign: gas.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: false
+	self assert: interpreter pop unsignedValue equals: 0
 ]
 
 { #category : #test }

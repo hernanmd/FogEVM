@@ -20,6 +20,19 @@ FogEVMUnitaryTest >> createBytecodeForADD: aValue plus: oValue [
 ]
 
 { #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForADDAndPop: aValue plus: oValue [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	stream nextPutPush3: oValue.
+	stream nextPutPush3: aValue.
+	stream nextPutAdd.
+	stream nextPutPop.
+	stream nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForADDMOD: x and: y and: z [
 	| bytecode stream |
 	bytecode := FogEVMByteCode new.
@@ -207,7 +220,7 @@ func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory 
 		nextPutPush8: inSize;
 		nextPutPush8: inOffset;
 		nextPutPush8: value;
-		nextPutPush8: address;
+		nextPutPush20: address;
 		nextPutPush8: gas;
 		nextPutCallcode;
 		nextPutStop.
@@ -324,7 +337,7 @@ func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory 
 		nextPutPush8: inSize;
 		nextPutPush8: inOffset;
 		nextPutPush8: value;
-		nextPutPush8: address;
+		nextPutPush20: address;
 		nextPutPush8: gas;
 		nextPutCall;
 		nextPutStop.
@@ -493,7 +506,7 @@ FogEVMUnitaryTest >> createBytecodeForCREATE2 [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForDELEGATECALLReturn: retSize at: retOffset parameters: inSize at: inOffset value: value contract: address usign: gas [
+FogEVMUnitaryTest >> createBytecodeForDELEGATECALLReturn: retSize at: retOffset parameters: inSize at: inOffset contract: address usign: gas [
 	| bytecode stream |
 	bytecode := FogEVMByteCode new.
 	stream := bytecode writeStream.
@@ -531,8 +544,7 @@ func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory 
 		nextPutPush8: retOffset;
 		nextPutPush8: inSize;
 		nextPutPush8: inOffset;
-		nextPutPush8: value;
-		nextPutPush8: address;
+		nextPutPush20: address;
 		nextPutPush8: gas;
 		nextPutDelegatecall;
 		nextPutStop.
@@ -2121,7 +2133,7 @@ func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory 
 		nextPutPush8: inSize;
 		nextPutPush8: inOffset;
 		nextPutPush8: value;
-		nextPutPush8: address;
+		nextPutPush20: address;
 		nextPutPush8: gas;
 		nextPutStaticcall;
 		nextPutStop.

@@ -6,7 +6,8 @@ Class {
 		'instructionPointer',
 		'isFinish',
 		'contract',
-		'return'
+		'return',
+		'contextualAccount'
 	],
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
@@ -32,11 +33,6 @@ FogEVMActivation >> call: aFogEVMCall [
 ]
 
 { #category : #accessing }
-FogEVMActivation >> callGasPrice [
-	^ call gasPrice
-]
-
-{ #category : #accessing }
 FogEVMActivation >> callValue [
 	^ call callValue
 ]
@@ -49,6 +45,16 @@ FogEVMActivation >> callerAddress [
 { #category : #initialization }
 FogEVMActivation >> cancelBreakOnAddress: anAddress [
 	^ (self executableMemory at: (self indexForMemoryAddress: anAddress)) breakpoint: false.
+]
+
+{ #category : #accessing }
+FogEVMActivation >> contextualAccount: aContextAccount [
+	contextualAccount := aContextAccount
+]
+
+{ #category : #accessing }
+FogEVMActivation >> contract [
+	^ contract
 ]
 
 { #category : #accessing }
@@ -84,6 +90,11 @@ FogEVMActivation >> gas [
 	^ call gas
 ]
 
+{ #category : #accessing }
+FogEVMActivation >> gasPrice [
+	^ call gasPrice
+]
+
 { #category : #initialization }
 FogEVMActivation >> indexForMemoryAddress: anAddress [
 	^ self indexForMemoryAddress: anAddress ifNone: [  FogEVMRuntimeError signal: 'Invalid Address. Out Of Memory' ]
@@ -115,7 +126,7 @@ FogEVMActivation >> peekInstruction: anAddress [
 
 { #category : #accessing }
 FogEVMActivation >> return [
-	^ return
+	^ return ifNil: [  return := FogEVMRegistry zero ]
 ]
 
 { #category : #accessing }

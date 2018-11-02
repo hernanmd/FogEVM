@@ -813,7 +813,7 @@ FogEVMInstruction >> accept: anInterpreter loadedAt: byteNumber of: anExecutable
 	stackSize := anInterpreter stackSize.
 	"self manageBreakpointFor: anExecutableMemoryReificaiton atMethod: anInterpreter class >> perform."
 	anInterpreter perform: perform withArguments: {self}.
-	self assert: anInterpreter stackSize = (stackSize - self expectedPops + self expectedPushes)
+	self assert: anInterpreter stackSize = (stackSize - (self expectedPops - self expectedPushes))
 ]
 
 { #category : #accessing }

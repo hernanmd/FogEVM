@@ -309,7 +309,7 @@ FogEVMEnvironmentalInformationAccessTest >> testGASPRICE [
 	bytecode := self createBytecodeForGASPRICE.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter pop equals: interpreter currentActivation callGasPrice
+	self assert: interpreter pop equals: interpreter currentActivation gasPrice
 ]
 
 { #category : #test }

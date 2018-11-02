@@ -10,7 +10,8 @@ Class {
 		'storage',
 		'logs',
 		'activations',
-		'trace'
+		'trace',
+		'errors'
 	],
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
@@ -125,6 +126,34 @@ FogEVMInterpreter >> copyElement: anInteger [
 	self push: (stack at: anInteger) copy
 ]
 
+{ #category : #visiting }
+FogEVMInterpreter >> copyReturnAt: memOffset sinceByte: dataOffset length: length [
+	| data bytearray |
+	bytearray := self currentActivation return asByteArray.
+	bytearray size >= (dataOffset + length - 1)
+		ifFalse: [ FogEVMRuntimeError signal: 'Memory access out of bounds' ].
+	data := bytearray copyFrom: dataOffset to: dataOffset + length - 1.
+	self memory store: data at: memOffset ensure: length.
+	^ data
+]
+
+{ #category : #'call activation' }
+FogEVMInterpreter >> createActivationFor: anInput value: aValue gas: aGas contextAccount: aContextAccount callingAccount: anCallingAccount gasPrice: aGasPrice contract: aContract [
+	| activation newCall |
+	newCall := FogEVMCall new.
+	newCall contractInput: anInput.
+	newCall callerAddress: anCallingAccount.
+	newCall contractAddress: aContract address.
+	newCall callValue: aValue.
+	newCall gas: aGas.
+	newCall gasPrice: aGasPrice.
+	activation := FogEVMActivation new.
+	activation contextualAccount: aContextAccount.
+	activation call: newCall.
+	activation contract: aContract.
+	^ activation
+]
+
 { #category : #accessing }
 FogEVMInterpreter >> currentActivation [
 	^ activations top
@@ -158,6 +187,17 @@ FogEVMInterpreter >> initialize [
 	stack := Stack new.
 	logs := OrderedCollection new.
 	activations := Stack new. 
+	errors := OrderedCollection new.
+]
+
+{ #category : #convenience }
+FogEVMInterpreter >> installContract: aContract at: anAddress [
+	(self storageFor: anAddress) contract: aContract
+]
+
+{ #category : #'installing accounts' }
+FogEVMInterpreter >> installExternalAccount: aFogEVMAccount at: anAddress [
+	(self storageFor: anAddress) externalAccount: aFogEVMAccount
 ]
 
 { #category : #'instruction decoding' }
@@ -195,6 +235,11 @@ FogEVMInterpreter >> pop [
 	^ stack pop 
 ]
 
+{ #category : #'activation stack' }
+FogEVMInterpreter >> popActivation [
+	^ activations pop
+]
+
 { #category : #'as yet unclassified' }
 FogEVMInterpreter >> programHasFinished [
 	^ activations size = 1 and: [ self currentActivation isFinished ]
@@ -210,6 +255,11 @@ FogEVMInterpreter >> pushActivation: anActivation [
 	activations push: anActivation
 ]
 
+{ #category : #'call activation' }
+FogEVMInterpreter >> registerError: anError [
+	errors add: anError.
+]
+
 { #category : #logs }
 FogEVMInterpreter >> registerLog: aContent topics: aCollectionOfTopics [
 	^ logs
@@ -218,6 +268,20 @@ FogEVMInterpreter >> registerLog: aContent topics: aCollectionOfTopics [
 				content: aContent;
 				topics: aCollectionOfTopics;
 				yourself)
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMInterpreter >> resolveAccountFor: aFogEVMRegistry [
+	^ (self
+		storageFor: aFogEVMRegistry
+		state: self runtimeState
+		ifAbsent: [ FogEVMRuntimeError signal: 'The given registry point to an unexistant account' ])
+		account
+]
+
+{ #category : #'contract resolving' }
+FogEVMInterpreter >> resolveContractFor: aContractAddress [ 
+	^ (self storageFor: aContractAddress state: (self runtimeState) ) contract
 ]
 
 { #category : #business }
@@ -232,34 +296,22 @@ FogEVMInterpreter >> runtimeState [
 ]
 
 { #category : #'call activation' }
-FogEVMInterpreter >> sendToAddress: aFogEVMRegistryAddress message: aFogEVMRegistrySelector contractInput: anInput returnOffset: aFogEVMRegistryReturnOffset returnSize: aFogEVMRegistryReturnSize [
-	^ self
-		sendToContract: (self resolveContractFor: aFogEVMRegistryAddress)
-		from: self contract 
-		message: aFogEVMRegistrySelector
-		contractInput: anInput 
-		returnOffset: aFogEVMRegistryReturnOffset
-		returnSize: aFogEVMRegistryReturnSize
-		gas: self gas
-		gasPrice: self gasPrice
-		transferring: 0
-]
-
-{ #category : #'call activation' }
-FogEVMInterpreter >> sendToContract: aContract from: anCallingAccount message: aFogEVMRegistrySelector contractInput: anInput returnOffset: aFogEVMRegistryReturnOffset returnSize: aFogEVMRegistryReturnSize gas: aGas gasPrice: aGasPrice transferring: aValue [
-	| activation newCall |
-	newCall := FogEVMCall new.
-	newCall contractInput: anInput.
-	newCall caller: anCallingAccount.
-	newCall contract: aContract.
-	newCall callValue: aValue.
-	newCall gas: aGas.
-	newCall gasPrice: aGasPrice.
-	activation := FogEVMActivation new.
-	activation call: newCall.
-	activation contract: aContract.
-	self pushActivation: activation.
-	self interpret
+FogEVMInterpreter >> sendToContract: aContract contextualAccount: aContextAccount from: anCallingAccount contractInput: anInput returnOffset: aFogEVMRegistryReturnOffset returnSize: aFogEVMRegistryReturnSize gas: aGas gasPrice: aGasPrice transferring: aValue [
+	| computationSuccess | 
+	self
+		pushActivation:
+			(self
+				createActivationFor: anInput
+				value: aValue
+				gas: aGas
+				contextAccount: aContextAccount
+				callingAccount: anCallingAccount
+				gasPrice: aGasPrice
+				contract: aContract).
+	[self interpret. computationSuccess:= FogEVMRegistry one ] on: Error do: [ : e | self registerError: e. computationSuccess := FogEVMRegistry zero ].
+	self copyReturnAt: aFogEVMRegistryReturnOffset unsignedValue sinceByte: 1 length: aFogEVMRegistryReturnSize unsignedValue.
+	self push: computationSuccess .
+	^ self popActivation return
 ]
 
 { #category : #utility }
@@ -281,6 +333,11 @@ FogEVMInterpreter >> storageFor: anAddress [
 FogEVMInterpreter >> storageFor: aContractAddress state: aStateHash [ 
 	self flag: #WeshouldCareAboutTheMerkelTreeState. 
 	^ self storage at: aContractAddress ifAbsentPut: [ FogEVMBucketStorage new ].
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMInterpreter >> storageFor: aContractAddress state: aStateHash ifAbsent: aBlock [
+	^ self storage at: aContractAddress ifAbsent: [ aBlock value ].
 ]
 
 { #category : #'stack operations' }
@@ -350,7 +407,6 @@ FogEVMInterpreter >> visitByte: aFogVMByte [
 { #category : #visiting }
 FogEVMInterpreter >> visitCall: aFogVMCall [
 	| gas address value inOffset inSize retOffset retSize contractInput |
-
 	gas := self pop.
 	address := self pop.
 	value := self pop.
@@ -358,15 +414,40 @@ FogEVMInterpreter >> visitCall: aFogVMCall [
 	inSize := self pop.
 	retOffset := self pop.
 	retSize := self pop.
-	
 	contractInput := self memory loadFrom: inOffset unsignedValue bytes: inSize unsignedValue.
-	
 	self
-		sendToAddress: address
-		message: value
+		sendToContract: (self resolveContractFor: address)
+		contextualAccount: self currentActivation contract
+		from: self currentActivation contract address
 		contractInput: contractInput
 		returnOffset: retOffset
 		returnSize: retSize
+		gas: self currentActivation gas
+		gasPrice: self currentActivation gasPrice
+		transferring: value
+]
+
+{ #category : #viisting }
+FogEVMInterpreter >> visitCallcode: aFogVMCallcode [ 
+| gas address value inOffset inSize retOffset retSize contractInput |
+	gas := self pop.
+	address := self pop.
+	value := self pop.
+	inOffset := self pop.
+	inSize := self pop.
+	retOffset := self pop.
+	retSize := self pop.
+	contractInput := self memory loadFrom: inOffset unsignedValue bytes: inSize unsignedValue.
+	self
+		sendToContract: (self resolveContractFor: address)
+		contextualAccount: (self resolveAccountFor: self currentActivation callerAddress )
+		from: self currentActivation contract address
+		contractInput: contractInput
+		returnOffset: retOffset
+		returnSize: retSize
+		gas: self currentActivation gas
+		gasPrice: self currentActivation gasPrice
+		transferring: value
 ]
 
 { #category : #visiting }
@@ -426,6 +507,28 @@ FogEVMInterpreter >> visitCodesize: aFogVMCodesize [
 { #category : #accessing }
 FogEVMInterpreter >> visitCoinbase: aFogVMCoinbase [ 
 	self push: self minerAddress
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitDelegatecall: aFogVMDelegatecall [ 
+| gas address value inOffset inSize retOffset retSize contractInput |
+	gas := self pop.
+	address := self pop.
+	inOffset := self pop.
+	inSize := self pop.
+	retOffset := self pop.
+	retSize := self pop.
+	contractInput := self memory loadFrom: inOffset unsignedValue bytes: inSize unsignedValue.
+	self
+		sendToContract: (self resolveContractFor: address)
+		contextualAccount: (self resolveAccountFor: self currentActivation callerAddress )
+		from: self currentActivation callerAddress
+		contractInput: contractInput
+		returnOffset: retOffset
+		returnSize: retSize
+		gas: self currentActivation gas
+		gasPrice: self currentActivation gasPrice
+		transferring: 0
 ]
 
 { #category : #visiting }
@@ -504,7 +607,7 @@ FogEVMInterpreter >> visitGaslimit: aFogVMGaslimit [
 
 { #category : #visiting }
 FogEVMInterpreter >> visitGasprice: aFogVMGasprice [
-	self push: self currentActivation callGasPrice
+	self push: self currentActivation gasPrice
 ]
 
 { #category : #'visit - comparision' }
@@ -692,7 +795,7 @@ FogEVMInterpreter >> visitReturn: aFogVMReturn [
 
 { #category : #visiting }
 FogEVMInterpreter >> visitReturndatacopy: aFogVMReturndatacopy [
-	| memOffset dataOffset length data |
+	| memOffset dataOffset length |
 	"func opReturnDataCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		memOffset  = stack.pop()
@@ -710,10 +813,7 @@ FogEVMInterpreter >> visitReturndatacopy: aFogVMReturndatacopy [
 	memOffset := self pop.
 	dataOffset := self pop.
 	length := self pop.
-	self currentActivation return size >= (dataOffset unsignedValue + length unsignedValue - 1)
-		ifFalse: [ FogEVMRuntimeError signal: 'Memory access out of bounds' ].
-	data := self currentActivation return copyFrom: dataOffset unsignedValue to: dataOffset unsignedValue + length unsignedValue - 1.
-	self memory store: data at: memOffset unsignedValue ensure: length unsignedValue
+	self copyReturnAt: memOffset unsignedValue sinceByte: dataOffset unsignedValue length: length unsignedValue
 ]
 
 { #category : #visiting }

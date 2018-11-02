@@ -10,6 +10,11 @@ Class {
 	#category : #'FogEVM-Storage'
 }
 
+{ #category : #accessing }
+FogEVMBucketStorage >> account [
+	^ self isContract ifTrue: [ self contract ] ifFalse: [ self externalAccount ]
+]
+
 { #category : #'balance adding' }
 FogEVMBucketStorage >> addBalance: aValue [
 	| currentValue |
@@ -27,11 +32,33 @@ FogEVMBucketStorage >> balance [
 	^ storage getStorageAt: #'&balance'
 ]
 
+{ #category : #accessing }
+FogEVMBucketStorage >> contract [
+	^ storage getStorageAt: #'&contract' ifAbsent: [ self error: 'The account is not a contract' ].
+]
+
+{ #category : #accessing }
+FogEVMBucketStorage >> contract: aFogEVMContract [ 
+	^ storage atStorage:#'&contract' put: aFogEVMContract 
+]
+
 { #category : #initialization }
 FogEVMBucketStorage >> destroyed [
 	^ (storage getStorageAt: #'&destroyed') = FogEVMRegistry zero
 		ifTrue: [ FogEVMRegistry false ]
 		ifFalse: [ FogEVMRegistry true ]
+]
+
+{ #category : #accessing }
+FogEVMBucketStorage >> externalAccount [
+	^ storage
+		getStorageAt: #'&externalAccount'
+		ifAbsent: [ self error: 'The account is not an external account' ]
+]
+
+{ #category : #accessing }
+FogEVMBucketStorage >> externalAccount: aFogEVMExternalAccount [
+	storage atStorage: #'&externalAccount' put: aFogEVMExternalAccount
 ]
 
 { #category : #initialization }
@@ -42,6 +69,12 @@ FogEVMBucketStorage >> getStorageAt: anIndex [
 { #category : #initialization }
 FogEVMBucketStorage >> initialize [
 	storage := FogEVMMemoryLayout new.
+]
+
+{ #category : #accessing }
+FogEVMBucketStorage >> isContract [
+	storage getStorageAt: #'&contract' ifAbsent: [ ^ false ].
+	^ true
 ]
 
 { #category : #initialization }
