@@ -385,7 +385,7 @@ FogEVMContractsByteCodeTest >> testSELFDESTRUCT [
 
 { #category : #test }
 FogEVMContractsByteCodeTest >> testSTATICCALL [
-	| bytecode retSize retOffset inSize inOffset address gas value |
+	| bytecode retSize retOffset inSize inOffset address gas  |
 	"should test over 
 		func opStaticCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// Pop gas. The actual gas is in interpreter.evm.callGasTemp.
@@ -410,20 +410,18 @@ FogEVMContractsByteCodeTest >> testSTATICCALL [
 
 	interpreter.intPool.put(addr, inOffset, inSize, retOffset, retSize)
 	re"
-	retSize := 10.
-	retOffset := 1.
+	retSize := 0.
+	retOffset := 0.
 	inSize := 0.
 	inOffset := 0.
 	address := self contractAddressForTest.
 	gas := 3000.
-	value := self contractInputForCall.
 	bytecode := self
 		createBytecodeForSTATICCALLCodeReturn: retSize
 		at: retOffset
 		parameters: inSize
 		at: inOffset
-		value: value
-		contract: address
+		contract: address unsignedValue
 		usign: gas.
 	interpreter bytecode: bytecode.
 	interpreter run

@@ -256,6 +256,30 @@ FogEVMInterpreter >> pushActivation: anActivation [
 ]
 
 { #category : #'call activation' }
+FogEVMInterpreter >> readOnlySendToContract: aContract contextualAccount: aContextAccount from: anCallingAccount contractInput: anInput returnOffset: aFogEVMRegistryReturnOffset returnSize: aFogEVMRegistryReturnSize gas: aGas gasPrice: aGasPrice [
+	| computationSuccess |
+	self
+		pushActivation:
+			(self
+				createActivationFor: anInput
+				value: 0
+				gas: aGas
+				contextAccount: aContextAccount
+				callingAccount: anCallingAccount
+				gasPrice: aGasPrice
+				contract: aContract).
+	[ self interpret.
+	computationSuccess := FogEVMRegistry one ]
+		on: Error
+		do: [ :e | 
+			self registerError: e.
+			computationSuccess := FogEVMRegistry zero ].
+	self copyReturnAt: aFogEVMRegistryReturnOffset unsignedValue sinceByte: 1 length: aFogEVMRegistryReturnSize unsignedValue.
+	self push: computationSuccess.
+	^ self popActivation return
+]
+
+{ #category : #'call activation' }
 FogEVMInterpreter >> registerError: anError [
 	errors add: anError.
 ]
@@ -511,7 +535,7 @@ FogEVMInterpreter >> visitCoinbase: aFogVMCoinbase [
 
 { #category : #visiting }
 FogEVMInterpreter >> visitDelegatecall: aFogVMDelegatecall [ 
-| gas address value inOffset inSize retOffset retSize contractInput |
+| gas address  inOffset inSize retOffset retSize contractInput |
 	gas := self pop.
 	address := self pop.
 	inOffset := self pop.
@@ -935,6 +959,27 @@ FogEVMInterpreter >> visitSstore: aFogVMSstore [
 	value := self pop.
 	address := FogEVMRegistry forValue: storageAddress unsignedValue bytesLength: 32.
 	value := (self storageFor: self currentActivation contractAddress ) atStorage: address put: value
+]
+
+{ #category : #visiting }
+FogEVMInterpreter >> visitStaticcall: aFogVMStaticcall [
+	| gas address inOffset inSize retOffset retSize contractInput |
+	gas := self pop.
+	address := self pop.
+	inOffset := self pop.
+	inSize := self pop.
+	retOffset := self pop.
+	retSize := self pop.
+	contractInput := self memory loadFrom: inOffset unsignedValue bytes: inSize unsignedValue.
+	self
+		readOnlySendToContract: (self resolveContractFor: address)
+		contextualAccount: (self resolveAccountFor: self currentActivation callerAddress)
+		from: self currentActivation callerAddress
+		contractInput: contractInput
+		returnOffset: retOffset
+		returnSize: retSize
+		gas: self currentActivation gas
+		gasPrice: self currentActivation gasPrice
 ]
 
 { #category : #'visiti stop' }

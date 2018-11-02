@@ -2094,7 +2094,7 @@ FogEVMUnitaryTest >> createBytecodeForSSTORE: value at: memoryStart [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForSTATICCALLCodeReturn: retSize at: retOffset parameters: inSize at: inOffset value: value contract: address usign: gas [
+FogEVMUnitaryTest >> createBytecodeForSTATICCALLCodeReturn: retSize at: retOffset parameters: inSize at: inOffset  contract: address usign: gas [
 	| bytecode stream |
 	bytecode := FogEVMByteCode new.
 	stream := bytecode writeStream.
@@ -2132,7 +2132,6 @@ func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory 
 		nextPutPush8: retOffset;
 		nextPutPush8: inSize;
 		nextPutPush8: inOffset;
-		nextPutPush8: value;
 		nextPutPush20: address;
 		nextPutPush8: gas;
 		nextPutStaticcall;
