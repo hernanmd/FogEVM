@@ -7,6 +7,11 @@ Class {
 	#category : #'FogEVM-ByteCode'
 }
 
+{ #category : #number }
+FogVMLog class >> byteCode [
+	^ 'no-meaning'
+]
+
 { #category : #'as yet unclassified' }
 FogVMLog class >> fetchGoCode [
 	| stream lowcaseStream selector bytes goCode |

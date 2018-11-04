@@ -34,7 +34,11 @@ FogEVMByteCode class >> fromBinary: anHexaContent [
 FogEVMByteCode class >> instructionFor: aCode [
 	| code |
 	code := '0x' , aCode.
-	^ (FogEVMInstruction allSubclasses detect: [ :c | c byteCode = code ] ifNone:[ FogEVMUnknown ]) instance
+	^ (FogEVMInstruction allSubclasses
+		detect: [ :c | c byteCode = code ]
+		ifNone: [ FogEVMUnknown new
+				byteCode: code;
+				yourself ]) instance
 ]
 
 { #category : #converting }

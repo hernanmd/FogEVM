@@ -4,6 +4,9 @@ UNKNOWN
 Class {
 	#name : #FogEVMUnknown,
 	#superclass : #FogEVMInstruction,
+	#instVars : [
+		'byteCode'
+	],
 	#category : #'FogEVM-ByteCode'
 }
 
@@ -37,4 +40,28 @@ FogEVMUnknown class >> goCode [
 { #category : #generated }
 FogEVMUnknown class >> mnemonic [ 
 	^ 'UNKNOWN'
+]
+
+{ #category : #accessing }
+FogEVMUnknown >> byteCode [
+	^ byteCode 
+]
+
+{ #category : #accessing }
+FogEVMUnknown >> byteCode: aString [
+	byteCode := aString
+]
+
+{ #category : #polimorf }
+FogEVMUnknown >> instance [
+	^ self
+]
+
+{ #category : #polimorf }
+FogEVMUnknown >> printOn: aStream [
+	aStream
+		nextPutAll: self mnemonic;
+		nextPut: $(;
+		nextPutAll: byteCode;
+		nextPut: $)
 ]

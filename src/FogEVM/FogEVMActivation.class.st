@@ -135,6 +135,11 @@ FogEVMActivation >> return: aCollection [
 	isFinish := true.
 ]
 
+{ #category : #imp }
+FogEVMActivation >> revert [
+	self halt: #ShouldImplement
+]
+
 { #category : #testing }
 FogEVMActivation >> setFinished: aBool [
 	isFinish := aBool.

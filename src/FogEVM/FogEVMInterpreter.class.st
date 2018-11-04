@@ -17,6 +17,48 @@ Class {
 }
 
 { #category : #test }
+FogEVMInterpreter class >> creationCall [
+	| call |
+	call := FogEVMCall new.
+	call contractInput: 16rc3c5a547000000000000000000000000b4ebf466889c4a0239379125a7d0f9c4e8bf2a14 asByteArray.
+	call callerAddress: (FogEVMRegistry forValue: 16rb4ebf466889c4a0239379125a7d0f9c4e8bf2a14 bytesLength: 20).
+	call contractAddress: (FogEVMRegistry forValue: 16r81bfba8301a073a010e9fb71fab514e53d1cc3f0 bytesLength: 20).
+	call callValue: (FogEVMRegistry forValue: 0 bytesLength: 32).
+	call gas: (FogEVMRegistry forValue: 3000000 bytesLength: 32).
+	call gasPrice: (FogEVMRegistry forValue: 1 bytesLength: 32).
+	^ call
+
+
+	" 
+	type Message struct {
+		to         *common.Address
+		from       common.Address
+		nonce      uint64
+		amount     *big.Int
+		gasLimit   uint64
+		gasPrice   *big.Int
+		data       []byte
+		checkNonce bool
+	}
+	
+	
+	
+	
+	(
+            gas,
+            value,
+            to,
+            sender,
+            code_address,
+            memory_input_start_position,
+            memory_input_size,
+            memory_output_start_position,
+            memory_output_size,
+            should_transfer_value,
+        ) = self.get_call_params(computation)"
+]
+
+{ #category : #test }
 FogEVMInterpreter class >> exampleCall [
 	| call |
 	call := FogEVMCall new.
@@ -846,15 +888,12 @@ FogEVMInterpreter >> visitReturndatasize: aFogVMReturndatasize [
 ]
 
 { #category : #'visit - flow' }
-FogEVMInterpreter >> visitRevert: aFogVMRevert [ 
+FogEVMInterpreter >> visitRevert: aFogVMRevert [
 	| offset size content |
-	offset := self pop. 
-	size := self pop. 
-	
-	content := self copyMemoryFrom: offset bytes: size .
-	self revertComputation: content.  
-	
-	
+	offset := self pop.
+	size := self pop.
+	content := self memory loadFrom: offset unsignedValue bytes: size unsignedValue.
+	self revertComputation: content
 ]
 
 { #category : #'visit - bit operators' }
