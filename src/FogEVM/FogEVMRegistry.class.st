@@ -274,7 +274,7 @@ FogEVMRegistry >> not [
 
 { #category : #testing }
 FogEVMRegistry >> printOn: aStream [
-	aStream nextPutAll: ('Hexa:[{1}]' format: {self hex})
+	aStream nextPutAll: ('[{1}]' format: {self hex asString copyReplaceAll:'16r' with:'0x'})
 ]
 
 { #category : #arithmetics }

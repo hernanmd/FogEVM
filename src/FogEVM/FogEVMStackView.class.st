@@ -18,10 +18,10 @@ FogEVMStackView class >> defaultSpec [
 { #category : #accessing }
 FogEVMStackView >> initializeWidgets [
 	table := FTSmartTableMorph new.
-	table 		hResizing: #spaceFill;
+	table
+		hResizing: #spaceFill;
 		vResizing: #spaceFill.
-	(table add: 'stack' display: #printString) width: 100.
-
+	table add: 'stack' display: #printString.
 	table := table asSpecAdapter
 ]
 
