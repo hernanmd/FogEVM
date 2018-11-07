@@ -28,6 +28,11 @@ FogEVMActivation >> bytecodeSize [
 ]
 
 { #category : #accessing }
+FogEVMActivation >> call [
+	^ call
+]
+
+{ #category : #accessing }
 FogEVMActivation >> call: aFogEVMCall [ 
 	call := aFogEVMCall
 ]
@@ -48,6 +53,11 @@ FogEVMActivation >> cancelBreakOnAddress: anAddress [
 ]
 
 { #category : #accessing }
+FogEVMActivation >> contextualAccount [
+	^ contextualAccount
+]
+
+{ #category : #accessing }
 FogEVMActivation >> contextualAccount: aContextAccount [
 	contextualAccount := aContextAccount
 ]
@@ -65,6 +75,11 @@ FogEVMActivation >> contract: aFogEVMContract [
 { #category : #accessing }
 FogEVMActivation >> contractAddress [
 	^ contract address
+]
+
+{ #category : #accessing }
+FogEVMActivation >> currentInstruction [
+	^ self executableMemory at: self currentInstructionPointer 
 ]
 
 { #category : #accessing }
@@ -117,6 +132,16 @@ FogEVMActivation >> initializeInstructionPointer [
 { #category : #testing }
 FogEVMActivation >> isFinished [
 	^ isFinish ifNil: [ isFinish := false ]
+]
+
+{ #category : #accessing }
+FogEVMActivation >> nextInstruction [
+	^ self executableMemory at: instructionPointer 
+]
+
+{ #category : #accessing }
+FogEVMActivation >> nextInstructionPointer [
+	^ instructionPointer
 ]
 
 { #category : #initialization }

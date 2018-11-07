@@ -202,6 +202,11 @@ FogEVMInterpreter >> currentActivation [
 ]
 
 { #category : #accessing }
+FogEVMInterpreter >> currentInstruction [
+	^ self currentActivation currentInstruction
+]
+
+{ #category : #accessing }
 FogEVMInterpreter >> currentInstructionPointer [
 	^ FogEVMRegistry forValue: self currentActivation currentInstructionPointer  bytesLength: 8
 ]
@@ -242,16 +247,15 @@ FogEVMInterpreter >> installExternalAccount: aFogEVMAccount at: anAddress [
 	(self storageFor: anAddress) externalAccount: aFogEVMAccount
 ]
 
+{ #category : #accessing }
+FogEVMInterpreter >> installMemory: aMemoryObject [
+	^ memory ifNil: [ memory := aMemoryObject  ] ifNotNil: [ FogEVMRuntimeError signal: ' Memory already in use! It cannot be changed' ]
+]
+
 { #category : #interpret }
 FogEVMInterpreter >> interpret [
-	| i |
-	trace := OrderedCollection new.
-	stack := Stack new.
-	self currentActivation initializeInstructionPointer.
-	[ self currentActivation isFinished ]
-		whileFalse: [ i := self currentActivation fetchNextInstruction.
-			trace add: i.
-			i accept: self with: nil ]
+	self restart.
+	[ self currentActivation isFinished ] whileFalse: [ self next ]
 ]
 
 { #category : #convenience }
@@ -270,6 +274,15 @@ FogEVMInterpreter >> logs [
 { #category : #accessing }
 FogEVMInterpreter >> memory [
 	^ memory ifNil: [ memory := FogEVMMemory new  ]
+]
+
+{ #category : #actions }
+FogEVMInterpreter >> next [
+	| instruction |
+	instruction := self currentActivation fetchNextInstruction.
+	trace add: instruction.
+	instruction accept: self with: nil.
+	^ instruction
 ]
 
 { #category : #accessing }
@@ -348,6 +361,14 @@ FogEVMInterpreter >> resolveAccountFor: aFogEVMRegistry [
 { #category : #'contract resolving' }
 FogEVMInterpreter >> resolveContractFor: aContractAddress [ 
 	^ (self storageFor: aContractAddress state: (self runtimeState) ) contract
+]
+
+{ #category : #interpret }
+FogEVMInterpreter >> restart [
+	trace := OrderedCollection new.
+	stack := Stack new.
+	memory restart.
+	self currentActivation initializeInstructionPointer
 ]
 
 { #category : #'call activation' }

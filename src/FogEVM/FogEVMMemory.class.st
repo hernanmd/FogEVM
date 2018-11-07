@@ -30,27 +30,10 @@ FogEVMMemory >> ensureAddressAvailable: anAddress size: size [
 	layout := newArray
 ]
 
-{ #category : #'as yet unclassified' }
-FogEVMMemory >> fetchFrom: anHexaAddressFrom to: anHexaAddressTo [
-	| value |
-	value := '' writeStream.
-	value nextPutAll: '0x'.
-	anHexaAddressFrom asBKNumber to: anHexaAddressTo asBKNumber - 1 do: [ :id | 
-		| memoryValue |
-		memoryValue := self fetchValue: id asBKHexa.
-		value nextPutAll: (memoryValue copyFrom: 3 to: memoryValue size) ].
-	^ value contents
-]
-
-{ #category : #'as yet unclassified' }
-FogEVMMemory >> fetchValue: aString [
-	^ layout at: aString ifAbsent: [ (layout associations detect: [ :a | a key asBKNumber = aString asBKNumber ] ifNone: [ layout at: aString put: 0 asBKHexa ]) value ]
-]
-
 { #category : #initialization }
 FogEVMMemory >> initialize [
 	super initialize.
-	layout := ByteArray new: 0. 
+	layout := ByteArray new: 10. 
 ]
 
 { #category : #accessing }
@@ -74,6 +57,11 @@ FogEVMMemory >> loadWords: addressRegistry to: offsetRegistry [
 	^ self copyFrom: address to: address + offset
 ]
 
+{ #category : #initialization }
+FogEVMMemory >> restart [
+	self initialize.
+]
+
 { #category : #'as yet unclassified' }
 FogEVMMemory >> set: aValue at: anAddress [
 	layout at: anAddress put: aValue
@@ -82,6 +70,11 @@ FogEVMMemory >> set: aValue at: anAddress [
 { #category : #'as yet unclassified' }
 FogEVMMemory >> sizeInBytes [
 	^ layout size
+]
+
+{ #category : #accessing }
+FogEVMMemory >> slotSize [
+	^ 32 
 ]
 
 { #category : #accessing }
@@ -97,6 +90,11 @@ FogEVMMemory >> storeByte: aRegistry at: aRegistryAddress [
 	value := FogEVMRegistry forValue: aRegistry unsignedValue bytesLength: 1.
 	self ensureAddressAvailable: address size: 1.
 	self set: value asByteArray first at: address
+]
+
+{ #category : #accessing }
+FogEVMMemory >> storeSize [
+	^ layout size
 ]
 
 { #category : #accessing }

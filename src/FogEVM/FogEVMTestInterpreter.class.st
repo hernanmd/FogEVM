@@ -92,12 +92,18 @@ FogEVMTestInterpreter >> originAddress [
 ]
 
 { #category : #'running arbitrary code' }
-FogEVMTestInterpreter >> run [
+FogEVMTestInterpreter >> prepareToRun [
 	| activation |
 	activation := FogEVMActivation new.
 	activation call: call.
 	activation contract: contract.
 	self pushActivation: activation.
+	
+]
+
+{ #category : #'running arbitrary code' }
+FogEVMTestInterpreter >> run [
+	self prepareToRun.
 	self interpret
 ]
 

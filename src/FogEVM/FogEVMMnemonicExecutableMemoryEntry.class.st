@@ -71,3 +71,8 @@ FogEVMMnemonicExecutableMemoryEntry >> printOn: aStream [
 FogEVMMnemonicExecutableMemoryEntry >> shouldBreak [
 	^ breakpoint 
 ]
+
+{ #category : #toggle }
+FogEVMMnemonicExecutableMemoryEntry >> toggleBreakpoint [
+	self breakpoint: self shouldBreak not
+]

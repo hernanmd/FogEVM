@@ -11,7 +11,8 @@ Class {
 		'falseInstance',
 		'trueInstance',
 		'zeroInstance',
-		'minusOneInstance'
+		'minusOneInstance',
+		'oneInstance'
 	],
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
@@ -92,6 +93,15 @@ FogEVMRegistry class >> minusOne [
 		ifNil: [ minusOneInstance := self new
 				mask: self mask32Bytes;
 				value: -1;
+				yourself ]
+]
+
+{ #category : #accessing }
+FogEVMRegistry class >> one [
+	^ oneInstance
+		ifNil: [ oneInstance := self new
+				mask: self booleanMask;
+				value: 1;
 				yourself ]
 ]
 

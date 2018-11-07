@@ -22,6 +22,12 @@ FogEVMLoadStoreTest >> generator: aGenerator [
 ]
 
 { #category : #test }
+FogEVMLoadStoreTest >> setUp [
+	super setUp.
+	interpreter installMemory: FogEVMTraceableMemory new
+]
+
+{ #category : #test }
 FogEVMLoadStoreTest >> testMLOAD [
 	| bytecode |
 	"should test over 
