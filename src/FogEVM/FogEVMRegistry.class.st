@@ -355,6 +355,11 @@ FogEVMRegistry >> value: anInteger [
 		ifFalse: [ value := anInteger bitAnd: mask ]
 ]
 
+{ #category : #'debugger ui' }
+FogEVMRegistry >> values [
+	^{ }
+]
+
 { #category : #'logical operations' }
 FogEVMRegistry >> xor: aFogEVMRegistry [
 	^ (self booleanValue xor: aFogEVMRegistry booleanValue)

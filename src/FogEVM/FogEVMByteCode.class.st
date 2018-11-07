@@ -151,6 +151,11 @@ FogEVMByteCode >> toHexa [
 			acc ]) contents
 ]
 
+{ #category : #'debugger ui' }
+FogEVMByteCode >> values [
+	^ {}
+]
+
 { #category : #converting }
 FogEVMByteCode >> writeStream [
 	^ FogEVMByteCodeWriteStream on: self

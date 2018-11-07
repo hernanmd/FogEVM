@@ -30,3 +30,8 @@ FogEVMMemoryLayout >> initialize [
 	super initialize .
 	dictionary := Dictionary new.
 ]
+
+{ #category : #'debugger ui' }
+FogEVMMemoryLayout >> values [
+	^ dictionary 
+]

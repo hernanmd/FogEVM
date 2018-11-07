@@ -82,6 +82,11 @@ FogEVMBucketStorage >> setDestroyed [
 	^ storage atStorage: #'&destroyed' put: true .
 ]
 
+{ #category : #'debugger ui' }
+FogEVMBucketStorage >> values [
+	^ storage values
+]
+
 { #category : #accessing }
 FogEVMBucketStorage >> withdrawBalance [
 	| balance |

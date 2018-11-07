@@ -9,7 +9,13 @@ Class {
 		'context',
 		'input',
 		'value',
-		'empty'
+		'empty',
+		'gas',
+		'gasPrice',
+		'mainLabel'
+	],
+	#classInstVars : [
+		'mainLabel'
 	],
 	#category : #'FogEVM-VisualDebugger'
 }
@@ -20,12 +26,15 @@ FogEVMActivationView class >> defaultSpec [
 	^ SpecLayout composed
 		newColumn: [ :col | 
 			col
-				add: #from height:50;
-				add: #to height:50;
-				add: #contract height:50;
-				add: #context height:50;
-				add: #input height:50;
-				add: #value height:50;
+				add: #mainLabel height: 50;
+				add: #from height: 50;
+				add: #to height: 50;
+				add: #contract height: 50;
+				add: #context height: 50;
+				add: #input height: 50;
+				add: #value height: 50;
+				add: #gas height: 50;
+				add: #gasPrice height: 50;
 				add: #empty ]
 ]
 
@@ -39,10 +48,12 @@ FogEVMActivationView >> activation: anObject [
 	activation := anObject.
 	from text: activation call callerAddress.
 	to text: activation call contractAddress.
-	contract text: activation contract.
-	input text: activation call contractInput.
-	value text: activation call callValue.
-	context text: activation contextualAccount printString
+	contract text: activation contract address.
+	input text: (String streamContents: [ :str | activation call contractInput printOn: str ]).
+	value text: activation call callValue unsignedValue .
+	context text: activation contextualAccount printString.
+	gas text: activation gas unsignedValue printString.
+	gasPrice  text: activation gasPrice  unsignedValue printString.
 ]
 
 { #category : #accessing }
@@ -80,9 +91,21 @@ FogEVMActivationView >> from: anObject [
 	from := anObject
 ]
 
+{ #category : #accessing }
+FogEVMActivationView >> gas [
+	^ gas
+]
+
+{ #category : #accessing }
+FogEVMActivationView >> gasPrice [
+	^ gasPrice
+]
+
 { #category : #initialization }
 FogEVMActivationView >> initializeWidgets [
-	from := self instantiate: LabelledTextInput .
+	mainLabel := self newLabel .
+	mainLabel label: '      Current Activation details '.
+	from := self instantiate: LabelledTextInput.
 	from label: 'From:'.
 	to := self instantiate: LabelledTextInput.
 	to label: 'To:'.
@@ -94,7 +117,11 @@ FogEVMActivationView >> initializeWidgets [
 	input label: 'Input:'.
 	value := self instantiate: LabelledTextInput.
 	value label: 'Value:'.
-	empty := FogEVMEmpty new .
+	gas := self instantiate: LabelledTextInput.
+	gas label: 'Gas:'.
+	gasPrice := self instantiate: LabelledTextInput.
+	gasPrice label: 'Gas price:'.
+	empty := FogEVMEmpty new
 ]
 
 { #category : #accessing }
@@ -105,6 +132,11 @@ FogEVMActivationView >> input [
 { #category : #accessing }
 FogEVMActivationView >> input: anObject [
 	input := anObject
+]
+
+{ #category : #accessing }
+FogEVMActivationView >> mainLabel [
+	^ mainLabel
 ]
 
 { #category : #accessing }

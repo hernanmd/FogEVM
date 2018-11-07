@@ -27,3 +27,8 @@ FogEVMContract >> bytecode [
 FogEVMContract >> bytecode: aFogEVMByteCode [ 
 	bytecode := aFogEVMByteCode
 ]
+
+{ #category : #'debugger ui' }
+FogEVMContract >> values [
+	^ { address . bytecode }
+]

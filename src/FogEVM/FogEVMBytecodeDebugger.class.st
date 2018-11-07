@@ -13,7 +13,8 @@ Class {
 		'empty',
 		'restart',
 		'execute',
-		'stepControl'
+		'stepControl',
+		'interpreterView'
 	],
 	#category : #'FogEVM-VisualDebugger'
 }
@@ -24,7 +25,9 @@ FogEVMBytecodeDebugger class >> defaultSpec [
 	^ SpecLayout composed
 		newRow: [ :mainRow | 
 			mainRow
-				newColumn: #context width: ( (self defaultFont widthOfString: 'Hexa:[16rB4EBF466889C4A0239379125A7D0F9C4E8BF2A14]'  )+12);
+				newColumn:[ : col | col 
+					newRow: #context; 
+					newRow:#interpreterView ] width: ( (self defaultFont widthOfString: 'Hexa:[16rB4EBF466889C4A0239379125A7D0F9C4E8BF2A14]'  )+12);
 				newColumn: #bytecode width: 250;
    		      newColumn: #stack width: 150; 
 				
@@ -47,16 +50,12 @@ FogEVMBytecodeDebugger class >> defaultSpec [
 FogEVMBytecodeDebugger >> bindComponents [
 	context activation: interpreter currentActivation.
 	bytecode elements: interpreter currentActivation executableMemory.
-	bytecode ip: interpreter currentActivation nextInstruction  .
-	"executed . "
-	preview
-		preview:
-			(FogEVMExecutionPreview
-				from: interpreter currentActivation nextInstruction
-				and: interpreter stack).
-	stack stack: interpreter stack .
-	"store ."
+	bytecode ip: interpreter currentActivation nextInstruction.
+	preview preview: (FogEVMExecutionPreview from: interpreter currentActivation nextInstruction and: interpreter stack).
+	stack stack: interpreter stack.
+	store storage: interpreter storage.
 	memory memory: interpreter memory.
+	interpreterView interpreter: interpreter
 ]
 
 { #category : #accessing }
@@ -103,9 +102,17 @@ FogEVMBytecodeDebugger >> initializeWidgets [
 	stack := self instantiate: FogEVMStackView.
 	store := self instantiate: FogEVMStorageView.
 	memory := self instantiate: FogEVMMemoryView.
-	restart := self newButton icon: (self iconNamed: #refresh) ; action: [ self restartInterpreter ] ;yourself .
-	stepControl := self newButton icon: (self iconNamed: #glamorousInto) ; action: [ self stepOneInstructionOnInterpreter  ].
-	execute := self newButton icon: (self iconNamed: #smallDoIt); action: [ self runInterpreter  ].
+	restart := self newButton
+		icon: (self iconNamed: #refresh);
+		action: [ self restartInterpreter ];
+		yourself.
+	stepControl := self newButton
+		icon: (self iconNamed: #glamorousInto);
+		action: [ self stepOneInstructionOnInterpreter ].
+	execute := self newButton
+		icon: (self iconNamed: #smallDoIt);
+		action: [ self runInterpreter ].
+	interpreterView := self instantiate: FogEVMInterpreterView
 ]
 
 { #category : #accessing }
@@ -118,6 +125,11 @@ FogEVMBytecodeDebugger >> interpreter: anInterpreter [
 	interpreter := anInterpreter .
 	self bindComponents.
 	
+]
+
+{ #category : #accssing }
+FogEVMBytecodeDebugger >> interpreterView [
+	^ interpreterView
 ]
 
 { #category : #accessing }
