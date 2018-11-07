@@ -125,6 +125,11 @@ FogEVMBytecodeDebugger >> memory [
 	^ memory
 ]
 
+{ #category : #notifications }
+FogEVMBytecodeDebugger >> noteBreakpoint [
+	self inform: 'Breakpoint reached'
+]
+
 { #category : #accessing }
 FogEVMBytecodeDebugger >> preview [
 	^ preview
@@ -143,6 +148,19 @@ FogEVMBytecodeDebugger >> restartInterpreter [
 	self bindComponents.
 ]
 
+{ #category : #running }
+FogEVMBytecodeDebugger >> runInterpreter [
+	| firstIteration |
+	firstIteration := true. 
+	[ interpreter currentActivation isFinished ]
+		whileFalse: [ 
+			(interpreter currentActivation nextInstruction shouldBreak and: [firstIteration not])
+				ifTrue: [ self noteBreakpoint.
+					^ self ].
+			firstIteration := false.
+			self stepOneInstructionOnInterpreter ]
+]
+
 { #category : #accessing }
 FogEVMBytecodeDebugger >> stack [
 	^ stack
@@ -155,7 +173,7 @@ FogEVMBytecodeDebugger >> stepControl [
 
 { #category : #'interpreter actions' }
 FogEVMBytecodeDebugger >> stepOneInstructionOnInterpreter [
-	interpreter next.
+	interpreter executeNextInstruction .
 	self transferData
 ]
 

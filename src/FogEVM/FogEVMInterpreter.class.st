@@ -211,6 +211,15 @@ FogEVMInterpreter >> currentInstructionPointer [
 	^ FogEVMRegistry forValue: self currentActivation currentInstructionPointer  bytesLength: 8
 ]
 
+{ #category : #actions }
+FogEVMInterpreter >> executeNextInstruction [
+	| instruction |
+	instruction := self currentActivation fetchNextInstruction.
+	trace add: instruction.
+	instruction accept: self with: nil.
+	^ instruction
+]
+
 { #category : #accessing }
 FogEVMInterpreter >> gasLimit [
 	^ self shouldBeImplemented 
@@ -255,7 +264,7 @@ FogEVMInterpreter >> installMemory: aMemoryObject [
 { #category : #interpret }
 FogEVMInterpreter >> interpret [
 	self restart.
-	[ self currentActivation isFinished ] whileFalse: [ self next ]
+	[ self currentActivation isFinished ] whileFalse: [ self executeNextInstruction ]
 ]
 
 { #category : #convenience }
@@ -274,15 +283,6 @@ FogEVMInterpreter >> logs [
 { #category : #accessing }
 FogEVMInterpreter >> memory [
 	^ memory ifNil: [ memory := FogEVMMemory new  ]
-]
-
-{ #category : #actions }
-FogEVMInterpreter >> next [
-	| instruction |
-	instruction := self currentActivation fetchNextInstruction.
-	trace add: instruction.
-	instruction accept: self with: nil.
-	^ instruction
 ]
 
 { #category : #accessing }

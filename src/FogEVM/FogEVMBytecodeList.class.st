@@ -30,11 +30,17 @@ FogEVMBytecodeList >> initializeWidgets [
 	(list
 		add: ' IP '
 		display: [ :m | 
-			m = ip
-				ifTrue: [ self iconNamed: #forward ]
-				ifFalse: [ '' ] ]) width: 30.
+			m shouldBreak
+				ifTrue: [ self iconNamed: #testRed ]
+				ifFalse: [ m = ip
+						ifTrue: [ self iconNamed: #forward ]
+						ifFalse: [ '' ] ] ]) width: 30.
 	(list add: '#' display: [ :m | m byteNumber hex asString ]) width: 50.
-	list onAnnouncement: FTStrongSelectionChanged do: [ :ann | (list widget elements at: ann selectedRowIndex )toggleBreakpoint ].
+	list
+		onAnnouncement: FTStrongSelectionChanged
+		do: [ :ann | 
+			(list widget elements at: ann selectedRowIndex) toggleBreakpoint.
+			self refresh ].
 	list
 		add: #instruction;
 		beResizable;
