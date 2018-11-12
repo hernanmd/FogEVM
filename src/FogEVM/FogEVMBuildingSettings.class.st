@@ -10,7 +10,8 @@ Class {
 		'empty',
 		'bytecodes',
 		'contractSelector',
-		'memoryColumns'
+		'memoryColumns',
+		'sessionChoice'
 	],
 	#category : #'FogEVM-UIDebugger-Open'
 }
@@ -32,6 +33,7 @@ FogEVMBuildingSettings class >> defaultSpec [
 								add: #fileSelector;
 								add: #chooseFileButton width: 25 ]
 							height: 25;
+						newRow: #sessionChoice height: 25;
 						newRow: #contractSelector height: 25;
 						add: #empty height: 25 ];
 				newColumn: #empty width: 10 ]
@@ -63,17 +65,6 @@ FogEVMBuildingSettings >> contractSelector [
 ]
 
 { #category : #accessing }
-FogEVMBuildingSettings >> data [
-	| interpreter |
-	bytecodes isNil
-		ifTrue: [ ^ self error: 'You must provide a valid solidity file' ].
-	interpreter := interpreterSelector selectedItem new.
-	interpreter installMemory: memorySelector selectedItem new.
-	interpreter installStorage: storageSelector selectedItem new.
-	^ interpreter
-]
-
-{ #category : #accessing }
 FogEVMBuildingSettings >> empty [
 	^ empty
 ]
@@ -92,7 +83,10 @@ FogEVMBuildingSettings >> initializeWidgets [
 		displayBlock: [ :item | item name ].
 	memoryColumns := self instantiate: LabelledDropList.
 	memoryColumns label: 'Memory visualization columns'.
-	memoryColumns items: {8 . 16 . 32. 64 . 128}.
+	memoryColumns items: {8 . 16 . 32 . 64 . 128}.
+	sessionChoice := self instantiate: LabelledDropList.
+	sessionChoice label: 'Choose the kind of activation'.
+	sessionChoice items: {#Deploy . #Method}.
 	memorySelector := self instantiate: LabelledDropList.
 	memorySelector label: 'Memory Layout'.
 	memorySelector
@@ -143,9 +137,15 @@ FogEVMBuildingSettings >> openFileDialog [
 			{('Solidity' -> #(sol)).
 			('All files' -> #())};
 		openModal.
-	fileSelector text: file asString.
-	bytecodes := FogUtils new compileSolidity: file.
-	contractSelector items: bytecodes keys
+	file
+		ifNotNil: [ fileSelector text: file asString.
+			bytecodes := FogUtils new compileSolidity: file.
+			contractSelector items: bytecodes keys ]
+]
+
+{ #category : #accessing }
+FogEVMBuildingSettings >> sessionChoice [
+	^ sessionChoice
 ]
 
 { #category : #initialization }
@@ -161,8 +161,8 @@ FogEVMBuildingSettings >> setUp: aFogEVMInterpreterBuilder [
 	bytecodes isNil
 		ifTrue: [ ^ self error: 'You must provide a valid solidity file' ].
 	aFogEVMInterpreterBuilder interpreterClass: interpreterSelector selectedItem memoryClass: memorySelector selectedItem storageClass: storageSelector selectedItem.
-	aFogEVMInterpreterBuilder contractBytecode: (bytecodes at: contractSelector selectedItem) named: contractSelector selectedItem deploying: #binary.
-	aFogEVMInterpreterBuilder columnsToShow: (memoryColumns selectedItem)
+	aFogEVMInterpreterBuilder contractBytecode: (bytecodes at: contractSelector selectedItem) named: contractSelector selectedItem deploying: sessionChoice selectedItem.
+	aFogEVMInterpreterBuilder columnsToShow: memoryColumns selectedItem
 ]
 
 { #category : #accessing }

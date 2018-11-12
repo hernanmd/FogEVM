@@ -31,6 +31,7 @@ FogEVMDebuggerSessionEdit class >> defaultSpec [
 
 { #category : #initialization }
 FogEVMDebuggerSessionEdit >> accept [
+ whenConfirmed cull: self buildInterpreter cull: builder.
 	[ whenConfirmed cull: self buildInterpreter cull: builder.
 	self delete ]
 		on: Error
@@ -109,8 +110,8 @@ FogEVMDebuggerSessionEdit >> defaultInterpreterConfiguration [
 
 { #category : #initialization }
 FogEVMDebuggerSessionEdit >> initializeWidgets [
-	interpreterView := self instantiate: FogEVMInterpreterView.
-	callView := self instantiate: FogEVMActivationView.
+	interpreterView := self instantiate: FogEVMInterpreterEdit.
+	callView := self instantiate: FogEVMActivationEdit.
 	settings := self instantiate: FogEVMBuildingSettings.
 	callView activation: self defaultActivationConfiguration.
 	interpreterView interpreter: self defaultInterpreterConfiguration.
@@ -121,7 +122,7 @@ FogEVMDebuggerSessionEdit >> initializeWidgets [
 	cancel := self newButton.
 	cancel
 		label: 'Cancel';
-		action: [ self cancel ].
+		action: [ self reject ].
 	self buildTabManager
 ]
 
@@ -138,6 +139,11 @@ FogEVMDebuggerSessionEdit >> interpreterView [
 { #category : #initialization }
 FogEVMDebuggerSessionEdit >> ok [
 	^ ok
+]
+
+{ #category : #initialization }
+FogEVMDebuggerSessionEdit >> reject [
+	^ self delete
 ]
 
 { #category : #initialization }

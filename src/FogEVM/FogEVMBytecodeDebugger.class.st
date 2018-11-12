@@ -263,7 +263,7 @@ FogEVMBytecodeDebugger >> openSolidityFile [
 		whenConfirmed: [ :built :builder | 
 			self interpreter: built.
 			memory showColumns: builder columnsToShow ].
-	dialog openWithSpec
+	dialog openWithSpec extent: 597.0 @ 404.0
 ]
 
 { #category : #accessing }

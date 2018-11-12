@@ -10,13 +10,13 @@ Class {
 		'blockHash',
 		'empty'
 	],
-	#category : #'FogEVM-UIDebugger'
+	#category : #'FogEVM-UIDebugger-Tools'
 }
 
 { #category : #specs }
 FogEVMInterpreterView class >> defaultSpec [
 	<spec>
-	^ SpecLayout composed
+	^ SpecLayout composed  
 		newRow: [ :r | 
 			r
 				newColumn: #empty width: 10;
@@ -30,7 +30,8 @@ FogEVMInterpreterView class >> defaultSpec [
 						add: #blockNumber height: 25;
 						add: #blockHash height: 25;
 						add: #empty height: 25 ];
-				newColumn: #empty width: 10 ]
+				newColumn: #empty width: 10 ];
+		yourself
 ]
 
 { #category : #accessing }
@@ -84,17 +85,6 @@ FogEVMInterpreterView >> interpreter: anInterpreter [
 	gasLimit text: anInterpreter gasLimit unsignedValue.
 	blockNumber text: anInterpreter currentBlockNumber unsignedValue.
 	blockHash text: (anInterpreter blockHashRegisty: anInterpreter currentBlockNumber unsignedValue - 10)
-]
-
-{ #category : #setting }
-FogEVMInterpreterView >> setUp: aFogEVMInterpreterBuilder [
-	aFogEVMInterpreterBuilder
-		blockDifficulty: (FogEVMRegistry fromPrintString: blockDifficulty text asString length: 8)
-		startedAt: startedTime text asString asDateAndTime
-		timestamp: timestamp text asString asDateAndTime
-		gasLimit: (FogEVMRegistry fromPrintString: gasLimit text asString length: 8)
-		blockNumber: (FogEVMRegistry fromPrintString: blockNumber text asString length: 8)
-		blockHash: (FogEVMRegistry fromPrintString: blockHash text asString length: 32)
 ]
 
 { #category : #accessing }

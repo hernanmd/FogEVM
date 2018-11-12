@@ -79,17 +79,6 @@ FogEVMActivationView >> contract: anObject [
 	contract := anObject
 ]
 
-{ #category : #creating }
-FogEVMActivationView >> createByteArrayFor: aString [
-	^ OpalCompiler new evaluate: aString
-]
-
-{ #category : #transforming }
-FogEVMActivationView >> createRegistryFor: aString length: anInteger [
-	^ FogEVMRegistry fromPrintString: aString length: anInteger
-
-]
-
 { #category : #accessing }
 FogEVMActivationView >> empty [ 
 	^ empty
@@ -145,28 +134,6 @@ FogEVMActivationView >> input [
 { #category : #accessing }
 FogEVMActivationView >> input: anObject [
 	input := anObject
-]
-
-{ #category : #setting }
-FogEVMActivationView >> setUp: aFogEVMInterpreterBuilder [
-	| fromRegistry toRegistry contractAddress inputByteArray valueRegistry contextAddress gasRegistry gasPriceRegistry |
-	fromRegistry := self createRegistryFor: from text asString length: 20.
-	toRegistry := self createRegistryFor: to text asString length: 20.
-	contractAddress := self createRegistryFor: (contract text asString ifEmpty: [ toRegistry asString ]) length: 20.
-	valueRegistry := self createRegistryFor: value text asString length: 8.
-	contextAddress := self createRegistryFor: context text asString length: 20.
-	inputByteArray := self createByteArrayFor: input text asString.
-	gasRegistry := self createRegistryFor: gas text asString length: 8.
-	gasPriceRegistry := self createRegistryFor: gasPrice text asString length: 8.
-	^ aFogEVMInterpreterBuilder
-		from: fromRegistry
-		to: toRegistry
-		contract: contractAddress
-		context: contextAddress
-		input: inputByteArray
-		value: valueRegistry
-		gas: gasRegistry
-		gasPrice: gasPriceRegistry
 ]
 
 { #category : #accessing }

@@ -20,7 +20,8 @@ Class {
 		'blockNumber',
 		'blockHash',
 		'shoulIinstallContract',
-		'columnsToShow'
+		'columnsToShow',
+		'binaryData'
 	],
 	#category : #'FogEVM-UIDebugger-Open'
 }
@@ -72,10 +73,13 @@ FogEVMInterpreterBuilder >> contractBytecode: aCollection named: aString [
 ]
 
 { #category : #accessing }
-FogEVMInterpreterBuilder >> contractBytecode: aBinaryData named: aName deploying: aBytecodeSelector [ 
-	executing := FogEVMByteCode fromBinary: (aBinaryData at: aBytecodeSelector).
-	
-		
+FogEVMInterpreterBuilder >> contractBytecode: aBinaryData named: aName deploying: aBytecodeSelector [
+	| selector |
+	binaryData := aBinaryData.
+	selector := aBytecodeSelector = #Deploy
+		ifTrue: [ #binary ]
+		ifFalse: [ #runtime ].
+	executing := FogEVMByteCode fromBinary: (aBinaryData at: selector)
 ]
 
 { #category : #setting }
