@@ -36,6 +36,11 @@ FogEVMMemoryView >> refresh [
 ]
 
 { #category : #accessing }
+FogEVMMemoryView >> showColumns: anAmount [
+	table widget dataSource showColumns: anAmount
+]
+
+{ #category : #accessing }
 FogEVMMemoryView >> table [
 	^ table
 ]

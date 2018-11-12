@@ -19,14 +19,20 @@ FogEVMBytecodeExecutionPreviewHistoric class >> defaultSpec [
 
 { #category : #initialization }
 FogEVMBytecodeExecutionPreviewHistoric >> initializeWidgets [
-	previews := OrderedCollection new. 
+	previews := OrderedCollection new.
 	table := FTSmartTableMorph new.
 	table
 		hResizing: #spaceFill;
 		vResizing: #spaceFill.
-	(table add: 'instructions' accessing: #mnemonic) width: 200.
-	1 to: 7 do: [ :idx | (table add: '#' display: [ :preview | preview args size >= idx ifTrue: [ preview args at: idx ] ifFalse:[ '' ] ]) ].
 	table add: 'Result' accessing: #resultString.
+	(table add: 'instructions' accessing: #mnemonic) width: 200.
+	1 to: 7 do: [ :idx | 
+		table
+			add: '#'
+			display: [ :preview | 
+				preview args size >= idx
+					ifTrue: [ preview args at: idx ]
+					ifFalse: [ '' ] ] ].
 	table beResizable.
 	table elements: previews.
 	table := table asSpecAdapter
@@ -40,6 +46,7 @@ FogEVMBytecodeExecutionPreviewHistoric >> refresh [
 { #category : #accessing }
 FogEVMBytecodeExecutionPreviewHistoric >> register: aFogEVMExecutionPreview [ 
 	previews add: aFogEVMExecutionPreview.
+	table widget selectRowIndex: previews size.
 	table widget refresh.
 
 ]

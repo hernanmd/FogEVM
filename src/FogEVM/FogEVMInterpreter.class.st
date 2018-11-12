@@ -665,7 +665,7 @@ FogEVMInterpreter >> visitExp: aFogVMExp [
 	| value exponent |
 	value := self pop.
 	exponent := self pop.
-	self push: value ** exponent
+	self push: (value ** exponent)
 ]
 
 { #category : #'visit - call' }

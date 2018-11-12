@@ -76,8 +76,9 @@ FogEVMRegistry class >> forValue: anInteger bytesLength: aByteLengthSize [
 
 { #category : #creating }
 FogEVMRegistry class >> forValue: anInteger maskedAs: aFogEVMRegistry [
+	aFogEVMRegistry mask.
 	^ self new
-		mask: aFogEVMRegistry mask;
+		mask: self mask32Bytes;
 		value: anInteger;
 		yourself
 ]
@@ -142,7 +143,7 @@ FogEVMRegistry >> * aFogEVMRegistry [
 
 { #category : #arithmetics }
 FogEVMRegistry >> ** aFogEVMRegistry [
-	^ FogEVMRegistry forValue: self unsignedValue ** aFogEVMRegistry unsignedValue maskedAs: self
+	^ FogEVMRegistry forValue: self unsignedValue ** aFogEVMRegistry unsignedValue maskedAs: aFogEVMRegistry
 ]
 
 { #category : #arithmetics }

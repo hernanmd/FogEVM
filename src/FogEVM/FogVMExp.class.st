@@ -26,8 +26,7 @@ FogVMExp class >> expectedPops [
 
 { #category : #generated }
 FogVMExp class >> expectedPushes [
-		^1.
-	
+	^ 1
 ]
 
 { #category : #'as yet unclassified' }

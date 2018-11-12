@@ -19,7 +19,8 @@ Class {
 		'gasLimit',
 		'blockNumber',
 		'blockHash',
-		'shoulIinstallContract'
+		'shoulIinstallContract',
+		'columnsToShow'
 	],
 	#category : #'FogEVM-UIDebugger-Open'
 }
@@ -53,6 +54,16 @@ FogEVMInterpreterBuilder >> build [
 				blockHash: blockHash ].
 	interpreter restart.
 	^ interpreter
+]
+
+{ #category : #testing }
+FogEVMInterpreterBuilder >> columnsToShow [
+	^ columnsToShow
+]
+
+{ #category : #testing }
+FogEVMInterpreterBuilder >> columnsToShow: anAmount [
+	columnsToShow := anAmount
 ]
 
 { #category : #accessing }

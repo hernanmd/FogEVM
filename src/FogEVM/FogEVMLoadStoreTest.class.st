@@ -56,7 +56,7 @@ FogEVMLoadStoreTest >> testMSIZE [
 		storeWord: (FogEVMRegistry forValue: value bytesLength: value asByteArray size )
 		startingAt: (FogEVMRegistry forValue: 1 bytesLength: 32).
 	interpreter hackedRun.
-	self assert: interpreter pop unsignedValue equals: 33 + 1.
+	self assert: interpreter pop unsignedValue equals: 33 .
 	
 ]
 
@@ -76,7 +76,7 @@ FogEVMLoadStoreTest >> testMSTORE [
 	interpreter run.
 	
 	self assert: interpreter stack isEmpty.
-	self assert: interpreter memory sizeInBytes equals: memoryStart +1 + 32 
+	self assert: interpreter memory sizeInBytes equals: memoryStart+ 32 
 ]
 
 { #category : #test }
@@ -95,7 +95,7 @@ FogEVMLoadStoreTest >> testMSTORE8 [
 	interpreter run.
 	
 	self assert: interpreter stack isEmpty.
-	self assert: interpreter memory sizeInBytes equals: memoryStart + 1 + 1  "Base 0"
+	self assert: interpreter memory sizeInBytes equals: memoryStart + 1  "Base 0"
 ]
 
 { #category : #test }

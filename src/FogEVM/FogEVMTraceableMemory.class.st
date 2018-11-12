@@ -9,7 +9,7 @@ Class {
 
 { #category : #accessing }
 FogEVMTraceableMemory >> ensureAddressAvailable: anAddress size: size [
-	super ensureAddressAvailable: anAddress size: size.
+	super ensureAddressAvailable: anAddress size: size - 1.
 	anAddress to: anAddress + size do: [ :byte | self tag: byte with: self resolveCall ]
 ]
 

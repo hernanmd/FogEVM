@@ -3,7 +3,8 @@ Class {
 	#superclass : #FGGridDataSource,
 	#instVars : [
 		'memory',
-		'assignedColors'
+		'assignedColors',
+		'showColumns'
 	],
 	#category : #'FogEVM-UIDebugger-Tools'
 }
@@ -72,7 +73,13 @@ FogEVMMemorySource >> columnWidth: anIndex [
 
 { #category : #sizes }
 FogEVMMemorySource >> columns [
-	^  16
+	^  showColumns
+]
+
+{ #category : #sizes }
+FogEVMMemorySource >> initialize [
+	super initialize.
+	showColumns := 1
 ]
 
 { #category : #sizes }
@@ -102,4 +109,9 @@ FogEVMMemorySource >> rowHeader: rowIndex [
 { #category : #sizes }
 FogEVMMemorySource >> rows [
 	^ memory ifNil: [ 0 ] ifNotNil: [ (memory storeSize / self columns) ceiling ]
+]
+
+{ #category : #sizes }
+FogEVMMemorySource >> showColumns: anAmount [
+	showColumns := anAmount
 ]

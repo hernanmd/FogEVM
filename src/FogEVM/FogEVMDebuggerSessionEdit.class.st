@@ -9,7 +9,8 @@ Class {
 		'settings',
 		'whenConfirmed',
 		'ok',
-		'cancel'
+		'cancel',
+		'builder'
 	],
 	#category : #'FogEVM-UIDebugger-Open'
 }
@@ -30,7 +31,7 @@ FogEVMDebuggerSessionEdit class >> defaultSpec [
 
 { #category : #initialization }
 FogEVMDebuggerSessionEdit >> accept [
-	[ whenConfirmed value: self buildInterpreter.
+	[ whenConfirmed cull: self buildInterpreter cull: builder.
 	self delete ]
 		on: Error
 		do: [ :e | UIManager default alert: e messageText ]
@@ -38,7 +39,7 @@ FogEVMDebuggerSessionEdit >> accept [
 
 { #category : #building }
 FogEVMDebuggerSessionEdit >> buildInterpreter [
-	| builder |
+
 	builder := FogEVMInterpreterBuilder new.
 	settings setUp: builder.
 	callView setUp: builder.
@@ -78,6 +79,11 @@ FogEVMDebuggerSessionEdit >> callView [
 { #category : #initialization }
 FogEVMDebuggerSessionEdit >> cancel [
 	^ cancel
+]
+
+{ #category : #initialization }
+FogEVMDebuggerSessionEdit >> columnsToShow [
+	^ settings columnsToShow
 ]
 
 { #category : #initialization }

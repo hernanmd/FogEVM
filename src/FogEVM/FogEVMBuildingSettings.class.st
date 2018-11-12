@@ -9,7 +9,8 @@ Class {
 		'chooseFileButton',
 		'empty',
 		'bytecodes',
-		'contractSelector'
+		'contractSelector',
+		'memoryColumns'
 	],
 	#category : #'FogEVM-UIDebugger-Open'
 }
@@ -24,6 +25,7 @@ FogEVMBuildingSettings class >> defaultSpec [
 					left
 						newRow: #interpreterSelector height: 25;
 						newRow: #memorySelector height: 25;
+						newRow: #memoryColumns height: 25;
 						newRow: #storageSelector height: 25;
 						newRow: [ :ff | 
 							ff
@@ -88,6 +90,9 @@ FogEVMBuildingSettings >> initializeWidgets [
 	interpreterSelector
 		items: self availableInterpreters;
 		displayBlock: [ :item | item name ].
+	memoryColumns := self instantiate: LabelledDropList.
+	memoryColumns label: 'Memory visualization columns'.
+	memoryColumns items: {8 . 16 . 32. 64 . 128}.
 	memorySelector := self instantiate: LabelledDropList.
 	memorySelector label: 'Memory Layout'.
 	memorySelector
@@ -112,12 +117,17 @@ FogEVMBuildingSettings >> initializeWidgets [
 		action: [ self openFileDialog ].
 	empty := self newLabel.
 	empty label: ''.
-	self setDefaults.
+	self setDefaults
 ]
 
 { #category : #accessing }
 FogEVMBuildingSettings >> interpreterSelector [
 	^ interpreterSelector
+]
+
+{ #category : #accessing }
+FogEVMBuildingSettings >> memoryColumns [
+	^ memoryColumns
 ]
 
 { #category : #accessing }
@@ -140,10 +150,10 @@ FogEVMBuildingSettings >> openFileDialog [
 
 { #category : #initialization }
 FogEVMBuildingSettings >> setDefaults [
-
-	interpreterSelector setSelectedItem: FogEVMDebuggingInterpreter.  
+	interpreterSelector setSelectedItem: FogEVMDebuggingInterpreter.
 	memorySelector setSelectedItem: FogEVMTraceableMemory.
 	storageSelector setSelectedItem: FogEVMBucketStorage.
+	memoryColumns setSelectedItem: 32
 ]
 
 { #category : #building }
@@ -152,6 +162,7 @@ FogEVMBuildingSettings >> setUp: aFogEVMInterpreterBuilder [
 		ifTrue: [ ^ self error: 'You must provide a valid solidity file' ].
 	aFogEVMInterpreterBuilder interpreterClass: interpreterSelector selectedItem memoryClass: memorySelector selectedItem storageClass: storageSelector selectedItem.
 	aFogEVMInterpreterBuilder contractBytecode: (bytecodes at: contractSelector selectedItem) named: contractSelector selectedItem deploying: #binary.
+	aFogEVMInterpreterBuilder columnsToShow: (memoryColumns selectedItem)
 ]
 
 { #category : #accessing }

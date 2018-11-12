@@ -259,7 +259,10 @@ FogEVMBytecodeDebugger >> noteBreakpoint [
 FogEVMBytecodeDebugger >> openSolidityFile [
 	| dialog |
 	dialog := FogEVMDebuggerSessionEdit new.
-	dialog whenConfirmed: [ :built | self interpreter: built ].
+	dialog
+		whenConfirmed: [ :built :builder | 
+			self interpreter: built.
+			memory showColumns: builder columnsToShow ].
 	dialog openWithSpec
 ]
 
@@ -332,6 +335,7 @@ FogEVMBytecodeDebugger >> transferData [
 	bytecode refresh.
 	executed refresh.	
 	stack refresh.
+	store storage: interpreter storage.
 	store refresh.
 	memory refresh.
 ]
