@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'table'
 	],
-	#category : #'FogEVM-VisualDebugger'
+	#category : #'FogEVM-UIDebugger'
 }
 
 { #category : #specs }

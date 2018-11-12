@@ -1,7 +1,7 @@
 Class {
 	#name : #FogEVMEmpty,
 	#superclass : #ComposablePresenter,
-	#category : #'FogEVM-VisualDebugger'
+	#category : #'FogEVM-UIDebugger-Tools'
 }
 
 { #category : #specs }

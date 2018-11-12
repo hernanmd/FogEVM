@@ -6,7 +6,7 @@ Class {
 		'stack',
 		'previews'
 	],
-	#category : #'FogEVM-VisualDebugger'
+	#category : #'FogEVM-UIDebugger'
 }
 
 { #category : #specs }

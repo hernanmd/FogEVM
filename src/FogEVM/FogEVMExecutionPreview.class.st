@@ -6,7 +6,7 @@ Class {
 		'args',
 		'result'
 	],
-	#category : #'FogEVM-VisualDebugger'
+	#category : #'FogEVM-UIDebugger'
 }
 
 { #category : #'instance creation' }

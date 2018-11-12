@@ -82,6 +82,11 @@ FogEVMRegistry class >> forValue: anInteger maskedAs: aFogEVMRegistry [
 		yourself
 ]
 
+{ #category : #creating }
+FogEVMRegistry class >> fromPrintString: aString length: aByteLength [
+	^ self forValue: (aString copyReplaceAll: '0x' with: '16r') asNumber bytesLength: aByteLength
+]
+
 { #category : #accessing }
 FogEVMRegistry class >> mask32Bytes [
 	^ self createMaskFor: 32
@@ -274,7 +279,7 @@ FogEVMRegistry >> not [
 
 { #category : #testing }
 FogEVMRegistry >> printOn: aStream [
-	aStream nextPutAll: ('[{1}]' format: {self hex asString copyReplaceAll:'16r' with:'0x'})
+	aStream nextPutAll: ('{1}' format: {self hex asString copyReplaceAll:'16r' with:'0x'})
 ]
 
 { #category : #arithmetics }

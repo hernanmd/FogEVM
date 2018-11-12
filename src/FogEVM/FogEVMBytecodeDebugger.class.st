@@ -1,6 +1,6 @@
 Class {
 	#name : #FogEVMBytecodeDebugger,
-	#superclass : #ApplicationWithToolbar,
+	#superclass : #ComposablePresenter,
 	#instVars : [
 		'context',
 		'bytecode',
@@ -15,9 +15,10 @@ Class {
 		'execute',
 		'stepControl',
 		'interpreterView',
-		'file'
+		'menu',
+		'sideTabs'
 	],
-	#category : #'FogEVM-VisualDebugger'
+	#category : #'FogEVM-UIDebugger'
 }
 
 { #category : #specs }
@@ -30,8 +31,8 @@ FogEVMBytecodeDebugger class >> defaultSpec [
 					mainRow
 						newColumn: [ :col | 
 							col
-								newRow: #context;
-								newRow: #interpreterView ]
+								newRow: #sideTabs";
+								newRow: #interpreterView "]
 							width: (self defaultFont widthOfString: 'Hexa:[16rB4EBF466889C4A0239379125A7D0F9C4E8BF2A14]') + 12;
 						newColumn: #bytecode width: 250;
 						newColumn: #stack width: 150;
@@ -55,24 +56,42 @@ FogEVMBytecodeDebugger class >> defaultSpec [
 		yourself
 ]
 
+{ #category : #specs }
+FogEVMBytecodeDebugger class >> generalMenu: aBuilder [
+	<worldMenu>
+	(aBuilder item: #Solidity)
+		order: 2.0;
+		target: self;
+		help: 'Set of tools to get a better Pharo experience.'
+]
+
+{ #category : #specs }
+FogEVMBytecodeDebugger class >> menuCommandOn: aBuilder [
+	<worldMenu>
+	
+	(aBuilder item: #Debugger)
+		parent: #Solidity;
+		order: 320;
+		action: [ self new openWithSpec extent: 1280.0 @ 771.0 ];
+		help: 'Debugging solidity bytecode';
+		icon: self taskbarIcon.
+	aBuilder withSeparatorAfter
+]
+
 { #category : #initialization }
 FogEVMBytecodeDebugger >> bindComponents [
 	context activation: interpreter currentActivation.
 	bytecode elements: interpreter currentActivation executableMemory.
 	bytecode ip: interpreter currentActivation nextInstruction.
-	preview
-		preview:
-			(FogEVMExecutionPreview
-				from: interpreter currentActivation nextInstruction
-				and: interpreter stack).
+	preview preview: (FogEVMExecutionPreview from: interpreter currentActivation nextInstruction and: interpreter stack).
 	stack stack: interpreter stack.
 	store storage: interpreter storage.
 	memory memory: interpreter memory.
-	interpreterView := (GTInspector new openOn: interpreter)
+	"	interpreterView := (GTInspector new openOn: interpreter)
 		close;
 		extent: 300.0 @ 400.0;
-		asSpecAdapter	" self instantiate: FogEVMInterpreterView."
-	"	interpreterView interpreter: interpreter"
+		asSpecAdapter	"
+	interpreterView interpreter: interpreter
 ]
 
 { #category : #accessing }
@@ -107,21 +126,23 @@ FogEVMBytecodeDebugger >> executed [
 
 { #category : #accessing }
 FogEVMBytecodeDebugger >> executed: anObject [
-	executed := anObject
+	executed := anObject.
 ]
 
 { #category : #initialization }
 FogEVMBytecodeDebugger >> initializeWidgets [
-	context := self instantiate: FogEVMActivationView.
 	bytecode := self instantiate: FogEVMBytecodeList.
 	executed := self instantiate: FogEVMBytecodeExecutionPreviewHistoric.
 	preview := self instantiate: FogEVMBytecodeExecutionPreview.
 	stack := self instantiate: FogEVMStackView.
 	store := self instantiate: FogEVMStorageView.
 	memory := self instantiate: FogEVMMemoryView.
-	interpreterView := ((GTInspector new openOn: interpreter ) close; extent:   (300.0@400.0) ; asSpecAdapter )." self instantiate: FogEVMInterpreterView."
+	self installContextualdata.
 	self installButtons.
 	self installMenu.
+	
+	
+
 ]
 
 { #category : #initialization }
@@ -139,10 +160,32 @@ FogEVMBytecodeDebugger >> installButtons [
 ]
 
 { #category : #initialization }
+FogEVMBytecodeDebugger >> installContextualdata [
+	| tab |
+	sideTabs := self newTabManager. 
+	context := self instantiate: FogEVMActivationView.
+	interpreterView := self instantiate: FogEVMInterpreterView.
+	
+	tab := self newTab.
+	tab closeable: false.
+	tab
+		label: 'Activation context';
+		presenter: context.
+	sideTabs addTab: tab. 
+	
+	tab := self newTab.
+	tab closeable: false.
+	tab
+		label: 'Interpreter context';
+		presenter: interpreterView.
+	sideTabs addTab: tab. 
+	
+]
+
+{ #category : #initialization }
 FogEVMBytecodeDebugger >> installMenu [
 	menu := MenuPresenter new
 		addGroup: [ :group | 
-
 			group
 				addItem: [ :item | 
 					item
@@ -162,27 +205,24 @@ FogEVMBytecodeDebugger >> installMenu [
 				addItem: [ :item | 
 					item
 						name: nil;
-						description: 'Undo';
-						icon: (self iconNamed: #smallUndoIcon);
-						action: [ self inform: 'Undo' ] ].
+						description: 'Restart';
+						icon: (self iconNamed: #refresh);
+						action: [ self restartInterpreter ] ].
 			group
 				addItem: [ :item | 
 					item
 						name: nil;
-						description: 'Redo';
-						icon: (self iconNamed: #smallRedoIcon);
-						action: [ self inform: 'Redo' ] ] ];
-		addGroup: [ :group | 
+						description: 'Step';
+						icon: (self iconNamed: #glamorousInto);
+						action: [ self stepOneInstructionOnInterpreter ] ].
 			group
 				addItem: [ :item | 
 					item
 						name: nil;
-						description: 'Add menu item';
-						icon: (self iconNamed: #add);
-						action: [ self addItemTo: group ] ] ].
-	menu applyTo: self.
-	text := self newText.
-	self focusOrder add: text
+						description: 'Execute';
+						icon: (self iconNamed: #smallDoIt);
+						action: [ self runInterpreter ] ] ].
+	menu applyTo: self
 ]
 
 { #category : #initialization }
@@ -211,6 +251,11 @@ FogEVMBytecodeDebugger >> memory [
 	^ memory
 ]
 
+{ #category : #accessing }
+FogEVMBytecodeDebugger >> menu [
+	^ menu
+]
+
 { #category : #notifications }
 FogEVMBytecodeDebugger >> noteBreakpoint [
 	self inform: 'Breakpoint reached'
@@ -218,18 +263,10 @@ FogEVMBytecodeDebugger >> noteBreakpoint [
 
 { #category : #opening }
 FogEVMBytecodeDebugger >> openSolidityFile [
-	|loadedBytecode|
-	file := 
-	UITheme current
-		chooseFileIn: self widget widget
-		title: 'Solidity Contract'
-		extensions: {#sol}
-		path: Smalltalk imageDirectory
-		preview: #text.
-	
-	
-	loadedBytecode := FogUtils new compileSolidity: file.
-	"interpreter contract: loaded"
+	| dialog |
+	dialog := FogEVMDebuggerSessionEdit new.
+	dialog whenConfirmed: [ :built | self interpreter: built ].
+	dialog openWithSpec
 ]
 
 { #category : #accessing }
@@ -261,6 +298,11 @@ FogEVMBytecodeDebugger >> runInterpreter [
 					^ self ].
 			firstIteration := false.
 			self stepOneInstructionOnInterpreter ]
+]
+
+{ #category : #initialization }
+FogEVMBytecodeDebugger >> sideTabs [
+	^ sideTabs
 ]
 
 { #category : #accessing }

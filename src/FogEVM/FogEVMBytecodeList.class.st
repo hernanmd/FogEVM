@@ -5,7 +5,7 @@ Class {
 		'list',
 		'ip'
 	],
-	#category : #'FogEVM-VisualDebugger'
+	#category : #'FogEVM-UIDebugger'
 }
 
 { #category : #specs }
@@ -43,8 +43,7 @@ FogEVMBytecodeList >> initializeWidgets [
 			self refresh ].
 	list
 		add: #instruction;
-		beResizable;
-		yourself.
+		beResizable.
 	list := list asSpecAdapter
 ]
 

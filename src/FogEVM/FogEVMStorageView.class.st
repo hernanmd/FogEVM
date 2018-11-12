@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'storageTable'
 	],
-	#category : #'FogEVM-VisualDebugger'
+	#category : #'FogEVM-UIDebugger'
 }
 
 { #category : #specs }

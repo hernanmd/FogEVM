@@ -11,31 +11,34 @@ Class {
 		'value',
 		'empty',
 		'gas',
-		'gasPrice',
-		'mainLabel'
+		'gasPrice'
 	],
 	#classInstVars : [
 		'mainLabel'
 	],
-	#category : #'FogEVM-VisualDebugger'
+	#category : #'FogEVM-UIDebugger-Tools'
 }
 
 { #category : #specs }
 FogEVMActivationView class >> defaultSpec [
 	<spec>
 	^ SpecLayout composed
-		newColumn: [ :col | 
-			col
-				add: #mainLabel height: 50;
-				add: #from height: 50;
-				add: #to height: 50;
-				add: #contract height: 50;
-				add: #context height: 50;
-				add: #input height: 50;
-				add: #value height: 50;
-				add: #gas height: 50;
-				add: #gasPrice height: 50;
-				add: #empty ]
+		newRow: [ :r | 
+			r
+				newColumn: #empty width: 10;
+				newColumn: [ :col | 
+					col
+						add: #empty height: 25;
+						add: #from height: 25;
+						add: #to height: 25;
+						add: #contract height: 25;
+						add: #context height: 25;
+						add: #input height: 25;
+						add: #value height: 25;
+						add: #gas height: 25;
+						add: #gasPrice height: 25;
+						add: #empty height: 25 ];
+				newColumn: #empty width: 10 ]
 ]
 
 { #category : #accessing }
@@ -48,7 +51,7 @@ FogEVMActivationView >> activation: anObject [
 	activation := anObject.
 	from text: activation call callerAddress.
 	to text: activation call contractAddress.
-	contract text: activation contract address.
+	contract text: (activation contract ifNil: [''] ifNotNil: [: val | val address]).
 	input text: (String streamContents: [ :str | activation call contractInput printOn: str ]).
 	value text: activation call callValue unsignedValue .
 	context text: activation contextualAccount printString.
@@ -74,6 +77,17 @@ FogEVMActivationView >> contract [
 { #category : #accessing }
 FogEVMActivationView >> contract: anObject [
 	contract := anObject
+]
+
+{ #category : #creating }
+FogEVMActivationView >> createByteArrayFor: aString [
+	^ OpalCompiler new evaluate: aString
+]
+
+{ #category : #transforming }
+FogEVMActivationView >> createRegistryFor: aString length: anInteger [
+	^ FogEVMRegistry fromPrintString: aString length: anInteger
+
 ]
 
 { #category : #accessing }
@@ -103,8 +117,6 @@ FogEVMActivationView >> gasPrice [
 
 { #category : #initialization }
 FogEVMActivationView >> initializeWidgets [
-	mainLabel := self newLabel .
-	mainLabel label: '      Current Activation details '.
 	from := self instantiate: LabelledTextInput.
 	from label: 'From:'.
 	to := self instantiate: LabelledTextInput.
@@ -121,7 +133,8 @@ FogEVMActivationView >> initializeWidgets [
 	gas label: 'Gas:'.
 	gasPrice := self instantiate: LabelledTextInput.
 	gasPrice label: 'Gas price:'.
-	empty := FogEVMEmpty new
+	empty := self newLabel.
+	empty label: ''.
 ]
 
 { #category : #accessing }
@@ -134,9 +147,26 @@ FogEVMActivationView >> input: anObject [
 	input := anObject
 ]
 
-{ #category : #accessing }
-FogEVMActivationView >> mainLabel [
-	^ mainLabel
+{ #category : #setting }
+FogEVMActivationView >> setUp: aFogEVMInterpreterBuilder [
+	| fromRegistry toRegistry contractAddress inputByteArray valueRegistry contextAddress gasRegistry gasPriceRegistry |
+	fromRegistry := self createRegistryFor: from text asString length: 20.
+	toRegistry := self createRegistryFor: to text asString length: 20.
+	contractAddress := self createRegistryFor: (contract text asString ifEmpty: [ toRegistry asString ]) length: 20.
+	valueRegistry := self createRegistryFor: value text asString length: 8.
+	contextAddress := self createRegistryFor: context text asString length: 20.
+	inputByteArray := self createByteArrayFor: input text asString.
+	gasRegistry := self createRegistryFor: gas text asString length: 8.
+	gasPriceRegistry := self createRegistryFor: gasPrice text asString length: 8.
+	^ aFogEVMInterpreterBuilder
+		from: fromRegistry
+		to: toRegistry
+		contract: contractAddress
+		context: contextAddress
+		input: inputByteArray
+		value: valueRegistry
+		gas: gasRegistry
+		gasPrice: gasPriceRegistry
 ]
 
 { #category : #accessing }

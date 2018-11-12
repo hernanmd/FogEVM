@@ -5,7 +5,7 @@ Class {
 		'memory',
 		'assignedColors'
 	],
-	#category : #'FogEVM-VisualDebugger'
+	#category : #'FogEVM-UIDebugger-Tools'
 }
 
 { #category : #sizes }
@@ -20,8 +20,15 @@ FogEVMMemorySource >> cellColumn: colIndex row: rowIndex [
 		ifTrue: [ ^ self rowHeader: rowIndex ].
 	rowIndex = 0
 		ifTrue: [ ^ self columnHeader: colIndex ].
-	dataId := (rowIndex  -1 ) * self columns + colIndex.
-
+	dataId := (rowIndex - 1) * self columns + colIndex.
+	memory
+		ifNil: [ ^ FGGridCell new
+				row: rowIndex;
+				column: colIndex;
+				addMorph: 'NON' asMorph;
+				width: (self columnWidth: colIndex);
+				height: (self rowHeight: rowIndex);
+				yourself ].
 	^ dataId <= memory storeSize
 		ifTrue: [ FGGridCell new
 				row: rowIndex;
@@ -30,7 +37,7 @@ FogEVMMemorySource >> cellColumn: colIndex row: rowIndex [
 				color: (self colorFor: dataId);
 				width: (self columnWidth: colIndex);
 				height: (self rowHeight: rowIndex);
-				setBalloonText: ((memory tagFor: dataId) printString);
+				setBalloonText: (memory tagFor: dataId) printString;
 				yourself ]
 		ifFalse: [ FGGridCell new
 				row: rowIndex;

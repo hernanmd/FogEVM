@@ -11,7 +11,8 @@ Class {
 		'logs',
 		'activations',
 		'trace',
-		'errors'
+		'errors',
+		'storageClass'
 	],
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
@@ -242,8 +243,9 @@ FogEVMInterpreter >> initialize [
 	super initialize.
 	stack := Stack new.
 	logs := OrderedCollection new.
-	activations := Stack new. 
+	activations := Stack new.
 	errors := OrderedCollection new.
+	storageClass := FogEVMBucketStorage
 ]
 
 { #category : #convenience }
@@ -258,13 +260,23 @@ FogEVMInterpreter >> installExternalAccount: aFogEVMAccount at: anAddress [
 
 { #category : #accessing }
 FogEVMInterpreter >> installMemory: aMemoryObject [
-	^ memory ifNil: [ memory := aMemoryObject  ] ifNotNil: [ FogEVMRuntimeError signal: ' Memory already in use! It cannot be changed' ]
+	^ memory ifNil: [ memory := aMemoryObject ] ifNotNil: [ FogEVMRuntimeError signal: ' Memory already in use! It cannot be changed' ]
+]
+
+{ #category : #accessing }
+FogEVMInterpreter >> installStorage: aStorage [
+	^ storage ifNil: [ storageClass := aStorage ] ifNotNil: [ FogEVMRuntimeError signal: ' Storage already in use! It cannot be changed' ]
 ]
 
 { #category : #interpret }
 FogEVMInterpreter >> interpret [
 	self restart.
 	[ self currentActivation isFinished ] whileFalse: [ self executeNextInstruction ]
+]
+
+{ #category : #testing }
+FogEVMInterpreter >> isConfigurable [
+	^ false
 ]
 
 { #category : #convenience }
@@ -419,7 +431,7 @@ FogEVMInterpreter >> storageFor: anAddress [
 { #category : #accessing }
 FogEVMInterpreter >> storageFor: aContractAddress state: aStateHash [ 
 	self flag: #WeshouldCareAboutTheMerkelTreeState. 
-	^ self storage at: aContractAddress ifAbsentPut: [ FogEVMBucketStorage new ].
+	^ self storage at: aContractAddress ifAbsentPut: [ storageClass new ].
 ]
 
 { #category : #accessing }
