@@ -12,16 +12,16 @@ Class {
 }
 
 { #category : #getting }
-FogEVMMemory >> copyFrom: anInteger to: anInteger2 [ 
-	^ layout copyFrom: anInteger to: anInteger2 
+FogEVMMemory >> copyFrom: anInteger to: anInteger2 [
+	^ layout copyFrom: anInteger + 1 to: anInteger2 + 1
 ]
 
 { #category : #accessing }
 FogEVMMemory >> ensureAddressAvailable: anAddress size: size [
 	| newArray |
-	(anAddress + size) >= layout size
+	(anAddress + 1 + size) >= layout size
 		ifFalse: [ ^ self ].
-	newArray := ByteArray new: anAddress + size .
+	newArray := ByteArray new: anAddress + 1 + size .
 	newArray
 		replaceFrom: 1
 		to: layout size
@@ -33,12 +33,17 @@ FogEVMMemory >> ensureAddressAvailable: anAddress size: size [
 { #category : #initialization }
 FogEVMMemory >> initialize [
 	super initialize.
-	layout := ByteArray new: 10. 
+	layout := ByteArray new: 0. 
+]
+
+{ #category : #accessing }
+FogEVMMemory >> isEmptyOrNil [
+	self shouldBeImplemented.
 ]
 
 { #category : #accessing }
 FogEVMMemory >> loadFrom: anAddress bytes: aSize [
-	^ layout copyFrom: anAddress to: anAddress + aSize - 1
+	^ self copyFrom: anAddress to: anAddress + aSize - 1
 ]
 
 { #category : #loading }
@@ -51,7 +56,7 @@ FogEVMMemory >> loadWord: aFogEVMRegistry [
 
 { #category : #load }
 FogEVMMemory >> loadWords: addressRegistry to: offsetRegistry [
-	| address offset value |
+	| address offset  |
 	address := addressRegistry unsignedValue.
 	offset := offsetRegistry unsignedValue. 
 	^ self copyFrom: address to: address + offset
@@ -64,7 +69,7 @@ FogEVMMemory >> restart [
 
 { #category : #'as yet unclassified' }
 FogEVMMemory >> set: aValue at: anAddress [
-	layout at: anAddress put: aValue
+	layout at: anAddress + 1 put: aValue
 ]
 
 { #category : #'as yet unclassified' }
@@ -80,7 +85,7 @@ FogEVMMemory >> slotSize [
 { #category : #accessing }
 FogEVMMemory >> store: aByteArray at: anAddress ensure: aLength [
 	self ensureAddressAvailable: anAddress size: aLength.
-	1 to: aLength do: [ :idx | layout at: anAddress + idx - 1 put: (aByteArray at: idx) ]
+	1 to: aLength do: [ :idx | self set: (aByteArray at: idx) at: anAddress + idx - 1 ]
 ]
 
 { #category : #accessing }

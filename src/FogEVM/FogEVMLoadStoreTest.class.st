@@ -22,12 +22,6 @@ FogEVMLoadStoreTest >> generator: aGenerator [
 ]
 
 { #category : #test }
-FogEVMLoadStoreTest >> setUp [
-	super setUp.
-	interpreter installMemory: FogEVMTraceableMemory new
-]
-
-{ #category : #test }
 FogEVMLoadStoreTest >> testMLOAD [
 	| bytecode |
 	"should test over 
@@ -43,7 +37,7 @@ FogEVMLoadStoreTest >> testMLOAD [
 	interpreter run.
 	bytecode := self createBytecodeForMLOAD: memoryStart.
 	interpreter bytecode: bytecode.
-	interpreter run.
+	interpreter hackedRun .
 	self assert: interpreter stack pop unsignedValue equals: value
 ]
 
@@ -61,8 +55,9 @@ FogEVMLoadStoreTest >> testMSIZE [
 	interpreter memory
 		storeWord: (FogEVMRegistry forValue: value bytesLength: value asByteArray size )
 		startingAt: (FogEVMRegistry forValue: 1 bytesLength: 32).
-	interpreter run.
-	self assert: interpreter pop unsignedValue equals: 33
+	interpreter hackedRun.
+	self assert: interpreter pop unsignedValue equals: 33 + 1.
+	
 ]
 
 { #category : #test }
@@ -81,7 +76,7 @@ FogEVMLoadStoreTest >> testMSTORE [
 	interpreter run.
 	
 	self assert: interpreter stack isEmpty.
-	self assert: interpreter memory sizeInBytes equals: memoryStart + 32 
+	self assert: interpreter memory sizeInBytes equals: memoryStart +1 + 32 
 ]
 
 { #category : #test }
@@ -100,7 +95,7 @@ FogEVMLoadStoreTest >> testMSTORE8 [
 	interpreter run.
 	
 	self assert: interpreter stack isEmpty.
-	self assert: interpreter memory sizeInBytes equals: memoryStart + 1
+	self assert: interpreter memory sizeInBytes equals: memoryStart + 1 + 1  "Base 0"
 ]
 
 { #category : #test }

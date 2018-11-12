@@ -13,7 +13,7 @@ Class {
 FogEVMBytecodeExecutionPreviewHistoric class >> defaultSpec [
 	<spec: #default>
 	^ SpecLayout composed
-		newRow: [ :row | row newColumn: #table ] height: 100;
+		newRow: [ :row | row newColumn: #table ];
 		yourself
 ]
 

@@ -20,7 +20,7 @@ FogEVMMemorySource >> cellColumn: colIndex row: rowIndex [
 		ifTrue: [ ^ self rowHeader: rowIndex ].
 	rowIndex = 0
 		ifTrue: [ ^ self columnHeader: colIndex ].
-	dataId := (rowIndex - 1) * self columns + colIndex.
+	dataId := ((rowIndex - 1) * self columns + colIndex) - 1.
 	memory
 		ifNil: [ ^ FGGridCell new
 				row: rowIndex;
@@ -29,7 +29,7 @@ FogEVMMemorySource >> cellColumn: colIndex row: rowIndex [
 				width: (self columnWidth: colIndex);
 				height: (self rowHeight: rowIndex);
 				yourself ].
-	^ dataId <= memory storeSize
+	^ dataId < memory storeSize
 		ifTrue: [ FGGridCell new
 				row: rowIndex;
 				column: colIndex;
@@ -56,7 +56,7 @@ FogEVMMemorySource >> colorFor: aDataId [
 { #category : #sizes }
 FogEVMMemorySource >> columnHeader: anIndex [
 	^ FGGridCell header
-		addMorph: ('+' , (anIndex hex asString copyReplaceAll: '16r' with: '')) asMorph;
+		addMorph: ('+' , ((anIndex - 1) hex asString copyReplaceAll: '16r' with: '')) asMorph;
 		width: (self columnWidth: anIndex);
 		height: (self rowHeight: 0);
 		column: anIndex yourself

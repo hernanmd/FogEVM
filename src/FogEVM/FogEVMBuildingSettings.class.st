@@ -141,7 +141,7 @@ FogEVMBuildingSettings >> openFileDialog [
 { #category : #initialization }
 FogEVMBuildingSettings >> setDefaults [
 
-	interpreterSelector setSelectedItem: FogEVMTestInterpreter.  
+	interpreterSelector setSelectedItem: FogEVMDebuggingInterpreter.  
 	memorySelector setSelectedItem: FogEVMTraceableMemory.
 	storageSelector setSelectedItem: FogEVMBucketStorage.
 ]

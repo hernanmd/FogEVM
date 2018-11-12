@@ -379,7 +379,6 @@ FogEVMInterpreter >> resolveContractFor: aContractAddress [
 FogEVMInterpreter >> restart [
 	trace := OrderedCollection new.
 	stack := Stack new.
-	memory restart.
 	self currentActivation initializeInstructionPointer
 ]
 
@@ -407,7 +406,7 @@ FogEVMInterpreter >> sendToContract: aContract contextualAccount: aContextAccoun
 				callingAccount: anCallingAccount
 				gasPrice: aGasPrice
 				contract: aContract).
-	[self interpret. computationSuccess:= FogEVMRegistry one ] on: Error do: [ : e | self registerError: e. computationSuccess := FogEVMRegistry zero ].
+	[self interpret. computationSuccess:= FogEVMRegistry one ] on: Error do: [ : e | e signal.self registerError: e. computationSuccess := FogEVMRegistry zero ].
 	self copyReturnAt: aFogEVMRegistryReturnOffset unsignedValue sinceByte: 1 length: aFogEVMRegistryReturnSize unsignedValue.
 	self push: computationSuccess .
 	^ self popActivation return

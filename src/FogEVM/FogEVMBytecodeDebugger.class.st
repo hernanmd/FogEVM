@@ -42,15 +42,9 @@ FogEVMBytecodeDebugger class >> defaultSpec [
 									upperPart
 										newColumn: [ :previewArea | 
 											previewArea
-												newRow: #executed;
-												newRow: [ :p | 
-													p
-														newColumn: #stepControl width: 30;
-														newColumn: #execute width: 30;
-														newColumn: #restart width: 30;
-														newColumn: #preview ]
-													height: 30 ] ]
-									height: 100;
+												newRow: #executed height: 300;
+												newRow: #preview 	height: 30 ] ]
+									height: 330;
 								newRow: #memory height: 250;
 								newRow: #store ] ] ];
 		yourself
