@@ -7,12 +7,24 @@ Class {
 	#instVars : [
 		'dictionary'
 	],
+	#classInstVars : [
+		'dictionary'
+	],
 	#category : #'FogEVM-Environment-Storage'
 }
 
 { #category : #accessing }
 FogEVMMemoryLayout >> atStorage: anAddress put: aValue [
 	^ dictionary at: anAddress put: aValue
+]
+
+{ #category : #accessing }
+FogEVMMemoryLayout >> entries [
+	^ dictionary associations
+		collect: [ :a | 
+			FogEVMUIMemoryEntry new
+				association: a;
+				yourself ]
 ]
 
 { #category : #accessing }
@@ -29,9 +41,4 @@ FogEVMMemoryLayout >> getStorageAt: anIndex ifAbsent: aBlock [
 FogEVMMemoryLayout >> initialize [
 	super initialize .
 	dictionary := Dictionary new.
-]
-
-{ #category : #'debugger ui' }
-FogEVMMemoryLayout >> values [
-	^ dictionary 
 ]

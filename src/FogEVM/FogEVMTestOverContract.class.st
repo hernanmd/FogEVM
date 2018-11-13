@@ -64,7 +64,7 @@ contract Sell {
 FogEVMTestOverContract >> setUp [ 	
 	super setUp.
 	interpreter := FogEVMTestInterpreter new.
-	interpreter call: FogEVMInterpreter creationCall.
+	interpreter call: FogEVMAbstractInterpreter creationCall.
 	interpreter bytecode: self class sellContractByteCode .
 ]
 

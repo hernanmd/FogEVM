@@ -252,6 +252,7 @@ FogEVMBytecodeDebugger >> menu [
 
 { #category : #notifications }
 FogEVMBytecodeDebugger >> noteBreakpoint [
+	self transferData.
 	self inform: 'Breakpoint reached'
 ]
 
@@ -294,7 +295,8 @@ FogEVMBytecodeDebugger >> runInterpreter [
 				ifTrue: [ self noteBreakpoint.
 					^ self ].
 			firstIteration := false.
-			self stepOneInstructionOnInterpreter ]
+			self stepOne ].
+	self transferData.
 ]
 
 { #category : #initialization }
@@ -313,8 +315,14 @@ FogEVMBytecodeDebugger >> stepControl [
 ]
 
 { #category : #'interpreter actions' }
+FogEVMBytecodeDebugger >> stepOne [
+	interpreter executeNextInstruction.
+	self transferPreview
+]
+
+{ #category : #'interpreter actions' }
 FogEVMBytecodeDebugger >> stepOneInstructionOnInterpreter [
-	interpreter executeNextInstruction .
+	self stepOne.
 	self transferData
 ]
 
@@ -326,16 +334,18 @@ FogEVMBytecodeDebugger >> store [
 { #category : #initialization }
 FogEVMBytecodeDebugger >> transferData [
 	context activation: interpreter currentActivation.
-	preview preview loadResultFrom: interpreter stack.
-	executed register: preview preview.
-	preview preview: (FogEVMExecutionPreview from: interpreter currentActivation nextInstruction and: interpreter stack).
-
-	bytecode ip: interpreter currentActivation nextInstruction .
-	
+	bytecode ip: interpreter currentActivation nextInstruction.
 	bytecode refresh.
-	executed refresh.	
+	executed refresh.
 	stack refresh.
 	store storage: interpreter storage.
 	store refresh.
-	memory refresh.
+	memory refresh
+]
+
+{ #category : #initialization }
+FogEVMBytecodeDebugger >> transferPreview [
+	preview preview loadResultFrom: interpreter stack.
+	executed register: preview preview.
+	preview preview: (FogEVMExecutionPreview from: interpreter currentActivation nextInstruction and: interpreter stack)
 ]

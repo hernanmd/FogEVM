@@ -41,7 +41,7 @@ FogEVMBuildingSettings class >> defaultSpec [
 
 { #category : #initialization }
 FogEVMBuildingSettings >> availableInterpreters [
-	^ {FogEVMInterpreter} , FogEVMInterpreter allSubclasses
+	^ {FogEVMAbstractInterpreter} , FogEVMAbstractInterpreter allSubclasses
 ]
 
 { #category : #initialization }
@@ -51,7 +51,7 @@ FogEVMBuildingSettings >> availableMemory [
 
 { #category : #initialization }
 FogEVMBuildingSettings >> availableStorage [
-		^ {FogEVMBucketStorage} , FogEVMBucketStorage allSubclasses
+		^ {FogEVMMemoryStorage} , FogEVMMemoryStorage allSubclasses
 ]
 
 { #category : #initialization }
@@ -152,7 +152,7 @@ FogEVMBuildingSettings >> sessionChoice [
 FogEVMBuildingSettings >> setDefaults [
 	interpreterSelector setSelectedItem: FogEVMDebuggingInterpreter.
 	memorySelector setSelectedItem: FogEVMTraceableMemory.
-	storageSelector setSelectedItem: FogEVMBucketStorage.
+	storageSelector setSelectedItem: FogEVMMemoryStorage.
 	memoryColumns setSelectedItem: 32
 ]
 

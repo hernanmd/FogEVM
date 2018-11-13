@@ -24,7 +24,7 @@ FogEVMTraceableMemory >> resolveCall [
 	| sender |
 	sender := thisContext sender.
 	[ sender receiver isKindOf: FogEVMMemory ] whileTrue: [ sender := sender sender ].
-	^ (sender receiver isKindOf: FogEVMInterpreter)
+	^ (sender receiver isKindOf: FogEVMAbstractInterpreter)
 		ifTrue: [ sender receiver currentInstruction ]
 		ifFalse: [ 'non-interpreter-allocated' ]
 ]

@@ -5,6 +5,7 @@ Class {
 	#name : #FogEVMBucketStorage,
 	#superclass : #Object,
 	#instVars : [
+		'address',
 		'storage'
 	],
 	#category : #'FogEVM-Environment-Storage'
@@ -20,6 +21,16 @@ FogEVMBucketStorage >> addBalance: aValue [
 	| currentValue |
 	currentValue := self balance + aValue.
 	storage atStorage: #'&balance' put: currentValue
+]
+
+{ #category : #initialization }
+FogEVMBucketStorage >> address: anAddress [
+	address := anAddress
+]
+
+{ #category : #initialization }
+FogEVMBucketStorage >> at: anIndex [
+	^ storage getStorageAt: anIndex
 ]
 
 { #category : #accessing }
@@ -47,6 +58,11 @@ FogEVMBucketStorage >> destroyed [
 	^ (storage getStorageAt: #'&destroyed') = FogEVMRegistry zero
 		ifTrue: [ FogEVMRegistry false ]
 		ifFalse: [ FogEVMRegistry true ]
+]
+
+{ #category : #'debugger ui' }
+FogEVMBucketStorage >> entries [
+	^ storage entries
 ]
 
 { #category : #accessing }
@@ -77,14 +93,17 @@ FogEVMBucketStorage >> isContract [
 	^ true
 ]
 
+{ #category : #accessing }
+FogEVMBucketStorage >> printOn: aStream [
+	aStream nextPutAll:'Storage'; nextPutAll: ' ('.
+	address printOn: aStream.
+	aStream nextPutAll: ') - '.
+	aStream nextPutAll: self class name 
+]
+
 { #category : #initialization }
 FogEVMBucketStorage >> setDestroyed [
 	^ storage atStorage: #'&destroyed' put: true .
-]
-
-{ #category : #'debugger ui' }
-FogEVMBucketStorage >> values [
-	^ storage values
 ]
 
 { #category : #accessing }

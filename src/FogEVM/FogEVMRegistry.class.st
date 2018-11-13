@@ -192,8 +192,8 @@ FogEVMRegistry >> asPushableRegistry [
 FogEVMRegistry >> asWordByteArray [
 	| content wordarray delta |
 	content := self byteArray.
-	delta := FogEVMInterpreter wordSize - content size.
-	wordarray := ByteArray new: FogEVMInterpreter wordSize.
+	delta := FogEVMAbstractInterpreter wordSize - content size.
+	wordarray := ByteArray new: FogEVMAbstractInterpreter wordSize.
 	1 to: content size do: [ :idx | wordarray at: delta + idx put: (content at: idx) ].
 	^ wordarray 
 ]
@@ -211,6 +211,11 @@ FogEVMRegistry >> byteArray [
 { #category : #accessing }
 FogEVMRegistry >> byteAt: aFogEVMRegistry [
 	^ FogEVMRegistry forValue: (self byteArray at: aFogEVMRegistry unsignedValue) bytesLength: 1
+]
+
+{ #category : #enumerating }
+FogEVMRegistry >> collect: aBlock [
+	^{ self } collect: aBlock
 ]
 
 { #category : #extention }

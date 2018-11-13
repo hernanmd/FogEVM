@@ -50,8 +50,8 @@ FogEVMMemory >> loadFrom: anAddress bytes: aSize [
 FogEVMMemory >> loadWord: aFogEVMRegistry [
 	| address value |
 	address := aFogEVMRegistry unsignedValue.
-	value := self copyFrom: address to: address + FogEVMInterpreter wordSize - 1.
-	^ FogEVMRegistry forValue: value asInteger bytesLength: FogEVMInterpreter wordSize
+	value := self copyFrom: address to: address + FogEVMAbstractInterpreter wordSize - 1.
+	^ FogEVMRegistry forValue: value asInteger bytesLength: FogEVMAbstractInterpreter wordSize
 ]
 
 { #category : #load }
@@ -107,6 +107,6 @@ FogEVMMemory >> storeWord: aRegistry startingAt: aRegistryAddress [
 	| address stream |
 	address := aRegistryAddress unsignedValue.
 	stream := aRegistry asWordByteArray readStream.
-	self ensureAddressAvailable: address size: FogEVMInterpreter wordSize.
-	address to: address + FogEVMInterpreter wordSize - 1 do: [ :i | self set: stream next at: i ]
+	self ensureAddressAvailable: address size: FogEVMAbstractInterpreter wordSize.
+	address to: address + FogEVMAbstractInterpreter wordSize - 1 do: [ :i | self set: stream next at: i ]
 ]

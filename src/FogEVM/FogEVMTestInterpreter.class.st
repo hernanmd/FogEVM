@@ -1,6 +1,6 @@
 Class {
 	#name : #FogEVMTestInterpreter,
-	#superclass : #FogEVMInterpreter,
+	#superclass : #FogEVMAbstractInterpreter,
 	#instVars : [
 		'startedTime',
 		'call',

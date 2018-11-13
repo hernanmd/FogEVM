@@ -6,7 +6,7 @@ Class {
 		'args',
 		'preview'
 	],
-	#category : #'FogEVM-UIDebugger'
+	#category : #'FogEVM-UIDebugger-View'
 }
 
 { #category : #specs }

@@ -5,7 +5,7 @@ Class {
 		'list',
 		'ip'
 	],
-	#category : #'FogEVM-UIDebugger'
+	#category : #'FogEVM-UIDebugger-View'
 }
 
 { #category : #specs }

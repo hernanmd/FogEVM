@@ -1,12 +1,12 @@
 Class {
 	#name : #FogEVMDebuggingInterpreter,
-	#superclass : #FogEVMInterpreter,
+	#superclass : #FogEVMAbstractInterpreter,
 	#instVars : [
 		'startedTime',
-		'call',
-		'contract'
+		'contract',
+		'call'
 	],
-	#category : #'FogEVM-ByteCode-Interpreter-Tests'
+	#category : #'FogEVM-ByteCode-Interpreter'
 }
 
 { #category : #'as yet unclassified' }
@@ -28,6 +28,7 @@ FogEVMDebuggingInterpreter >> blockHashRegisty: aMinimalBlockNumber [
 
 { #category : #accessing }
 FogEVMDebuggingInterpreter >> contract: aFogEVMByteCode [
+	self halt.
 	contract := FogEVMContract new
 		bytecode: aFogEVMByteCode;
 		address: call contractAddress;

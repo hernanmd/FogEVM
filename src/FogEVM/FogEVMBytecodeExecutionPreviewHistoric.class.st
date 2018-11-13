@@ -6,7 +6,7 @@ Class {
 		'stack',
 		'previews'
 	],
-	#category : #'FogEVM-UIDebugger'
+	#category : #'FogEVM-UIDebugger-View'
 }
 
 { #category : #specs }
@@ -40,14 +40,14 @@ FogEVMBytecodeExecutionPreviewHistoric >> initializeWidgets [
 
 { #category : #refresh }
 FogEVMBytecodeExecutionPreviewHistoric >> refresh [
-	table widget refresh
+	table widget selectRowIndex: previews size.
+	table widget refresh.
 ]
 
 { #category : #accessing }
 FogEVMBytecodeExecutionPreviewHistoric >> register: aFogEVMExecutionPreview [ 
 	previews add: aFogEVMExecutionPreview.
-	table widget selectRowIndex: previews size.
-	table widget refresh.
+
 
 ]
 

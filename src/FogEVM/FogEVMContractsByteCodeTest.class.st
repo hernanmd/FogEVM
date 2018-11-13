@@ -24,7 +24,7 @@ FogEVMContractsByteCodeTest >> contractForTest [
 
 { #category : #testing }
 FogEVMContractsByteCodeTest >> contractInputForCall [
-	^ (FogEVMInterpreter exampleCall contractInput copyFrom: 1 to: 4) asInteger
+	^ (FogEVMAbstractInterpreter exampleCall contractInput copyFrom: 1 to: 4) asInteger
 ]
 
 { #category : #testing }

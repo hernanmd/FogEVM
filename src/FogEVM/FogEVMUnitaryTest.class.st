@@ -2299,6 +2299,6 @@ FogEVMUnitaryTest >> createBytecodeForXOR: a and:b [
 FogEVMUnitaryTest >> setUp [
 	super setUp.
 	interpreter := FogEVMTestInterpreter new.
-	interpreter call: FogEVMInterpreter exampleCall.
+	interpreter call: FogEVMAbstractInterpreter exampleCall.
 	interpreter installMemory: FogEVMTraceableMemory new.
 ]

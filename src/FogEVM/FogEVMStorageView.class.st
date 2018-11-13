@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'storageTable'
 	],
-	#category : #'FogEVM-UIDebugger'
+	#category : #'FogEVM-UIDebugger-View'
 }
 
 { #category : #specs }
@@ -29,7 +29,7 @@ FogEVMStorageView >> refresh [
 { #category : #initialization }
 FogEVMStorageView >> storage: aStorage [
 	| dataSource |
-	dataSource := FTTreeDataSource roots: aStorage  children: [ :data | data values ].
+	dataSource := FTTreeDataSource roots: {aStorage} children: [ :data | data entries ].
 	storageTable widget dataSource: dataSource
 ]
 

@@ -103,7 +103,7 @@ FogEVMInterpreterBuilder >> from: from to: to contract: contractAddress context:
 FogEVMInterpreterBuilder >> interpreterClass: anInterpreterClass memoryClass: aMemoryClass storageClass: aStorageClass [
 	interpreter := anInterpreterClass new.
 	interpreter installMemory: aMemoryClass new.
-	interpreter installStorage: aStorageClass 
+	interpreter installStorage: aStorageClass new
 ]
 
 { #category : #testing }
