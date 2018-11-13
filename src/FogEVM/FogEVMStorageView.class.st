@@ -21,7 +21,7 @@ FogEVMStorageView >> initializeWidgets [
 		asSpecAdapter
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 FogEVMStorageView >> refresh [
 	" "
 ]

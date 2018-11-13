@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'address'
 	],
-	#category : #'FogEVM-ByteCode-Interpreter-Tests'
+	#category : #'FogEVM-Envinronment-Objects'
 }
 
 { #category : #accessing }

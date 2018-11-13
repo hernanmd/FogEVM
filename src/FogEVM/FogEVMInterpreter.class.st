@@ -227,11 +227,6 @@ FogEVMInterpreter >> gasLimit [
 ]
 
 { #category : #convenience }
-FogEVMInterpreter >> hexa [
-	self shouldBeImplemented.
-]
-
-{ #category : #convenience }
 FogEVMInterpreter >> hexaToBoolean: anInteger [
 	^ anInteger unsignedValue = 0
 		ifTrue: [ false ]
@@ -889,6 +884,7 @@ FogEVMInterpreter >> visitReturn: aFogVMReturn [
 	to := self pop.
 	return := self memory loadFrom: from unsignedValue bytes: to unsignedValue.
 	self currentActivation return: return.
+	
 ]
 
 { #category : #'visit - flow' }

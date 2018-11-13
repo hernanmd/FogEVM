@@ -1,7 +1,7 @@
 Class {
 	#name : #FogEVMAstCallDataSize,
 	#superclass : #FogEVMAstNode,
-	#category : 'FogEVM-Interpreter'
+	#category : #'FogEVM-DecompilerAST'
 }
 
 { #category : #'as yet unclassified' }

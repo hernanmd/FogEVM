@@ -5,7 +5,7 @@ Class {
 		'topics',
 		'content'
 	],
-	#category : #'FogEVM-ByteCode-Interpreter'
+	#category : #'FogEVM-Envinronment-Objects'
 }
 
 { #category : #accessing }

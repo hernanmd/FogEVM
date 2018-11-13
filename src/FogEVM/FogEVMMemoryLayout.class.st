@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'dictionary'
 	],
-	#category : 'FogEVM-Storage'
+	#category : #'FogEVM-Environment-Storage'
 }
 
 { #category : #accessing }

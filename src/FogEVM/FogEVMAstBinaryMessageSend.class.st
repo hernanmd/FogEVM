@@ -1,7 +1,7 @@
 Class {
 	#name : #FogEVMAstBinaryMessageSend,
 	#superclass : #FogEVMAstMessageSend,
-	#category : 'FogEVM-Interpreter'
+	#category : #'FogEVM-DecompilerAST'
 }
 
 { #category : #'as yet unclassified' }

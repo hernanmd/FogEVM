@@ -5,7 +5,7 @@ Class {
 		'condition',
 		'body'
 	],
-	#category : 'FogEVM-Interpreter'
+	#category : #'FogEVM-DecompilerAST'
 }
 
 { #category : #'as yet unclassified' }

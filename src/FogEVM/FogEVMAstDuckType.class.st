@@ -1,7 +1,7 @@
 Class {
 	#name : #FogEVMAstDuckType,
 	#superclass : #FogEVMAstNode,
-	#category : 'FogEVM-Interpreter'
+	#category : #'FogEVM-DecompilerAST'
 }
 
 { #category : #printing }

@@ -7,5 +7,5 @@ Class {
 	#instVars : [
 		'trie'
 	],
-	#category : 'FogEVM-Storage'
+	#category : #'FogEVM-Environment-Storage'
 }

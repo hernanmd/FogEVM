@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'tags'
 	],
-	#category : #'FogEVM-Memory'
+	#category : #'FogEVM-Environment-Memory'
 }
 
 { #category : #accessing }

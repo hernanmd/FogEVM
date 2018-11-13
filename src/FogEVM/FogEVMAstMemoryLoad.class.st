@@ -5,7 +5,7 @@ Class {
 		'fromAddress',
 		'amountOfBytes'
 	],
-	#category : 'FogEVM-Interpreter'
+	#category : #'FogEVM-DecompilerAST'
 }
 
 { #category : #'as yet unclassified' }

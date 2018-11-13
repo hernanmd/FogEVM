@@ -6,7 +6,7 @@ Class {
 		'selector',
 		'arguments'
 	],
-	#category : 'FogEVM-Interpreter'
+	#category : #'FogEVM-DecompilerAST'
 }
 
 { #category : #'as yet unclassified' }

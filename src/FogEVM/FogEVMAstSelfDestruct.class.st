@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'account'
 	],
-	#category : 'FogEVM-Interpreter'
+	#category : #'FogEVM-DecompilerAST'
 }
 
 { #category : #'as yet unclassified' }

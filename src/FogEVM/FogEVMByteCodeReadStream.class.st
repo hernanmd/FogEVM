@@ -4,7 +4,7 @@ Stream with utilities to split code
 Class {
 	#name : #FogEVMByteCodeReadStream,
 	#superclass : #ReadStream,
-	#category : #'FogEVM-ByteCode'
+	#category : #'FogEVM-ByteCode-Streaming'
 }
 
 { #category : #'as yet unclassified' }

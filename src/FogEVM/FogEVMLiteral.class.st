@@ -7,7 +7,7 @@ Class {
 	#classInstVars : [
 		'literals'
 	],
-	#category : 'FogEVM-Interpreter'
+	#category : #'FogEVM-DecompilerAST'
 }
 
 { #category : #'instance creation' }

@@ -8,7 +8,7 @@ Class {
 	#instVars : [
 		'layout'
 	],
-	#category : 'FogEVM-Memory'
+	#category : #'FogEVM-Environment-Memory'
 }
 
 { #category : #getting }

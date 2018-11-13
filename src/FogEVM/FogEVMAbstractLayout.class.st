@@ -4,7 +4,7 @@ Storage layout basic protocol
 Class {
 	#name : #FogEVMAbstractLayout,
 	#superclass : #Object,
-	#category : 'FogEVM-Storage'
+	#category : #'FogEVM-Environment-Storage'
 }
 
 { #category : #accessing }

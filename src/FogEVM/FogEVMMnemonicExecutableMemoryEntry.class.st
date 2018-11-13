@@ -10,7 +10,7 @@ Class {
 		'instruction',
 		'breakpoint'
 	],
-	#category : 'FogEVM-Memory'
+	#category : #'FogEVM-Environment-Memory'
 }
 
 { #category : #visiting }

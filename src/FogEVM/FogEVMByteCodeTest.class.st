@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'contractDescription'
 	],
-	#category : 'FogEVM-ByteCode'
+	#category : #'FogEVM-ByteCode-Interpreter-Tests'
 }
 
 { #category : #initialization }

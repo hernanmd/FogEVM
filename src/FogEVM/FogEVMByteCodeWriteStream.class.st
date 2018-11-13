@@ -4,7 +4,7 @@ Stream with utilities to build bytecode programs
 Class {
 	#name : #FogEVMByteCodeWriteStream,
 	#superclass : #WriteStream,
-	#category : #'FogEVM-ByteCode'
+	#category : #'FogEVM-ByteCode-Streaming'
 }
 
 { #category : #'#generated - put' }
