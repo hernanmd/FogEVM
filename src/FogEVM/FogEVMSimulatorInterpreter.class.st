@@ -8,26 +8,46 @@ Class {
 }
 
 { #category : #accessing }
+FogEVMSimulatorInterpreter >> blockDifficulty [
+	^ self dataResolver blockDifficulty
+]
+
+{ #category : #accessing }
 FogEVMSimulatorInterpreter >> blockHashRegisty: aMinimalBlockNumber [ 
-	^ dataResolver blockHashRegisty: aMinimalBlockNumber 
+	^ self dataResolver blockHashRegisty: aMinimalBlockNumber 
 ]
 
 { #category : #accessing }
 FogEVMSimulatorInterpreter >> currentBlockNumber [
-	^ FogEVMRegistry forValue: dataResolver currentBlockNumber bytesLength: 32
+	^ FogEVMRegistry forValue: self dataResolver currentBlockNumber bytesLength: 32
+]
+
+{ #category : #accessing }
+FogEVMSimulatorInterpreter >> dataResolver [
+	^ dataResolver ifNil: [ dataResolver := FogEVMFogDataResolver new ]
 ]
 
 { #category : #accessing }
 FogEVMSimulatorInterpreter >> gasLimit [
-	^ FogEVMRegistry forValue: dataResolver gasLimit bytesLength: 32
+	^ FogEVMRegistry forValue: self dataResolver gasLimit bytesLength: 32
 ]
 
 { #category : #accessing }
 FogEVMSimulatorInterpreter >> minerAddress [
-	^ FogEVMRegistry forValue: dataResolver minerAddress bytesLength: 20
+	^ FogEVMRegistry forValue: self dataResolver minerAddress bytesLength: 20
+]
+
+{ #category : #accessing }
+FogEVMSimulatorInterpreter >> stack [
+	^ stack
+]
+
+{ #category : #accessing }
+FogEVMSimulatorInterpreter >> startedTime [
+	^ self dataResolver startedTime
 ]
 
 { #category : #accessing }
 FogEVMSimulatorInterpreter >> timestamp [
-	^ FogEVMRegistry forValue: dataResolver timestamp asUnixTime bytesLength: 32
+	^ FogEVMRegistry forValue: self dataResolver timestamp asUnixTime bytesLength: 32
 ]

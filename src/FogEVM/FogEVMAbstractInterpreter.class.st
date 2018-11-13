@@ -1069,6 +1069,13 @@ FogEVMAbstractInterpreter >> visitStaticcall: aFogVMStaticcall [
 { #category : #'visit - flow' }
 FogEVMAbstractInterpreter >> visitStop: aFogVMStop [
 	self currentActivation stop.
+	self currentActivation isContractDeploy
+		ifTrue: [ | contract |
+			contract := FogEVMContract new.
+			contract
+				address: (self keccack256: self currentActivation return hex);
+				bytecode: (FogEVMByteCode fromBinary: self currentActivation return hex ).
+			(self storageFor: (self keccack256: self currentActivation return hex)) contract: contract ]
 ]
 
 { #category : #'visit - arithmetics' }

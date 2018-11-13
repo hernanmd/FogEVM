@@ -130,6 +130,11 @@ FogEVMActivation >> initializeInstructionPointer [
 ]
 
 { #category : #testing }
+FogEVMActivation >> isContractDeploy [
+	^ call contractAddress unsignedValue = 0
+]
+
+{ #category : #testing }
 FogEVMActivation >> isFinished [
 	^ isFinish ifNil: [ isFinish := false ]
 ]

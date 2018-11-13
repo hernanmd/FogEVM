@@ -9,12 +9,6 @@ Class {
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
 
-{ #category : #'as yet unclassified' }
-FogEVMDebuggingInterpreter >> binaryBytecodeFor: aFogEVMRegistry [
-	self assert: aFogEVMRegistry unsignedValue = 740735499233530362346919405980904206194320393200.
-	^ contract bytecode toBinary 
-]
-
 { #category : #accessing }
 FogEVMDebuggingInterpreter >> blockDifficulty [
 	^ FogEVMRegistry forValue: 16r00000001  bytesLength: 32
@@ -24,16 +18,6 @@ FogEVMDebuggingInterpreter >> blockDifficulty [
 FogEVMDebuggingInterpreter >> blockHashRegisty: aMinimalBlockNumber [ 
 	 " Here we could put a strategy. maybe to be able to get information from running environment "
 	^ FogEVMRegistry forMemoryContent: 16r687980987654abaca234.
-]
-
-{ #category : #accessing }
-FogEVMDebuggingInterpreter >> contract: aFogEVMByteCode [
-	self halt.
-	contract := FogEVMContract new
-		bytecode: aFogEVMByteCode;
-		address: call contractAddress;
-		yourself.
-	(self storageFor: call contractAddress ) contract: contract .
 ]
 
 { #category : #accessing }

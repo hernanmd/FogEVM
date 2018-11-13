@@ -150,7 +150,7 @@ FogEVMBuildingSettings >> sessionChoice [
 
 { #category : #initialization }
 FogEVMBuildingSettings >> setDefaults [
-	interpreterSelector setSelectedItem: FogEVMDebuggingInterpreter.
+	interpreterSelector setSelectedItem: FogEVMSimulatorInterpreter .
 	memorySelector setSelectedItem: FogEVMTraceableMemory.
 	storageSelector setSelectedItem: FogEVMMemoryStorage.
 	memoryColumns setSelectedItem: 32
