@@ -28,11 +28,6 @@ FogEVMSimulatorInterpreter >> minerAddress [
 ]
 
 { #category : #accessing }
-FogEVMSimulatorInterpreter >> storage [
-	^ storage ifNil: [ storage := dataResolver storage ]
-]
-
-{ #category : #accessing }
 FogEVMSimulatorInterpreter >> timestamp [
 	^ FogEVMRegistry forValue: dataResolver timestamp asUnixTime bytesLength: 32
 ]
