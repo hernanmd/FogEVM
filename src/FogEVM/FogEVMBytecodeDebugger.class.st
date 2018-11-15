@@ -26,14 +26,16 @@ FogEVMBytecodeDebugger class >> defaultSpec [
 	<spec>
 	^ SpecLayout composed
 		newColumn: [ :g | 
-			g newRow: #menu height: self toolbarHeight;
-			  newRow: [ :mainRow | 
+			g
+				newRow: #menu height: self toolbarHeight;
+				newRow: [ :mainRow | 
 					mainRow
 						newColumn: [ :col | 
-							col
-								newRow: #sideTabs";
-								newRow: #interpreterView "]
-							width: (self defaultFont widthOfString: 'Hexa:[16rB4EBF466889C4A0239379125A7D0F9C4E8BF2A14]') + 12;
+							col newRow: #sideTabs	";
+								newRow: #interpreterView " ]
+							width:
+							(self defaultFont widthOfString: '16rB4EBF466889C4A0239379125A7D0F9C4E8BF2A14')
+									+ 12;
 						newColumn: #bytecode width: 250;
 						newColumn: #stack width: 150;
 						newColumn: [ :secondHalf | 
@@ -42,10 +44,10 @@ FogEVMBytecodeDebugger class >> defaultSpec [
 									upperPart
 										newColumn: [ :previewArea | 
 											previewArea
-												newRow: #executed height: 300;
-												newRow: #preview 	height: 30 ] ]
-									height: 330;
-								newRow: #memory height: 250;
+												newRow: #executed;
+												newRow: #preview height: 30 ] ]
+"									height: 330;";
+								newRow: #memory;
 								newRow: #store ] ] ];
 		yourself
 ]
@@ -101,6 +103,11 @@ FogEVMBytecodeDebugger >> context [
 { #category : #accessing }
 FogEVMBytecodeDebugger >> context: anObject [
 	context := anObject
+]
+
+{ #category : #transacrion }
+FogEVMBytecodeDebugger >> deployTransactionDialog [
+	self openSolidityFile 
 ]
 
 { #category : #weirdos }
@@ -184,16 +191,30 @@ FogEVMBytecodeDebugger >> installMenu [
 				addItem: [ :item | 
 					item
 						name: nil;
-						description: 'Open file';
-						icon: (self iconNamed: #openIcon);
-						action: [ self openSolidityFile ] ].
+						description: 'Deploying transaction';
+						icon: (self iconNamed: #addIcon);
+						action: [ self deployTransactionDialog ] ].
 			group
 				addItem: [ :item | 
 					item
 						name: nil;
-						description: 'Save File';
+						description: 'Message send transaction';
+						icon: (self iconNamed: #glamorousSpawn);
+						action: [ self invokeMethodDialog ] ].
+						group
+				addItem: [ :item | 
+					item
+						name: nil;
+						description: 'Send money';
+						icon: (self iconNamed: #glamorousSpawn);
+						action: [ self sendMoneyDialog ] ].
+			group
+				addItem: [ :item | 
+					item
+						name: nil;
+						description: 'Save session';
 						icon: (self iconNamed: #smallSaveIcon);
-						action: [ self saveSolidityFile ] ] ];
+						action: [ self saveSession ] ] ];
 		addGroup: [ :group | 
 			group
 				addItem: [ :item | 
@@ -259,7 +280,7 @@ FogEVMBytecodeDebugger >> noteBreakpoint [
 { #category : #opening }
 FogEVMBytecodeDebugger >> openSolidityFile [
 	| dialog |
-	dialog := FogEVMDebuggerSessionEdit new.
+	dialog := FogEVMNewTransactionDialog new.
 	dialog
 		whenConfirmed: [ :built :builder | 
 			self interpreter: built.

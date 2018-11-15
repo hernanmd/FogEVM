@@ -3,10 +3,31 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'dictionary',
-		'storageClass'
+		'storageClass',
+		'name'
+	],
+	#classInstVars : [
+		'instances'
 	],
 	#category : #'FogEVM-Environment-Storage'
 }
+
+{ #category : #accessing }
+FogEVMMemoryStorage class >> instances [
+	^ instances ifNil: [ instances := Set new ]
+]
+
+{ #category : #accessing }
+FogEVMMemoryStorage class >> named: aName [
+	^ self new
+		name: aName;
+		yourself
+]
+
+{ #category : #accessing }
+FogEVMMemoryStorage class >> new [
+	^ self instances add: super new
+]
 
 { #category : #accessing }
 FogEVMMemoryStorage >> at: aKey [
@@ -19,12 +40,28 @@ FogEVMMemoryStorage >> entries [
 ]
 
 { #category : #'debugger ui' }
+FogEVMMemoryStorage >> initialize [
+	super initialize.
+	name := UUID new asString
+]
+
+{ #category : #'debugger ui' }
+FogEVMMemoryStorage >> name [
+	^ name
+]
+
+{ #category : #'debugger ui' }
+FogEVMMemoryStorage >> name: aName [
+	name := aName
+]
+
+{ #category : #'debugger ui' }
 FogEVMMemoryStorage >> printOn: aStream [
 	aStream nextPutAll: ' Node storage - ('.
 	aStream
 		nextPutAll: self storage size asString;
 		nextPutAll: ' entries) - ';
-		nextPutAll: self class name
+		nextPutAll: name
 ]
 
 { #category : #accessing }
@@ -34,7 +71,6 @@ FogEVMMemoryStorage >> storage [
 
 { #category : #accessing }
 FogEVMMemoryStorage >> storageFor: aContractAddress state: aStateHash [
-	self flag: #WeshouldCareAboutTheMerkelTreeState.
 	^ self storage
 		at: aContractAddress
 		ifAbsentPut: [ FogEVMBucketStorage new

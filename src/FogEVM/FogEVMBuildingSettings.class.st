@@ -1,6 +1,6 @@
 Class {
 	#name : #FogEVMBuildingSettings,
-	#superclass : #ComposablePresenter,
+	#superclass : #ComposableWizardWidget,
 	#instVars : [
 		'interpreterSelector',
 		'memorySelector',

@@ -1,5 +1,5 @@
 Class {
-	#name : #FogEVMDebuggerSessionEdit,
+	#name : #FogEVMNewTransactionDialog,
 	#superclass : #ComposablePresenter,
 	#instVars : [
 		'interpreter',
@@ -16,7 +16,7 @@ Class {
 }
 
 { #category : #specs }
-FogEVMDebuggerSessionEdit class >> defaultSpec [
+FogEVMNewTransactionDialog class >> defaultSpec [
 	<spec>
 	^ SpecLayout composed
 		newColumn: [ :general | 
@@ -30,7 +30,7 @@ FogEVMDebuggerSessionEdit class >> defaultSpec [
 ]
 
 { #category : #initialization }
-FogEVMDebuggerSessionEdit >> accept [
+FogEVMNewTransactionDialog >> accept [
  whenConfirmed cull: self buildInterpreter cull: builder.
 	[ whenConfirmed cull: self buildInterpreter cull: builder.
 	self delete ]
@@ -39,7 +39,7 @@ FogEVMDebuggerSessionEdit >> accept [
 ]
 
 { #category : #building }
-FogEVMDebuggerSessionEdit >> buildInterpreter [
+FogEVMNewTransactionDialog >> buildInterpreter [
 
 	builder := FogEVMInterpreterBuilder new.
 	settings setUp: builder.
@@ -49,7 +49,7 @@ FogEVMDebuggerSessionEdit >> buildInterpreter [
 ]
 
 { #category : #initialization }
-FogEVMDebuggerSessionEdit >> buildTabManager [
+FogEVMNewTransactionDialog >> buildTabManager [
 	| tab |
 	tabManager := self newTabManager.
 	tab := self newTab.
@@ -73,22 +73,22 @@ FogEVMDebuggerSessionEdit >> buildTabManager [
 ]
 
 { #category : #accessing }
-FogEVMDebuggerSessionEdit >> callView [
+FogEVMNewTransactionDialog >> callView [
 	^ callView
 ]
 
 { #category : #initialization }
-FogEVMDebuggerSessionEdit >> cancel [
+FogEVMNewTransactionDialog >> cancel [
 	^ cancel
 ]
 
 { #category : #initialization }
-FogEVMDebuggerSessionEdit >> columnsToShow [
+FogEVMNewTransactionDialog >> columnsToShow [
 	^ settings columnsToShow
 ]
 
 { #category : #initialization }
-FogEVMDebuggerSessionEdit >> defaultActivationConfiguration [
+FogEVMNewTransactionDialog >> defaultActivationConfiguration [
 	| call activation |
 	call := FogEVMCall new.
 	call contractInput: #(0 0 0 0) asByteArray.
@@ -104,17 +104,15 @@ FogEVMDebuggerSessionEdit >> defaultActivationConfiguration [
 ]
 
 { #category : #initialization }
-FogEVMDebuggerSessionEdit >> defaultInterpreterConfiguration [
+FogEVMNewTransactionDialog >> defaultInterpreterConfiguration [
 	^ FogEVMTestInterpreter new 
 ]
 
 { #category : #initialization }
-FogEVMDebuggerSessionEdit >> initializeWidgets [
+FogEVMNewTransactionDialog >> initializeWidgets [
 	interpreterView := self instantiate: FogEVMInterpreterEdit.
 	callView := self instantiate: FogEVMActivationEdit.
 	settings := self instantiate: FogEVMBuildingSettings.
-	callView activation: self defaultActivationConfiguration.
-	interpreterView interpreter: self defaultInterpreterConfiguration.
 	ok := self newButton.
 	ok
 		label: 'Ok';
@@ -127,31 +125,31 @@ FogEVMDebuggerSessionEdit >> initializeWidgets [
 ]
 
 { #category : #accessing }
-FogEVMDebuggerSessionEdit >> interpreter [
+FogEVMNewTransactionDialog >> interpreter [
 	^ interpreter
 ]
 
 { #category : #accessing }
-FogEVMDebuggerSessionEdit >> interpreterView [
+FogEVMNewTransactionDialog >> interpreterView [
 	^ interpreterView
 ]
 
 { #category : #initialization }
-FogEVMDebuggerSessionEdit >> ok [
+FogEVMNewTransactionDialog >> ok [
 	^ ok
 ]
 
 { #category : #initialization }
-FogEVMDebuggerSessionEdit >> reject [
+FogEVMNewTransactionDialog >> reject [
 	^ self delete
 ]
 
 { #category : #initialization }
-FogEVMDebuggerSessionEdit >> tabManager [
+FogEVMNewTransactionDialog >> tabManager [
 	^ tabManager
 ]
 
 { #category : #accessing }
-FogEVMDebuggerSessionEdit >> whenConfirmed: aBlock [
+FogEVMNewTransactionDialog >> whenConfirmed: aBlock [
 	whenConfirmed:= aBlock
 ]
