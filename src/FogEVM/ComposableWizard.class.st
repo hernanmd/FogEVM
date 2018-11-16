@@ -33,7 +33,7 @@ ComposableWizard class >> defaultSpec [
 { #category : #actions }
 ComposableWizard >> acceptAction [
 	onAcceptDo value: self build. 
-	
+	self delete.
 ]
 
 { #category : #adding }
@@ -45,9 +45,17 @@ ComposableWizard >> addStep: aStep [
 	^ asStep
 ]
 
+{ #category : #actions }
+ComposableWizard >> basicNext [
+	stepsDone addLast: iterator.
+	iterator := iterator next.
+	self privateSetupIterator
+]
+
 { #category : #build }
 ComposableWizard >> build [
-	^ model
+
+	^ iterator build
 ]
 
 { #category : #accessing }
@@ -88,11 +96,8 @@ ComposableWizard >> nextAction [
 	iterator isDone
 		ifFalse: [ ^ self ].
 	iterator build.
-	stepsDone addLast: iterator.
-	iterator := iterator next.
-	iterator model: model.
-	view := iterator widgetAsNext.
-	self refresh
+	self basicNext.
+	
 ]
 
 { #category : #accessing }
@@ -116,12 +121,6 @@ ComposableWizard >> nextOrAcceptText [
 		ifFalse: [ 'Next' ]
 ]
 
-{ #category : #adding }
-ComposableWizard >> on: aTwoOptionalParametersBlock addStep: aStep [
-	aStep setCriteria: aTwoOptionalParametersBlock.
-	^ self addStep: aStep
-]
-
 { #category : #api }
 ComposableWizard >> openOnModel: aModel [
 	^ self openOnModel: aModel withSpec: self defaultSpecSelector.
@@ -130,6 +129,7 @@ ComposableWizard >> openOnModel: aModel [
 { #category : #api }
 ComposableWizard >> openOnModel: aModel withSpec: aSpec [
  	model := aModel.
+	self privateSetupIterator.
 	^ super openWithSpec: aSpec
 ]
 
@@ -157,9 +157,17 @@ ComposableWizard >> previousLabelText [
 ]
 
 { #category : #actions }
+ComposableWizard >> privateSetupIterator [
+	self iterator model: model.
+	view := self iterator widgetAsNext.
+	self setLabels .
+	self refresh
+]
+
+{ #category : #actions }
 ComposableWizard >> refresh [
 	self needRebuild.
-	window value rebuildWithSpecLayout: self defaultSpec.
+	window value ifNotNil: [window value rebuildWithSpecLayout: self defaultSpec].
 	self updatePresenter
 ]
 
@@ -174,6 +182,5 @@ ComposableWizard >> setLabels [
 
 { #category : #accessing }
 ComposableWizard >> view [
-	self setLabels.
-	^ view ifNil:[ view := self iterator widget ]
+	^ view
 ]

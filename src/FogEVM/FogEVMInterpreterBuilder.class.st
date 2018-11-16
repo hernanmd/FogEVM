@@ -2,12 +2,6 @@ Class {
 	#name : #FogEVMInterpreterBuilder,
 	#superclass : #Object,
 	#instVars : [
-		'interpreterClass',
-		'memoryClass',
-		'storageClass',
-		'bytecode',
-		'callData',
-		'interpreterData',
 		'interpreter',
 		'contract',
 		'executing',
@@ -21,10 +15,39 @@ Class {
 		'blockHash',
 		'shoulIinstallContract',
 		'columnsToShow',
-		'binaryData'
+		'kind',
+		'binaryData',
+		'useFogValues',
+		'session'
 	],
-	#category : #'FogEVM-UIDebugger-Open'
+	#classVars : [
+		'registeredStorages'
+	],
+	#classInstVars : [
+		'registeredStorages'
+	],
+	#category : #'FogEVM-UIDebugger-Builder'
 }
+
+{ #category : #accessing }
+FogEVMInterpreterBuilder >> allDeployedContracts [
+	^ interpreter storage allDeployedContracts
+]
+
+{ #category : #accessing }
+FogEVMInterpreterBuilder >> availableInterpreters [
+	^ { FogEVMSimulatorInterpreter }
+]
+
+{ #category : #accessing }
+FogEVMInterpreterBuilder >> availableMemory [
+	^ {FogEVMMemory} , FogEVMMemory allSubclasses
+]
+
+{ #category : #accessing }
+FogEVMInterpreterBuilder >> availableStorage [
+		^ self registeredStorages asArray, {FogEVMMemoryStorage} , FogEVMMemoryStorage allSubclasses
+]
 
 { #category : #settings }
 FogEVMInterpreterBuilder >> blockDifficulty: aFogEVMRegistry startedAt: aDateAndTime timestamp: aDateAndTime3 gasLimit: aFogEVMRegistry4 blockNumber: aFogEVMRegistry5 blockHash: aFogEVMRegistry6 [
@@ -46,15 +69,24 @@ FogEVMInterpreterBuilder >> build [
 		ifTrue: [ interpreter installContract: contract at: contract address ].
 	interpreter pushActivation: activation.
 	interpreter isConfigurable
-		ifTrue: [ interpreter
+		ifTrue: [ interpreter dataResolver: self buildDataResolver].
+	interpreter restart.
+	^ interpreter
+]
+
+{ #category : #accessing }
+FogEVMInterpreterBuilder >> buildDataResolver [
+	^ useFogValues
+		ifTrue: [ FogEVMFogDataResolver new
+				fog: session;
+				yourself ]
+		ifFalse: [ FogEVMMockedDataResolver new
 				blockDifficulty: blockDifficulty;
 				startedAt: startedAt;
 				timestamp: timestamp;
 				gasLimit: gasLimit;
 				blockNumber: blockNumber;
-				blockHash: blockHash ].
-	interpreter restart.
-	^ interpreter
+				blockHash: blockHash ]
 ]
 
 { #category : #testing }
@@ -68,18 +100,24 @@ FogEVMInterpreterBuilder >> columnsToShow: anAmount [
 ]
 
 { #category : #accessing }
-FogEVMInterpreterBuilder >> contractBytecode: aCollection named: aString [ 
-	self shouldBeImplemented.
+FogEVMInterpreterBuilder >> defaultInterpreter [
+	^  FogEVMSimulatorInterpreter 
 ]
 
 { #category : #accessing }
-FogEVMInterpreterBuilder >> contractBytecode: aBinaryData named: aName deploying: aBytecodeSelector [
-	| selector |
-	binaryData := aBinaryData.
-	selector := aBytecodeSelector = #Deploy
-		ifTrue: [ #binary ]
-		ifFalse: [ #runtime ].
-	executing := FogEVMByteCode fromBinary: (aBinaryData at: selector)
+FogEVMInterpreterBuilder >> defaultMemory [
+	^ FogEVMTraceableMemory
+]
+
+{ #category : #accessing }
+FogEVMInterpreterBuilder >> defaultStorage [
+	^ self availableStorage first
+]
+
+{ #category : #building }
+FogEVMInterpreterBuilder >> fogURL: anUrl [
+
+	session := (FogConnection on: anUrl) nonCachedSession . 
 ]
 
 { #category : #setting }
@@ -99,14 +137,65 @@ FogEVMInterpreterBuilder >> from: from to: to contract: contractAddress context:
 	^ activation
 ]
 
+{ #category : #accessing }
+FogEVMInterpreterBuilder >> input [
+	^ binaryData
+]
+
+{ #category : #building }
+FogEVMInterpreterBuilder >> input: aString [
+	binaryData := aString.
+	executing := FogEVMByteCode fromBinary: binaryData
+]
+
 { #category : #setting }
 FogEVMInterpreterBuilder >> interpreterClass: anInterpreterClass memoryClass: aMemoryClass storageClass: aStorageClass [
+	| storage |
 	interpreter := anInterpreterClass new.
 	interpreter installMemory: aMemoryClass new.
-	interpreter installStorage: aStorageClass new
+	storage := aStorageClass isClass
+		ifTrue: [ aStorageClass new ]
+		ifFalse: [ aStorageClass ].
+	interpreter installStorage: storage.
+	self registeredStorages add: storage
+]
+
+{ #category : #setting }
+FogEVMInterpreterBuilder >> isActivation [
+	^ kind = #Activate
+]
+
+{ #category : #testing }
+FogEVMInterpreterBuilder >> isDeploy [
+	^ kind = #Deploy
+]
+
+{ #category : #setting }
+FogEVMInterpreterBuilder >> isTransference [
+	^ kind = #Transfer
+]
+
+{ #category : #setting }
+FogEVMInterpreterBuilder >> registeredStorages [
+	^ registeredStorages ifNil: [ registeredStorages := Set new ] 
+]
+
+{ #category : #accessing }
+FogEVMInterpreterBuilder >> session [
+	^ session
+]
+
+{ #category : #setting }
+FogEVMInterpreterBuilder >> setKindOfTrasaction: aKind [
+	kind := aKind
 ]
 
 { #category : #testing }
 FogEVMInterpreterBuilder >> shoulIinstallContract [
 	^ shoulIinstallContract ifNil: [ false ]
+]
+
+{ #category : #building }
+FogEVMInterpreterBuilder >> useFogValues: aBoolean [
+	useFogValues := aBoolean
 ]

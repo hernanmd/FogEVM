@@ -8,10 +8,10 @@ Class {
 		'contract',
 		'context',
 		'input',
-		'value',
 		'empty',
 		'gas',
-		'gasPrice'
+		'gasPrice',
+		'transferValue'
 	],
 	#classInstVars : [
 		'mainLabel'
@@ -33,10 +33,10 @@ FogEVMActivationView class >> defaultSpec [
 						add: #to height: 25;
 						add: #contract height: 25;
 						add: #context height: 25;
-						add: #input height: 25;
-						add: #value height: 25;
+						add: #transferValue height: 25;
 						add: #gas height: 25;
 						add: #gasPrice height: 25;
+						add: #input ;
 						add: #empty height: 25 ];
 				newColumn: #empty width: 10 ]
 ]
@@ -52,8 +52,8 @@ FogEVMActivationView >> activation: anObject [
 	from text: activation call callerAddress.
 	to text: activation call contractAddress.
 	contract text: (activation contract ifNil: [''] ifNotNil: [: val | val address]).
-	input text: (String streamContents: [ :str | activation call contractInput printOn: str ]).
-	value text: activation call callValue unsignedValue .
+	input subwidget text: (String streamContents: [ :str | activation call contractInput printOn: str ]).
+	transferValue text: activation call callValue unsignedValue .
 	context text: activation contextualAccount printString.
 	gas text: activation gas unsignedValue printString.
 	gasPrice  text: activation gasPrice  unsignedValue printString.
@@ -114,10 +114,11 @@ FogEVMActivationView >> initializeWidgets [
 	contract label: 'Contract:'.
 	context := self instantiate: LabelledTextInput.
 	context label: 'Context:'.
-	input := self instantiate: LabelledTextInput.
+	input := self instantiate: LabelledContainer.
 	input label: 'Input:'.
-	value := self instantiate: LabelledTextInput.
-	value label: 'Value:'.
+	input subwidget: self newText.	 
+	transferValue := self instantiate: LabelledTextInput.
+	transferValue label: 'Value:'.
 	gas := self instantiate: LabelledTextInput.
 	gas label: 'Gas:'.
 	gasPrice := self instantiate: LabelledTextInput.
@@ -147,11 +148,11 @@ FogEVMActivationView >> to: anObject [
 ]
 
 { #category : #accessing }
-FogEVMActivationView >> value [
-	^ value
+FogEVMActivationView >> transferValue [
+	^ transferValue
 ]
 
 { #category : #accessing }
-FogEVMActivationView >> value: anObject [
-	value := anObject
+FogEVMActivationView >> transferValue: anObject [
+	transferValue := anObject
 ]

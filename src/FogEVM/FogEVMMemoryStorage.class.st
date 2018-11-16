@@ -30,6 +30,12 @@ FogEVMMemoryStorage class >> new [
 ]
 
 { #category : #accessing }
+FogEVMMemoryStorage >> allDeployedContracts [
+	dictionary ifNil: [ ^ {} ].
+	^ dictionary values select: #isContract thenCollect: #address
+]
+
+{ #category : #accessing }
 FogEVMMemoryStorage >> at: aKey [
 	^ self storage at: aKey
 ]
@@ -47,7 +53,7 @@ FogEVMMemoryStorage >> initialize [
 
 { #category : #'debugger ui' }
 FogEVMMemoryStorage >> name [
-	^ name
+	^ String streamContents: [ :str | self printOn: str ]
 ]
 
 { #category : #'debugger ui' }

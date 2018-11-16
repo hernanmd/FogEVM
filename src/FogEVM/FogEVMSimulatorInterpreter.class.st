@@ -24,12 +24,22 @@ FogEVMSimulatorInterpreter >> currentBlockNumber [
 
 { #category : #accessing }
 FogEVMSimulatorInterpreter >> dataResolver [
-	^ dataResolver ifNil: [ dataResolver := FogEVMFogDataResolver new ]
+	^ dataResolver 
+]
+
+{ #category : #accessing }
+FogEVMSimulatorInterpreter >> dataResolver: aResolver [ 
+	^ dataResolver := aResolver
 ]
 
 { #category : #accessing }
 FogEVMSimulatorInterpreter >> gasLimit [
 	^ FogEVMRegistry forValue: self dataResolver gasLimit bytesLength: 32
+]
+
+{ #category : #accessing }
+FogEVMSimulatorInterpreter >> isConfigurable [
+	^ true
 ]
 
 { #category : #accessing }

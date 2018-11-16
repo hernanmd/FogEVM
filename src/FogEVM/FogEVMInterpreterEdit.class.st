@@ -1,10 +1,12 @@
 Class {
 	#name : #FogEVMInterpreterEdit,
 	#superclass : #FogEVMInterpreterView,
+	#traits : 'TComposableWizardWidget',
+	#classTraits : 'TComposableWizardWidget classTrait',
 	#instVars : [
 		'mockedRandomValues',
 		'nodeDelegate',
-		'mockGeneratedValues'
+		'useFogValues'
 	],
 	#category : #'FogEVM-UIDebugger-Open'
 }
@@ -34,6 +36,11 @@ FogEVMInterpreterEdit class >> defaultSpec [
 		yourself
 ]
 
+{ #category : #accessing }
+FogEVMInterpreterEdit >> build [
+	^ self setUp: model
+]
+
 { #category : #generating }
 FogEVMInterpreterEdit >> generateValues [
 	| now random |
@@ -50,9 +57,12 @@ FogEVMInterpreterEdit >> generateValues [
 { #category : #initialization }
 FogEVMInterpreterEdit >> initializeWidgets [
 	super initializeWidgets.
-	mockGeneratedValues := self newButton.
-	mockGeneratedValues label: 'Random'.
-	mockGeneratedValues action: [ self generateValues ].
+	useFogValues := self newCheckBox.
+	useFogValues label: 'Use node information'.
+	useFogValues
+		whenActivatedDo: [ self switchState: true ];
+		whenDeactivatedDo: [ self switchState: false ].
+	useFogValues state: true.
 	blockDifficulty autoAccept.
 	startedTime autoAccept.
 	timestamp autoAccept.
@@ -63,16 +73,30 @@ FogEVMInterpreterEdit >> initializeWidgets [
 
 { #category : #initialization }
 FogEVMInterpreterEdit >> mockGeneratedValues [
-	^ mockGeneratedValues
+	^ useFogValues
 ]
 
 { #category : #initialization }
 FogEVMInterpreterEdit >> setUp: aFogEVMInterpreterBuilder [
-	aFogEVMInterpreterBuilder
-		blockDifficulty: (FogEVMRegistry fromPrintString: blockDifficulty text asString length: 8)
-		startedAt: startedTime text asString asDateAndTime
-		timestamp: timestamp text asString asDateAndTime
-		gasLimit: (FogEVMRegistry fromPrintString: gasLimit text asString length: 8)
-		blockNumber: (FogEVMRegistry fromPrintString: blockNumber text asString length: 8)
-		blockHash: (FogEVMRegistry fromPrintString: blockHash text asString length: 32)
+	aFogEVMInterpreterBuilder useFogValues: useFogValues state.
+	useFogValues state
+		ifFalse: [ aFogEVMInterpreterBuilder
+				blockDifficulty: (FogEVMRegistry fromPrintString: blockDifficulty text asString length: 8)
+				startedAt: startedTime text asString asDateAndTime
+				timestamp: timestamp text asString asDateAndTime
+				gasLimit: (FogEVMRegistry fromPrintString: gasLimit text asString length: 8)
+				blockNumber: (FogEVMRegistry fromPrintString: blockNumber text asString length: 8)
+				blockHash: (FogEVMRegistry fromPrintString: blockHash text asString length: 32) ]
+]
+
+{ #category : #initialization }
+FogEVMInterpreterEdit >> switchState: aBoolean [
+	aBoolean
+		ifTrue: [ blockDifficulty text: ''.
+			startedTime text: ''.
+			timestamp text: ''.
+			gasLimit text: ''.
+			blockNumber text: ''.
+			blockHash text: '' ]
+		ifFalse: [ self generateValues ]
 ]

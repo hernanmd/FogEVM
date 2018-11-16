@@ -1,14 +1,16 @@
 Class {
 	#name : #FogEVMBuildingClassSettings,
-	#superclass : #ComposableWizardWidget,
+	#superclass : #ComposablePresenter,
+	#traits : 'TComposableWizardWidget',
+	#classTraits : 'TComposableWizardWidget classTrait',
 	#instVars : [
 		'kind',
 		'interpreterSelector',
 		'memorySelector',
 		'storageSelector',
-		'chooseFileButton',
 		'empty',
-		'memoryColumns'
+		'memoryColumns',
+		'fogUrl'
 	],
 	#category : #'FogEVM-UIDebugger-Open'
 }
@@ -23,29 +25,17 @@ FogEVMBuildingClassSettings class >> defaultSpec [
 					left
 						newRow: #interpreterSelector height: 25;
 						newRow: #memorySelector height: 25;
+						newRow: #storageSelector height: 25;
 						newRow: #memoryColumns height: 25;
+						newRow: #fogUrl  height: 25;
+						newRow: #kind height: 25;
 						newRow: #empty height: 25 ];
 				newColumn: #empty width: 10 ]
 ]
 
 { #category : #initialization }
-FogEVMBuildingClassSettings >> availableInterpreters [
-	^ {FogEVMAbstractInterpreter} , FogEVMAbstractInterpreter allSubclasses
-]
-
-{ #category : #initialization }
-FogEVMBuildingClassSettings >> availableMemory [
-	^ {FogEVMMemory} , FogEVMMemory allSubclasses
-]
-
-{ #category : #initialization }
-FogEVMBuildingClassSettings >> availableStorage [
-		^ {FogEVMMemoryStorage} , FogEVMMemoryStorage allSubclasses
-]
-
-{ #category : #initialization }
-FogEVMBuildingClassSettings >> chooseFileButton [
-	^ chooseFileButton
+FogEVMBuildingClassSettings >> build [ 	
+	self setUp: model
 ]
 
 { #category : #accessing }
@@ -54,30 +44,33 @@ FogEVMBuildingClassSettings >> empty [
 ]
 
 { #category : #initialization }
+FogEVMBuildingClassSettings >> fogUrl [
+	^ fogUrl
+]
+
+{ #category : #initialization }
 FogEVMBuildingClassSettings >> initializeWidgets [
 	interpreterSelector := self instantiate: LabelledDropList.
 	interpreterSelector label: 'Interpreter:'.
-	interpreterSelector
-		items: self availableInterpreters;
-		displayBlock: [ :item | item name ].
+	interpreterSelector displayBlock: [ :item | item name ].
 	memoryColumns := self instantiate: LabelledDropList.
 	memoryColumns label: 'Memory visualization columns'.
 	memoryColumns items: {8 . 16 . 32 . 64 . 128}.
 	memorySelector := self instantiate: LabelledDropList.
 	memorySelector label: 'Memory Layout'.
-	memorySelector
-		items: self availableMemory;
-		displayBlock: [ :item | item name ].
+	memorySelector displayBlock: [ :item | item name ].
 	storageSelector := self instantiate: LabelledDropList.
 	storageSelector label: 'Storage '.
-	storageSelector
-		items: self availableStorage;
-		displayBlock: [ :item | item name ].
+	storageSelector displayBlock: [ :item | item name ].
 	empty := self newLabel.
 	empty label: ''.
+	fogUrl := self instantiate: LabelledTextInput.
+	fogUrl label: 'GETH RPC'.
+	fogUrl autoAccept: true.
+	fogUrl text: 'http://localhost:8545'.
 	kind := self instantiate: LabelledDropList.
-	kind items: {'Deploy contract' . 'Activate method' . 'Transfer money'}.
-	kind label: 'Kind of transaction'.
+	kind items: {#Deploy . #Activate . #Transfer}.
+	kind label: 'Transaction'.
 	self setDefaults
 ]
 
@@ -91,6 +84,11 @@ FogEVMBuildingClassSettings >> isDeploy [
 	^ kind selectedItem beginsWith: 'Deploy'
 ]
 
+{ #category : #initialization }
+FogEVMBuildingClassSettings >> kind [
+	^ kind
+]
+
 { #category : #accessing }
 FogEVMBuildingClassSettings >> memoryColumns [
 	^ memoryColumns
@@ -101,11 +99,19 @@ FogEVMBuildingClassSettings >> memorySelector [
 	^ memorySelector
 ]
 
+{ #category : #accessing }
+FogEVMBuildingClassSettings >> model: aModel [
+	model := aModel.
+	storageSelector items: aModel availableStorage.
+	memorySelector items: aModel availableMemory.
+	interpreterSelector items: aModel availableInterpreters.
+	interpreterSelector setSelectedItem: aModel defaultInterpreter.
+	memorySelector setSelectedItem: aModel defaultMemory.
+	storageSelector setSelectedItem: aModel defaultStorage
+]
+
 { #category : #initialization }
 FogEVMBuildingClassSettings >> setDefaults [
-	interpreterSelector setSelectedItem: FogEVMSimulatorInterpreter .
-	memorySelector setSelectedItem: FogEVMTraceableMemory.
-	storageSelector setSelectedItem: FogEVMMemoryStorage.
 	memoryColumns setSelectedItem: 32
 ]
 
@@ -115,7 +121,9 @@ FogEVMBuildingClassSettings >> setUp: aFogEVMInterpreterBuilder [
 		interpreterClass: interpreterSelector selectedItem
 		memoryClass: memorySelector selectedItem
 		storageClass: storageSelector selectedItem.
-	aFogEVMInterpreterBuilder columnsToShow: memoryColumns selectedItem
+	aFogEVMInterpreterBuilder columnsToShow: memoryColumns selectedItem.
+	aFogEVMInterpreterBuilder setKindOfTrasaction: kind selectedItem asSymbol.
+	aFogEVMInterpreterBuilder fogURL: fogUrl text.
 ]
 
 { #category : #accessing }

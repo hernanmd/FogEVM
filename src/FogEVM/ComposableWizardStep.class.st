@@ -24,7 +24,7 @@ ComposableWizardStep >> asStep [
 
 { #category : #adding }
 ComposableWizardStep >> atEnd [ 
-	^ self next isNil 
+	^ outgoing isEmpty 
 ]
 
 { #category : #adding }
@@ -84,7 +84,7 @@ ComposableWizardStep >> shouldFollow: aPreviouwsStep [
 
 { #category : #adding }
 ComposableWizardStep >> widget [
-	^ widget value
+	^widget := widget value
 ]
 
 { #category : #adding }

@@ -111,8 +111,8 @@ FogEVMNewTransactionDialog >> defaultInterpreterConfiguration [
 { #category : #initialization }
 FogEVMNewTransactionDialog >> initializeWidgets [
 	interpreterView := self instantiate: FogEVMInterpreterEdit.
-	callView := self instantiate: FogEVMActivationEdit.
-	settings := self instantiate: FogEVMBuildingSettings.
+	callView := self instantiate: FogEVMActivationForDeploy.
+	settings := self instantiate: FogEVMBytecodeLoadingWidget.
 	ok := self newButton.
 	ok
 		label: 'Ok';

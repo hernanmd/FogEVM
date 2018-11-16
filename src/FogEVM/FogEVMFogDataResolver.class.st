@@ -34,14 +34,13 @@ FogEVMFogDataResolver >> currentBlockNumber [
 ]
 
 { #category : #accessing }
-FogEVMFogDataResolver >> gasLimit [
-	^ (fog findBlockByTag: #latest full: false) gasLimit
+FogEVMFogDataResolver >> fog: aSession [
+	fog := aSession
 ]
 
 { #category : #accessing }
-FogEVMFogDataResolver >> initialize [
-	super initialize.
-	fog ifNil: [ fog := FogConnection createDefaultConnection session ]
+FogEVMFogDataResolver >> gasLimit [
+	^ (fog findBlockByTag: #latest full: false) gasLimit
 ]
 
 { #category : #accessing }

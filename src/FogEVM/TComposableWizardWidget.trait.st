@@ -1,6 +1,5 @@
-Class {
-	#name : #ComposableWizardWidget,
-	#superclass : #ITOptionPanel,
+Trait {
+	#name : #TComposableWizardWidget,
 	#instVars : [
 		'model'
 	],
@@ -8,38 +7,38 @@ Class {
 }
 
 { #category : #accessing }
-ComposableWizardWidget >> asStep [
+TComposableWizardWidget >> asStep [
 	^ ComposableWizardStep new
 		widget: self;
 		yourself
 ]
 
 { #category : #accessing }
-ComposableWizardWidget >> build [
+TComposableWizardWidget >> build [
 	^ model
 ]
 
 { #category : #accessing }
-ComposableWizardWidget >> isDone [
+TComposableWizardWidget >> isDone [
 	^ true
 ]
 
 { #category : #accessing }
-ComposableWizardWidget >> model [
+TComposableWizardWidget >> model [
 	^ model
 ]
 
 { #category : #accessing }
-ComposableWizardWidget >> model: aModel [
+TComposableWizardWidget >> model: aModel [
 	model := aModel
 ]
 
 { #category : #accessing }
-ComposableWizardWidget >> widgetAsNext [
+TComposableWizardWidget >> widgetAsNext [
 	^ self 
 ]
 
 { #category : #accessing }
-ComposableWizardWidget >> widgetAsPrevious [
+TComposableWizardWidget >> widgetAsPrevious [
 	^ self 
 ]
