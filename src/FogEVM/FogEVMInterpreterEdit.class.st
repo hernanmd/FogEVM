@@ -38,7 +38,8 @@ FogEVMInterpreterEdit class >> defaultSpec [
 
 { #category : #accessing }
 FogEVMInterpreterEdit >> build [
-	^ self setUp: model
+	self setUp: model.
+	^ model.
 ]
 
 { #category : #generating }
@@ -86,7 +87,7 @@ FogEVMInterpreterEdit >> setUp: aFogEVMInterpreterBuilder [
 				timestamp: timestamp text asString asDateAndTime
 				gasLimit: (FogEVMRegistry fromPrintString: gasLimit text asString length: 8)
 				blockNumber: (FogEVMRegistry fromPrintString: blockNumber text asString length: 8)
-				blockHash: (FogEVMRegistry fromPrintString: blockHash text asString length: 32) ]
+				blockHash: (FogEVMRegistry fromPrintString: '0x' , blockHash text asString length: 32) ]
 ]
 
 { #category : #initialization }

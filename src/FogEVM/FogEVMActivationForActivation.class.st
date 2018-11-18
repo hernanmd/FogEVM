@@ -30,6 +30,12 @@ FogEVMActivationForActivation class >> defaultSpec [
 ]
 
 { #category : #accessing }
+FogEVMActivationForActivation >> build [
+	self setUp: model.
+	^ model
+]
+
+{ #category : #accessing }
 FogEVMActivationForActivation >> createByteArrayFor: aString [
 	| parsedInput |
 
@@ -47,7 +53,7 @@ FogEVMActivationForActivation >> createByteArrayFor: aString [
 FogEVMActivationForActivation >> createRegistryFor: aString length: anInteger [
 	^ aString isEmpty
 		ifTrue: [ FogEVMRegistry forValue: 0 bytesLength: anInteger ]
-		
+		ifFalse: [  FogEVMRegistry forValue: aString asNumber  bytesLength: anInteger ]
 ]
 
 { #category : #accessing }

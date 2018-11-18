@@ -105,11 +105,6 @@ FogEVMBytecodeDebugger >> context: anObject [
 	context := anObject
 ]
 
-{ #category : #transacrion }
-FogEVMBytecodeDebugger >> deployTransactionDialog [
-	self openSolidityFile 
-]
-
 { #category : #weirdos }
 FogEVMBytecodeDebugger >> empty [
 	^ empty ifNil: [ empty := FogEVMEmpty new ]
@@ -193,21 +188,7 @@ FogEVMBytecodeDebugger >> installMenu [
 						name: nil;
 						description: 'Deploying transaction';
 						icon: (self iconNamed: #addIcon);
-						action: [ self deployTransactionDialog ] ].
-			group
-				addItem: [ :item | 
-					item
-						name: nil;
-						description: 'Message send transaction';
-						icon: (self iconNamed: #glamorousSpawn);
-						action: [ self invokeMethodDialog ] ].
-						group
-				addItem: [ :item | 
-					item
-						name: nil;
-						description: 'Send money';
-						icon: (self iconNamed: #glamorousSpawn);
-						action: [ self sendMoneyDialog ] ].
+						action: [ self openSolidityFile ] ].
 			group
 				addItem: [ :item | 
 					item
@@ -279,13 +260,19 @@ FogEVMBytecodeDebugger >> noteBreakpoint [
 
 { #category : #opening }
 FogEVMBytecodeDebugger >> openSolidityFile [
-	| dialog |
-	dialog := FogEVMNewTransactionDialog new.
-	dialog
-		whenConfirmed: [ :built :builder | 
-			self interpreter: built.
-			memory showColumns: builder columnsToShow ].
-	dialog openWithSpec extent: 597.0 @ 404.0
+	| wizard steps activationBranch deployBranch transferenceBranch |
+	wizard := ComposableWizard new.
+	steps := wizard addStep: FogEVMBuildingClassSettings new.
+	activationBranch := steps on: [ :widget :model | model isActivation ] stepTo: [ FogEVMInputGenerationForActivation new ].
+	(activationBranch addStep: [ FogEVMActivationForActivation new ]) addStep: [ FogEVMInterpreterEdit new ].
+	deployBranch := steps on: [ :widget :model | model isDeploy ] stepTo: [ FogEVMInputGenerationForDeploy new ].
+	(deployBranch addStep: [ FogEVMActivationForDeploy new ]) addStep: [ FogEVMInterpreterEdit new ].
+	transferenceBranch := steps on: [ :widget :model | model isTransference ] stepTo: [ FogEVMEtherTransferSettings new ].
+	wizard openOnModel: FogEVMInterpreterBuilder new.
+	wizard
+		onAcceptDo: [ :builder | 
+			self interpreter: builder build.
+			memory showColumns: builder columnsToShow ]
 ]
 
 { #category : #accessing }

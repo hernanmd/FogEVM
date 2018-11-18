@@ -34,8 +34,9 @@ FogEVMBuildingClassSettings class >> defaultSpec [
 ]
 
 { #category : #initialization }
-FogEVMBuildingClassSettings >> build [ 	
-	self setUp: model
+FogEVMBuildingClassSettings >> build [
+	self setUp: model.
+	^ model
 ]
 
 { #category : #accessing }

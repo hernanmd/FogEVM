@@ -121,6 +121,11 @@ ComposableWizard >> nextOrAcceptText [
 		ifFalse: [ 'Next' ]
 ]
 
+{ #category : #initialization }
+ComposableWizard >> onAcceptDo: aBlock [
+	onAcceptDo := aBlock
+]
+
 { #category : #api }
 ComposableWizard >> openOnModel: aModel [
 	^ self openOnModel: aModel withSpec: self defaultSpecSelector.

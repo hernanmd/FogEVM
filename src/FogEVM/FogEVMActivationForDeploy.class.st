@@ -52,7 +52,8 @@ FogEVMActivationForDeploy class >> defaultSpec [
 
 { #category : #accessing }
 FogEVMActivationForDeploy >> build [
-	^ self setUp: model
+	self setUp: model.
+	^ model
 ]
 
 { #category : #initialization }
@@ -73,7 +74,7 @@ FogEVMActivationForDeploy >> createByteArrayFor: aString [
 FogEVMActivationForDeploy >> createRegistryFor: aString length: anInteger [
 	^ aString isEmpty
 		ifTrue: [ FogEVMRegistry forValue: 0 bytesLength: anInteger ]
-		
+		ifFalse: [  FogEVMRegistry forValue: aString asNumber  bytesLength: anInteger ]
 ]
 
 { #category : #initialization }
@@ -99,7 +100,7 @@ FogEVMActivationForDeploy >> setUp: aFogEVMInterpreterBuilder [
 	| fromRegistry   inputByteArray valueRegistry  gasRegistry gasPriceRegistry |
 	fromRegistry := self createRegistryFor: from text asString length: 20.
 	valueRegistry :=  FogEVMRegistry zero.
-	inputByteArray := self createByteArrayFor: input text asString.
+	inputByteArray :=  input text asString.
 	gasRegistry := self createRegistryFor: gas text asString length: 8.
 	gasPriceRegistry := self createRegistryFor: gasPrice text asString length: 8.
 	^ aFogEVMInterpreterBuilder

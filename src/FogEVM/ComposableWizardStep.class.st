@@ -29,7 +29,7 @@ ComposableWizardStep >> atEnd [
 
 { #category : #adding }
 ComposableWizardStep >> build [
-	widget build
+	^ widget build
 ]
 
 { #category : #adding }

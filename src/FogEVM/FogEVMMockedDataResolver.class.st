@@ -51,7 +51,7 @@ FogEVMMockedDataResolver >> blockNumber: aFogEVMRegistry [
 
 { #category : #accessing }
 FogEVMMockedDataResolver >> currentBlockNumber [
-	^ currentBlockNumber 
+	^ blockNumber  unsignedValue
 ]
 
 { #category : #accessing }
@@ -61,7 +61,7 @@ FogEVMMockedDataResolver >> currentBlockNumber: anObject [
 
 { #category : #accessing }
 FogEVMMockedDataResolver >> gasLimit [
-	^ gasLimit
+	^ gasLimit unsignedValue
 ]
 
 { #category : #accessing }
@@ -87,6 +87,11 @@ FogEVMMockedDataResolver >> startedAt [
 { #category : #accessing }
 FogEVMMockedDataResolver >> startedAt: aDateAndTime [
 	startedAt := aDateAndTime
+]
+
+{ #category : #accessing }
+FogEVMMockedDataResolver >> startedTime [
+	^ startedAt 
 ]
 
 { #category : #accessing }

@@ -3,7 +3,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'interpreter',
-		'contract',
 		'executing',
 		'contractsCodeAddress',
 		'activation',
@@ -13,12 +12,12 @@ Class {
 		'gasLimit',
 		'blockNumber',
 		'blockHash',
-		'shoulIinstallContract',
 		'columnsToShow',
 		'kind',
 		'binaryData',
 		'useFogValues',
-		'session'
+		'session',
+		'shouldIinstallContract'
 	],
 	#classVars : [
 		'registeredStorages'
@@ -29,22 +28,22 @@ Class {
 	#category : #'FogEVM-UIDebugger-Builder'
 }
 
-{ #category : #accessing }
+{ #category : #'default values' }
 FogEVMInterpreterBuilder >> allDeployedContracts [
 	^ interpreter storage allDeployedContracts
 ]
 
-{ #category : #accessing }
+{ #category : #'default values' }
 FogEVMInterpreterBuilder >> availableInterpreters [
 	^ { FogEVMSimulatorInterpreter }
 ]
 
-{ #category : #accessing }
+{ #category : #'default values' }
 FogEVMInterpreterBuilder >> availableMemory [
 	^ {FogEVMMemory} , FogEVMMemory allSubclasses
 ]
 
-{ #category : #accessing }
+{ #category : #'default values' }
 FogEVMInterpreterBuilder >> availableStorage [
 		^ self registeredStorages asArray, {FogEVMMemoryStorage} , FogEVMMemoryStorage allSubclasses
 ]
@@ -59,22 +58,17 @@ FogEVMInterpreterBuilder >> blockDifficulty: aFogEVMRegistry startedAt: aDateAnd
 	blockHash := aFogEVMRegistry6
 ]
 
-{ #category : #accessing }
+{ #category : #build }
 FogEVMInterpreterBuilder >> build [
-	contract := FogEVMContract new
-		bytecode: executing;
-		address: contractsCodeAddress yourself.
-	activation contract: contract.
-	self shoulIinstallContract
-		ifTrue: [ interpreter installContract: contract at: contract address ].
+	activation contract: self resolveContract.
 	interpreter pushActivation: activation.
 	interpreter isConfigurable
-		ifTrue: [ interpreter dataResolver: self buildDataResolver].
+		ifTrue: [ interpreter dataResolver: self buildDataResolver ].
 	interpreter restart.
 	^ interpreter
 ]
 
-{ #category : #accessing }
+{ #category : #build }
 FogEVMInterpreterBuilder >> buildDataResolver [
 	^ useFogValues
 		ifTrue: [ FogEVMFogDataResolver new
@@ -89,6 +83,11 @@ FogEVMInterpreterBuilder >> buildDataResolver [
 				blockHash: blockHash ]
 ]
 
+{ #category : #settings }
+FogEVMInterpreterBuilder >> bytecodIsInTheInput [
+	^ activation call contractAddress isNil
+]
+
 { #category : #testing }
 FogEVMInterpreterBuilder >> columnsToShow [
 	^ columnsToShow
@@ -99,28 +98,28 @@ FogEVMInterpreterBuilder >> columnsToShow: anAmount [
 	columnsToShow := anAmount
 ]
 
-{ #category : #accessing }
+{ #category : #'default values' }
 FogEVMInterpreterBuilder >> defaultInterpreter [
 	^  FogEVMSimulatorInterpreter 
 ]
 
-{ #category : #accessing }
+{ #category : #'default values' }
 FogEVMInterpreterBuilder >> defaultMemory [
 	^ FogEVMTraceableMemory
 ]
 
-{ #category : #accessing }
+{ #category : #'default values' }
 FogEVMInterpreterBuilder >> defaultStorage [
 	^ self availableStorage first
 ]
 
-{ #category : #building }
+{ #category : #settings }
 FogEVMInterpreterBuilder >> fogURL: anUrl [
 
 	session := (FogConnection on: anUrl) nonCachedSession . 
 ]
 
-{ #category : #setting }
+{ #category : #settings }
 FogEVMInterpreterBuilder >> from: from to: to contract: contractAddress context: contextAddress input: aCollection value: aValue gas: gas gasPrice: gasPrice [
 	| call |
 	call := FogEVMCall new.
@@ -142,13 +141,13 @@ FogEVMInterpreterBuilder >> input [
 	^ binaryData
 ]
 
-{ #category : #building }
+{ #category : #settings }
 FogEVMInterpreterBuilder >> input: aString [
 	binaryData := aString.
-	executing := FogEVMByteCode fromBinary: binaryData
+	
 ]
 
-{ #category : #setting }
+{ #category : #settings }
 FogEVMInterpreterBuilder >> interpreterClass: anInterpreterClass memoryClass: aMemoryClass storageClass: aStorageClass [
 	| storage |
 	interpreter := anInterpreterClass new.
@@ -160,7 +159,7 @@ FogEVMInterpreterBuilder >> interpreterClass: anInterpreterClass memoryClass: aM
 	self registeredStorages add: storage
 ]
 
-{ #category : #setting }
+{ #category : #testing }
 FogEVMInterpreterBuilder >> isActivation [
 	^ kind = #Activate
 ]
@@ -170,14 +169,28 @@ FogEVMInterpreterBuilder >> isDeploy [
 	^ kind = #Deploy
 ]
 
-{ #category : #setting }
+{ #category : #testing }
 FogEVMInterpreterBuilder >> isTransference [
 	^ kind = #Transfer
 ]
 
-{ #category : #setting }
+{ #category : #settings }
 FogEVMInterpreterBuilder >> registeredStorages [
 	^ registeredStorages ifNil: [ registeredStorages := Set new ] 
+]
+
+{ #category : #build }
+FogEVMInterpreterBuilder >> resolveContract [
+	^ self bytecodIsInTheInput
+		ifTrue: [ | contract |
+			executing := FogEVMByteCode fromBinary: binaryData.
+			contract := FogEVMContract new
+				bytecode: executing;
+				address: (Keccak hashMessage: executing hash asString) asByteArray hex;
+				yourself.
+			interpreter installContract: contract at: contract address.
+			contract ]
+		ifFalse: [ (interpreter storageFor: activation call to) contract ]
 ]
 
 { #category : #accessing }
@@ -185,17 +198,12 @@ FogEVMInterpreterBuilder >> session [
 	^ session
 ]
 
-{ #category : #setting }
+{ #category : #settings }
 FogEVMInterpreterBuilder >> setKindOfTrasaction: aKind [
 	kind := aKind
 ]
 
-{ #category : #testing }
-FogEVMInterpreterBuilder >> shoulIinstallContract [
-	^ shoulIinstallContract ifNil: [ false ]
-]
-
-{ #category : #building }
+{ #category : #settings }
 FogEVMInterpreterBuilder >> useFogValues: aBoolean [
 	useFogValues := aBoolean
 ]

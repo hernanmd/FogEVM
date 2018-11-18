@@ -49,7 +49,8 @@ FogEVMBytecodeLoadingWidget >> availableStorage [
 
 { #category : #accessing }
 FogEVMBytecodeLoadingWidget >> build [
-	^ self setUp: model
+	self setUp: model.
+	^ model
 ]
 
 { #category : #initialization }
