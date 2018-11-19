@@ -16,7 +16,8 @@ Class {
 		'stepControl',
 		'interpreterView',
 		'menu',
-		'sideTabs'
+		'sideTabs',
+		'code'
 	],
 	#category : #'FogEVM-UIDebugger'
 }
@@ -161,7 +162,9 @@ FogEVMBytecodeDebugger >> installContextualdata [
 	sideTabs := self newTabManager. 
 	context := self instantiate: FogEVMActivationView.
 	interpreterView := self instantiate: FogEVMInterpreterView.
+	code := self newText.
 	
+
 	tab := self newTab.
 	tab closeable: false.
 	tab
@@ -174,6 +177,12 @@ FogEVMBytecodeDebugger >> installContextualdata [
 	tab
 		label: 'Interpreter context';
 		presenter: interpreterView.
+	sideTabs addTab: tab. 
+	tab := self newTab.
+	tab closeable: false.
+	tab
+		label: 'Solidity code';
+		presenter: code.
 	sideTabs addTab: tab. 
 	
 ]
@@ -260,19 +269,20 @@ FogEVMBytecodeDebugger >> noteBreakpoint [
 
 { #category : #opening }
 FogEVMBytecodeDebugger >> openSolidityFile [
-	| wizard steps activationBranch deployBranch transferenceBranch |
+	| wizard steps activationBranch deployBranch |
 	wizard := ComposableWizard new.
 	steps := wizard addStep: FogEVMBuildingClassSettings new.
 	activationBranch := steps on: [ :widget :model | model isActivation ] stepTo: [ FogEVMInputGenerationForActivation new ].
 	(activationBranch addStep: [ FogEVMActivationForActivation new ]) addStep: [ FogEVMInterpreterEdit new ].
 	deployBranch := steps on: [ :widget :model | model isDeploy ] stepTo: [ FogEVMInputGenerationForDeploy new ].
 	(deployBranch addStep: [ FogEVMActivationForDeploy new ]) addStep: [ FogEVMInterpreterEdit new ].
-	transferenceBranch := steps on: [ :widget :model | model isTransference ] stepTo: [ FogEVMEtherTransferSettings new ].
+	steps on: [ :widget :model | model isTransference ] stepTo: [ FogEVMEtherTransferSettings new ].
 	wizard openOnModel: FogEVMInterpreterBuilder new.
 	wizard
 		onAcceptDo: [ :builder | 
 			self interpreter: builder build.
-			memory showColumns: builder columnsToShow ]
+			memory showColumns: builder columnsToShow.
+			code text: builder sourceCode ]
 ]
 
 { #category : #accessing }

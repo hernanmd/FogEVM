@@ -166,7 +166,7 @@ FogEVMAbstractInterpreter >> cancelBreakOnAddress: anAddress [
 
 { #category : #accessing }
 FogEVMAbstractInterpreter >> contractInput [
-	^ self call contractInput 
+	^ self currentActivation call contractInput 
 ]
 
 { #category : #convenience }
@@ -499,7 +499,8 @@ FogEVMAbstractInterpreter >> visitAnd: aFogVMAnd [
 	| a b |
 	a := self pop.
 	b := self pop.
-	self push: a & b
+	
+	self push: (a & b)
 ]
 
 { #category : #'visit - account' }
@@ -582,9 +583,15 @@ FogEVMAbstractInterpreter >> visitCalldatacopy: aFogVMCalldatacopy [
 
 { #category : #'visit - call' }
 FogEVMAbstractInterpreter >> visitCalldataload: aFogVMCalldataload [
-	| id segment |
+	| id segment upTo data |
 	id := self pop.
-	segment := (self contractInput copyFrom: id unsignedValue to: id unsignedValue + 31) asInteger .
+	id := id unsignedValue + 1.
+	upTo := id + 31 min: self contractInput size.
+	data := self contractInput copyFrom: id to: upTo.
+	data size < 32
+		ifTrue: [ data := data , (ByteArray new: 32 - data size).
+			data at: data size put: 1 ].
+	segment := data asInteger.
 	self push: (FogEVMRegistry forValue: segment bytesLength: 32)
 ]
 
@@ -605,13 +612,15 @@ FogEVMAbstractInterpreter >> visitCallvalue: aFogVMCallvalue [
 
 { #category : #'visit - call' }
 FogEVMAbstractInterpreter >> visitCodecopy: aFogVMCodecopy [
-	| loadingArea fromByte amountOfBytes loadedData  to |
+	| loadingArea fromByte from amountOfBytes loadedData  to |
 	loadingArea := self pop.
 	fromByte := self pop.
 	amountOfBytes := self pop.
-	to := fromByte unsignedValue + amountOfBytes unsignedValue - 1.
+	
+	from := fromByte unsignedValue + 1 .
+	to :=  from + amountOfBytes unsignedValue - 1.
 
-	loadedData := self currentActivation binaryBytecode copyFrom: fromByte unsignedValue to: to.
+	loadedData := self currentActivation binaryBytecode copyFrom: from to: to.
 	self memory store: loadedData at: loadingArea unsignedValue ensure: amountOfBytes unsignedValue
 	"
 	hexa := program toHexa.
@@ -666,7 +675,7 @@ FogEVMAbstractInterpreter >> visitDiv: aFogVMDiv [
 	self
 		push:
 			(numerator isZero
-				ifTrue: [ 0 ]
+				ifTrue: [ FogEVMRegistry zero ]
 				ifFalse: [ numerator // denom ])
 ]
 
@@ -913,6 +922,9 @@ FogEVMAbstractInterpreter >> visitReturn: aFogVMReturn [
 	to := self pop.
 	return := self memory loadFrom: from unsignedValue bytes: to unsignedValue.
 	self currentActivation return: return.
+	self currentActivation isContractDeploy
+		ifTrue: [ self currentActivation contract
+				bytecode: (FogEVMByteCode fromBinary: self currentActivation return hex) ].
 	
 ]
 
@@ -1081,9 +1093,6 @@ FogEVMAbstractInterpreter >> visitStaticcall: aFogVMStaticcall [
 { #category : #'visit - flow' }
 FogEVMAbstractInterpreter >> visitStop: aFogVMStop [
 	self currentActivation stop.
-	self currentActivation isContractDeploy
-		ifTrue: [ self currentActivation contract
-				bytecode: (FogEVMByteCode fromBinary: self currentActivation return hex) ].
 	
 ]
 

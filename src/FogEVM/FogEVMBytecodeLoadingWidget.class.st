@@ -9,7 +9,8 @@ Class {
 		'empty',
 		'description',
 		'contractSelector',
-		'package'
+		'package',
+		'sourceCode'
 	],
 	#category : #'FogEVM-UIDebugger-Open'
 }
@@ -107,6 +108,7 @@ FogEVMBytecodeLoadingWidget >> openFileDialog [
 		openModal.
 	file
 		ifNotNil: [ fileSelector text: file asString.
+			sourceCode := file readStream upToEnd.
 			package := self session loadPackageForFileReference: file.
 			contractSelector items: package descriptions asOrderedCollection ]
 ]

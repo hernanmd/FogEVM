@@ -52,5 +52,6 @@ FogEVMInputGenerationForDeploy >> manageSelectedContract: anObject [
 
 { #category : #initialization }
 FogEVMInputGenerationForDeploy >> setUp: aFogEVMInterpreterBuilder [
-	aFogEVMInterpreterBuilder input: (constructor generateInput: self session and: contract)
+	aFogEVMInterpreterBuilder input: (constructor generateInput: self session and: contract).
+	aFogEVMInterpreterBuilder sourceCode: sourceCode
 ]

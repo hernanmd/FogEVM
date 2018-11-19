@@ -32,7 +32,7 @@ FogEVMMemoryStorage class >> new [
 { #category : #accessing }
 FogEVMMemoryStorage >> allDeployedContracts [
 	dictionary ifNil: [ ^ {} ].
-	^ dictionary values select: #isContract thenCollect: #address
+	^ dictionary values select: #isContract thenCollect: [ :b | b contract address ]
 ]
 
 { #category : #accessing }

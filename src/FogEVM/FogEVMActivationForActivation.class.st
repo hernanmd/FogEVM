@@ -38,9 +38,9 @@ FogEVMActivationForActivation >> build [
 { #category : #accessing }
 FogEVMActivationForActivation >> createByteArrayFor: aString [
 	| parsedInput |
-
+	self flag: #ShouldNotUseLikethisTheRegistry.
 	(aString trim beginsWith: '0x')
-		ifTrue: [ ^ (FogEVMRegistry fromPrintString: aString length: 32) byteArray ].
+		ifTrue: [ ^ (FogEVMRegistry fromPrintString: aString length:( aString size /2) -1 ) byteArray ].
 	parsedInput := RBParser parseExpression: aString.
 	parsedInput isLiteralNode
 		ifFalse: [ ^ self error: 'Byte array expected!' ].
@@ -53,7 +53,7 @@ FogEVMActivationForActivation >> createByteArrayFor: aString [
 FogEVMActivationForActivation >> createRegistryFor: aString length: anInteger [
 	^ aString isEmpty
 		ifTrue: [ FogEVMRegistry forValue: 0 bytesLength: anInteger ]
-		ifFalse: [  FogEVMRegistry forValue: aString asNumber  bytesLength: anInteger ]
+		ifFalse: [  FogEVMRegistry fromPrintString: aString length: anInteger ]
 ]
 
 { #category : #accessing }
@@ -79,12 +79,12 @@ FogEVMActivationForActivation >> model: aModel [
 FogEVMActivationForActivation >> setUp: aFogEVMInterpreterBuilder [
 	| fromRegistry toRegistry contractAddress inputByteArray valueRegistry contextAddress gasRegistry gasPriceRegistry |
 	fromRegistry := self createRegistryFor: from text asString length: 20.
-	toRegistry := self createRegistryFor: to text asString length: 20.
-	contractAddress := self
-		createRegistryFor: (contract text asString ifEmpty: [ toRegistry asString ])
-		length: 20.
+	toRegistry := to selectedItem.
+	contractAddress := contract text asString ifEmpty: [ toRegistry  ].
+
 	valueRegistry := self createRegistryFor: transferValue text asString length: 8.
 	contextAddress := self createRegistryFor: context text asString length: 20.
+
 	inputByteArray := self createByteArrayFor: input text asString.
 	gasRegistry := self createRegistryFor: gas text asString length: 8.
 	gasPriceRegistry := self createRegistryFor: gasPrice text asString length: 8.

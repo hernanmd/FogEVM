@@ -129,11 +129,9 @@ FogEVMRegistry class >> zero [
 				yourself ]
 ]
 
-{ #category : #'logical operations' }
+{ #category : #'bitwise logical operations' }
 FogEVMRegistry >> & aFogEVMRegistry [
-	^ self booleanValue & aFogEVMRegistry booleanValue
-		ifTrue: [ self class true ]
-		ifFalse: [ self class false ]
+	^ self class forValue: (self unsignedValue bitAnd: aFogEVMRegistry unsignedValue) bytesLength: 32
 ]
 
 { #category : #arithmetics }
@@ -163,7 +161,7 @@ FogEVMRegistry >> // aFogEVMRegistry [
 		maskedAs: aFogEVMRegistry
 ]
 
-{ #category : #bit }
+{ #category : #'bit manipulation' }
 FogEVMRegistry >> << aFogEVMRegistry [
 	^ FogEVMRegistry forValue: self unsignedValue << aFogEVMRegistry unsignedValue maskedAs: self
 ]
@@ -257,9 +255,9 @@ FogEVMRegistry >> hex [
 
 { #category : #flow }
 FogEVMRegistry >> ifTrue: aBlockClosure ifFalse: aBlockClosure2 [
-	^ self unsignedValue == 1
-		ifTrue: aBlockClosure
-		ifFalse: aBlockClosure2
+	^ self unsignedValue == 0
+		ifFalse: aBlockClosure
+		ifTrue: aBlockClosure2
 ]
 
 { #category : #testing }
@@ -291,11 +289,9 @@ FogEVMRegistry >> mask: anInteger [
 	mask := anInteger
 ]
 
-{ #category : #'logical operations' }
+{ #category : #'bitwise logical operations' }
 FogEVMRegistry >> not [
-	^ self booleanValue not
-		ifTrue: [ self class true ]
-		ifFalse: [ self class false ]
+	^ self class forValue: (self unsignedValue bitXor: mask) bytesLength: 32
 ]
 
 { #category : #testing }
@@ -386,16 +382,14 @@ FogEVMRegistry >> values [
 	^{ }
 ]
 
-{ #category : #'logical operations' }
+{ #category : #'bitwise logical operations' }
 FogEVMRegistry >> xor: aFogEVMRegistry [
 	^ (self booleanValue xor: aFogEVMRegistry booleanValue)
 		ifTrue: [ self class true ]
 		ifFalse: [ self class false ]
 ]
 
-{ #category : #'logical operations' }
+{ #category : #'bitwise logical operations' }
 FogEVMRegistry >> | aFogEVMRegistry [
-	^ self booleanValue | aFogEVMRegistry booleanValue
-		ifTrue: [ self class true ]
-		ifFalse: [ self class false ]
+		^ self class forValue: (self unsignedValue bitOr: aFogEVMRegistry unsignedValue) bytesLength: 32
 ]

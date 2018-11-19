@@ -52,5 +52,6 @@ FogEVMInputGenerationForActivation >> methods [
 
 { #category : #initialization }
 FogEVMInputGenerationForActivation >> setUp: aFogEVMInterpreterBuilder [
-	aFogEVMInterpreterBuilder input: (methods generateInput: self session and: contract)
+	aFogEVMInterpreterBuilder input: (methods generateInput: self session and: contract).
+	aFogEVMInterpreterBuilder sourceCode: sourceCode
 ]

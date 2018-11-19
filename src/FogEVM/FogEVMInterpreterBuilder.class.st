@@ -17,7 +17,8 @@ Class {
 		'binaryData',
 		'useFogValues',
 		'session',
-		'shouldIinstallContract'
+		'shouldIinstallContract',
+		'sourceCode'
 	],
 	#classVars : [
 		'registeredStorages'
@@ -196,11 +197,11 @@ FogEVMInterpreterBuilder >> resolveContract [
 			executing := FogEVMByteCode fromBinary: binaryData.
 			contract := FogEVMContract new
 				bytecode: executing;
-				address: (Keccak hashMessage: executing hash asString) asByteArray hex;
+				address: (FogEVMRegistry forValue: (Keccak hashMessage: executing hash asString) asByteArray hex asNumber bytesLength: 20);
 				yourself.
 			interpreter installContract: contract at: contract address.
 			contract ]
-		ifFalse: [ (interpreter storageFor: activation call to) contract ]
+		ifFalse: [ (interpreter storageFor: activation call contractAddress) contract ]
 ]
 
 { #category : #accessing }
@@ -211,6 +212,16 @@ FogEVMInterpreterBuilder >> session [
 { #category : #settings }
 FogEVMInterpreterBuilder >> setKindOfTrasaction: aKind [
 	kind := aKind
+]
+
+{ #category : #accessing }
+FogEVMInterpreterBuilder >> sourceCode [
+	^ sourceCode
+]
+
+{ #category : #accessing }
+FogEVMInterpreterBuilder >> sourceCode: aString [ 
+	sourceCode := aString
 ]
 
 { #category : #settings }
