@@ -85,7 +85,7 @@ FogEVMContractsByteCodeTest >> testCALL [
 		
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter pop unsignedValue equals: 0.
+	self assert: interpreter pop unsignedValue equals: 1.
 	
 ]
 
@@ -137,7 +137,7 @@ FogEVMContractsByteCodeTest >> testCALLCODE [
 		usign: gas.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter pop unsignedValue equals: 0
+	self assert: interpreter pop unsignedValue equals: 1
 ]
 
 { #category : #test }
@@ -268,7 +268,7 @@ FogEVMContractsByteCodeTest >> testDELEGATECALL [
 		usign: gas.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter pop unsignedValue equals: 0
+	self assert: interpreter pop unsignedValue equals: 1
 ]
 
 { #category : #test }

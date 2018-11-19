@@ -408,7 +408,7 @@ FogEVMAbstractInterpreter >> runtimeState [
 
 { #category : #'call activation' }
 FogEVMAbstractInterpreter >> sendToContract: aContract contextualAccount: aContextAccount from: anCallingAccount contractInput: anInput returnOffset: aFogEVMRegistryReturnOffset returnSize: aFogEVMRegistryReturnSize gas: aGas gasPrice: aGasPrice transferring: aValue [
-	| computationSuccess | 
+	| computationSuccess |
 	self
 		pushActivation:
 			(self
@@ -419,9 +419,19 @@ FogEVMAbstractInterpreter >> sendToContract: aContract contextualAccount: aConte
 				callingAccount: anCallingAccount
 				gasPrice: aGasPrice
 				contract: aContract).
-	[self interpret. computationSuccess:= FogEVMRegistry one ] on: Error do: [ : e | e signal.self registerError: e. computationSuccess := FogEVMRegistry zero ].
-	self copyReturnAt: aFogEVMRegistryReturnOffset unsignedValue sinceByte: 1 length: aFogEVMRegistryReturnSize unsignedValue.
-	self push: computationSuccess .
+				
+	[ self interpret.
+	computationSuccess := FogEVMRegistry one ]
+		on: Error
+		do: [ :e | 
+			e signal.
+			self registerError: e.
+			computationSuccess := FogEVMRegistry zero ].
+	self
+		copyReturnAt: aFogEVMRegistryReturnOffset unsignedValue
+		sinceByte: 1
+		length: aFogEVMRegistryReturnSize unsignedValue.
+	self push: computationSuccess.
 	^ self popActivation return
 ]
 
