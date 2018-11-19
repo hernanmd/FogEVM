@@ -2301,4 +2301,5 @@ FogEVMUnitaryTest >> setUp [
 	interpreter := FogEVMTestInterpreter new.
 	interpreter call: FogEVMAbstractInterpreter exampleCall.
 	interpreter installMemory: FogEVMTraceableMemory new.
+	interpreter installStorage: FogEVMMemoryStorage new.
 ]

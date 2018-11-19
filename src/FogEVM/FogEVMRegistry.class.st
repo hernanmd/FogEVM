@@ -189,6 +189,16 @@ FogEVMRegistry >> asPushableRegistry [
 ]
 
 { #category : #converting }
+FogEVMRegistry >> asRegistryLengthArray [
+	| content wordarray delta |
+	content := self byteArray.
+	delta := self byteLengthRepresentation - content size.
+	wordarray := ByteArray new: self byteLengthRepresentation .
+	1 to: content size do: [ :idx | wordarray at: delta + idx put: (content at: idx) ].
+	^ wordarray 
+]
+
+{ #category : #converting }
 FogEVMRegistry >> asWordByteArray [
 	| content wordarray delta |
 	content := self byteArray.
@@ -211,6 +221,11 @@ FogEVMRegistry >> byteArray [
 { #category : #accessing }
 FogEVMRegistry >> byteAt: aFogEVMRegistry [
 	^ FogEVMRegistry forValue: (self byteArray at: aFogEVMRegistry unsignedValue) bytesLength: 1
+]
+
+{ #category : #converting }
+FogEVMRegistry >> byteLengthRepresentation [
+	^ (mask hex asString copyReplaceAll: '16r' with: '') size / 2
 ]
 
 { #category : #enumerating }

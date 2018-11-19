@@ -83,3 +83,8 @@ FogEVMMemoryStorage >> storageFor: aContractAddress state: aStateHash [
 				address: aContractAddress;
 				yourself ]
 ]
+
+{ #category : #accesssing }
+FogEVMMemoryStorage >> storageFor: aContractAddress state: aString ifAbsent: aBlockClosure [
+	^ self storage at: aContractAddress ifAbsent: [ aBlockClosure value ]
+]

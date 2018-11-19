@@ -128,7 +128,7 @@ FogEVMActivation >> indexForMemoryAddress: anAddress ifNone: aBlock [
 FogEVMActivation >> initializeInstructionPointer [
 	self setInstructionPointerToByte: (FogEVMRegistry forValue: self executableMemory first byteNumber bytesLength: 8).
 	isFinish := false.
-	return := nil.
+	
 ]
 
 { #category : #testing }

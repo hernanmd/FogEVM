@@ -595,15 +595,13 @@ FogEVMAbstractInterpreter >> visitCallvalue: aFogVMCallvalue [
 
 { #category : #'visit - call' }
 FogEVMAbstractInterpreter >> visitCodecopy: aFogVMCodecopy [
-	| loadingArea fromByte amountOfBytes loadedData from to |
+	| loadingArea fromByte amountOfBytes loadedData  to |
 	loadingArea := self pop.
 	fromByte := self pop.
 	amountOfBytes := self pop.
-	
-	from := fromByte unsignedValue -1 .
-	to := from + amountOfBytes unsignedValue - 1.
+	to := fromByte unsignedValue + amountOfBytes unsignedValue - 1.
 
-	loadedData := self currentActivation binaryBytecode copyFrom: from to: to.
+	loadedData := self currentActivation binaryBytecode copyFrom: fromByte unsignedValue to: to.
 	self memory store: loadedData at: loadingArea unsignedValue ensure: amountOfBytes unsignedValue
 	"
 	hexa := program toHexa.
@@ -1076,8 +1074,7 @@ FogEVMAbstractInterpreter >> visitStop: aFogVMStop [
 	self currentActivation isContractDeploy
 		ifTrue: [ self currentActivation contract
 				bytecode: (FogEVMByteCode fromBinary: self currentActivation return hex) ].
-	activations size = 1
-		ifFalse: [ self popActivation ]
+	
 ]
 
 { #category : #'visit - arithmetics' }

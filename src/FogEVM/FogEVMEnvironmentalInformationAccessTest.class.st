@@ -73,7 +73,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLDATACOPY [
 	bytecode := self createBytecodeForCALLDATACOPY: 1 data: 3 length: 5.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter memory loadFrom: 1 bytes: 6) equals: (interpreter contractInput copyFrom: 3 to: 8)
+	self assert: (interpreter memory loadFrom: 1 bytes: 5) equals: (interpreter contractInput copyFrom: 3 to: 7)
 ]
 
 { #category : #test }
@@ -151,10 +151,10 @@ FogEVMEnvironmentalInformationAccessTest >> testCODECOPY [
 
 	interpreter.intPool.put(memOffset, codeOffset, length)
 	retu"
-	bytecode := self createBytecodeForCODECOPY: 1 code: 2 length: 3.
+	bytecode := self createBytecodeForCODECOPY: 2 code: 1 length: 3.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter memory loadFrom: 1 bytes: 4) equals: (bytecode toBinary copyFrom: 2 to: 2 + 3)
+	self assert: (interpreter memory loadFrom: 2 bytes: 3) equals: (bytecode toBinary copyFrom: 1 to:  3)
 ]
 
 { #category : #test }
@@ -268,7 +268,7 @@ FogEVMEnvironmentalInformationAccessTest >> testEXTCODESIZE [
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		
-		self assert: interpreter pop unsignedValue equals: bytecode bytecodeSize .
+		self assert: interpreter pop unsignedValue equals: bytecode bytecodeSize.
 		
 
 ]
