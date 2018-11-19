@@ -324,7 +324,8 @@ FogEVMBytecodeDebugger >> stepControl [
 
 { #category : #'interpreter actions' }
 FogEVMBytecodeDebugger >> stepOne [
-	interpreter executeNextInstruction.
+	interpreter currentActivation isFinished
+		ifFalse: [ interpreter executeNextInstruction ].
 	self transferPreview
 ]
 
@@ -355,5 +356,7 @@ FogEVMBytecodeDebugger >> transferData [
 FogEVMBytecodeDebugger >> transferPreview [
 	preview preview loadResultFrom: interpreter stack.
 	executed register: preview preview.
-	preview preview: (FogEVMExecutionPreview from: interpreter currentActivation nextInstruction and: interpreter stack)
+	interpreter currentActivation isFinished
+		ifFalse: [ preview preview: (FogEVMExecutionPreview from: interpreter currentActivation nextInstruction and: interpreter stack) ]
+		ifTrue: [ preview preview: nil ]
 ]

@@ -123,7 +123,7 @@ FogEVMInterpreterBuilder >> fogURL: anUrl [
 FogEVMInterpreterBuilder >> from: from to: to contract: contractAddress context: contextAddress input: aCollection value: aValue gas: gas gasPrice: gasPrice [
 	| call |
 	call := FogEVMCall new.
-	call contractInput: aCollection asByteArray.
+	call contractInput: aCollection.
 	call callerAddress: from.
 	call contractAddress: to.
 	call callValue: aValue.

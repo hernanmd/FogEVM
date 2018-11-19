@@ -91,7 +91,7 @@ FogEVMNewTransactionDialog >> columnsToShow [
 FogEVMNewTransactionDialog >> defaultActivationConfiguration [
 	| call activation |
 	call := FogEVMCall new.
-	call contractInput: #(0 0 0 0) asByteArray.
+	call contractInput: '0x'.
 	call callerAddress: (FogEVMRegistry forValue: 16rb4ebf466889c4a0239379125a7d0f9c4e8bf2a14 bytesLength: 20).
 	call contractAddress: (FogEVMRegistry forValue: 16r81bfba8301a073a010e9fb71fab514e53d1cc3f0 bytesLength: 20).
 	call callValue: (FogEVMRegistry forValue: 0 bytesLength: 32).

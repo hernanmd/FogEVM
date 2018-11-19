@@ -46,8 +46,11 @@ FogEVMBytecodeExecutionPreview >> preview [
 { #category : #initialization }
 FogEVMBytecodeExecutionPreview >> preview: aPreview [
 	preview := aPreview.
-	instruction label: aPreview instruction instruction mnemonic.
-	aPreview instruction instruction isPush
-		ifTrue: [ args label: aPreview instruction instruction parameter printString ]
-		ifFalse: [ args label: ('[{1}]' format: {('][' join: (aPreview args collect: #printString))}) ]
+	preview
+		ifNil: [ instruction label: ' '.
+			args label: 'Finished' ]
+		ifNotNil: [ instruction label: aPreview instruction instruction mnemonic.
+			aPreview instruction instruction isPush
+				ifTrue: [ args label: aPreview instruction instruction parameter printString ]
+				ifFalse: [ args label: ('[{1}]' format: {('][' join: (aPreview args collect: #printString))}) ] ]
 ]
