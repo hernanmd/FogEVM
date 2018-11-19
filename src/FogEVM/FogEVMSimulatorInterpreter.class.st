@@ -48,6 +48,12 @@ FogEVMSimulatorInterpreter >> minerAddress [
 ]
 
 { #category : #accessing }
+FogEVMSimulatorInterpreter >> restart [
+	memory restart.
+	super restart.
+]
+
+{ #category : #accessing }
 FogEVMSimulatorInterpreter >> stack [
 	^ stack
 ]

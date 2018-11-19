@@ -10,7 +10,9 @@ Class {
 		'storageSelector',
 		'empty',
 		'memoryColumns',
-		'fogUrl'
+		'fogUrl',
+		'eraseAllStorages',
+		'eraseOneStorage'
 	],
 	#category : #'FogEVM-UIDebugger-Open'
 }
@@ -25,9 +27,14 @@ FogEVMBuildingClassSettings class >> defaultSpec [
 					left
 						newRow: #interpreterSelector height: 25;
 						newRow: #memorySelector height: 25;
-						newRow: #storageSelector height: 25;
+						newRow: [ :st | 
+							st
+								add: #storageSelector;
+								add: #eraseAllStorages width: 30;
+								add: #eraseOneStorage width: 30 ]
+							height: 30;
 						newRow: #memoryColumns height: 25;
-						newRow: #fogUrl  height: 25;
+						newRow: #fogUrl height: 25;
 						newRow: #kind height: 25;
 						newRow: #empty height: 25 ];
 				newColumn: #empty width: 10 ]
@@ -45,6 +52,28 @@ FogEVMBuildingClassSettings >> empty [
 ]
 
 { #category : #initialization }
+FogEVMBuildingClassSettings >> eraseAllAvailableStorages [
+	model eraseAllAvailableStorages.
+	storageSelector setSelectedItem: model defaultStorage
+]
+
+{ #category : #accessing }
+FogEVMBuildingClassSettings >> eraseAllStorages [
+	^ eraseAllStorages
+]
+
+{ #category : #accessing }
+FogEVMBuildingClassSettings >> eraseOneStorage [
+	^ eraseOneStorage 
+]
+
+{ #category : #initialization }
+FogEVMBuildingClassSettings >> eraseSelectedStorage [
+	model eraseStorage: storageSelector selectedItem.
+	storageSelector setSelectedItem: model defaultStorage
+]
+
+{ #category : #initialization }
 FogEVMBuildingClassSettings >> fogUrl [
 	^ fogUrl
 ]
@@ -54,6 +83,14 @@ FogEVMBuildingClassSettings >> initializeWidgets [
 	interpreterSelector := self instantiate: LabelledDropList.
 	interpreterSelector label: 'Interpreter:'.
 	interpreterSelector displayBlock: [ :item | item name ].
+	eraseAllStorages := self newButton
+		icon: (self iconNamed: #delete);
+		action: [ self eraseAllAvailableStorages ];
+		help: 'Delete all the existing storages'.
+	eraseOneStorage := self newButton
+		icon: (self iconNamed: #glamorousRemove);
+		action: [ self eraseSelectedStorage ];
+		help: 'Delete  the selected storage'.
 	memoryColumns := self instantiate: LabelledDropList.
 	memoryColumns label: 'Memory visualization columns'.
 	memoryColumns items: {8 . 16 . 32 . 64 . 128}.

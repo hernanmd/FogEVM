@@ -113,6 +113,16 @@ FogEVMInterpreterBuilder >> defaultStorage [
 	^ self availableStorage first
 ]
 
+{ #category : #'default values' }
+FogEVMInterpreterBuilder >> eraseAllAvailableStorages [
+	registeredStorages removeAll.
+]
+
+{ #category : #testing }
+FogEVMInterpreterBuilder >> eraseStorage: aStorage [
+	registeredStorages remove: aStorage ifAbsent: [  ].
+]
+
 { #category : #settings }
 FogEVMInterpreterBuilder >> fogURL: anUrl [
 

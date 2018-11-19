@@ -79,14 +79,14 @@ FogEVMBytecodeDebugger >> bindComponents [
 	context activation: interpreter currentActivation.
 	bytecode elements: interpreter currentActivation executableMemory.
 	bytecode ip: interpreter currentActivation nextInstruction.
-	preview preview: (FogEVMExecutionPreview from: interpreter currentActivation nextInstruction and: interpreter stack).
+	preview
+		preview:
+			(FogEVMExecutionPreview
+				from: interpreter currentActivation nextInstruction
+				and: interpreter stack).
 	stack stack: interpreter stack.
 	store storage: interpreter storage.
 	memory memory: interpreter memory.
-	"	interpreterView := (GTInspector new openOn: interpreter)
-		close;
-		extent: 300.0 @ 400.0;
-		asSpecAdapter	"
 	interpreterView interpreter: interpreter
 ]
 
@@ -331,6 +331,8 @@ FogEVMBytecodeDebugger >> stepOne [
 
 { #category : #'interpreter actions' }
 FogEVMBytecodeDebugger >> stepOneInstructionOnInterpreter [
+	interpreter currentActivation isFinished
+		ifTrue: [ ^ self ].
 	self stepOne.
 	self transferData
 ]
@@ -349,7 +351,8 @@ FogEVMBytecodeDebugger >> transferData [
 	stack refresh.
 	store storage: interpreter storage.
 	store refresh.
-	memory refresh
+	memory refresh.
+	
 ]
 
 { #category : #initialization }

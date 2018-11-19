@@ -8,6 +8,7 @@ Class {
 		'gasLimit',
 		'blockNumber',
 		'blockHash',
+		'activationStack',
 		'empty'
 	],
 	#category : #'FogEVM-UIDebugger-Tools'

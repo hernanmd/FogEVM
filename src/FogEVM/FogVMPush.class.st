@@ -130,7 +130,7 @@ FogVMPush >> parameter: aString [
 FogVMPush >> printBinaryOn: aStream [
 	| stream |
 	super printBinaryOn: aStream.
-	aStream nextPutAll: self asPushableRegistry asWordByteArray.
+	aStream nextPutAll: self asPushableRegistry asByteArray .
 	
 ]
 

@@ -8,6 +8,7 @@ Class {
 		'contract',
 		'context',
 		'input',
+		'return',
 		'empty',
 		'gas',
 		'gasPrice',
@@ -37,6 +38,7 @@ FogEVMActivationView class >> defaultSpec [
 						add: #gas height: 25;
 						add: #gasPrice height: 25;
 						add: #input ;
+						add: #return;
 						add: #empty height: 25 ];
 				newColumn: #empty width: 10 ]
 ]
@@ -49,14 +51,20 @@ FogEVMActivationView >> activation [
 { #category : #accessing }
 FogEVMActivationView >> activation: anObject [
 	activation := anObject.
+	self bindValues.
+]
+
+{ #category : #accessing }
+FogEVMActivationView >> bindValues [
 	from text: activation call callerAddress.
 	to text: activation call contractAddress.
-	contract text: (activation contract ifNil: [''] ifNotNil: [: val | val address]).
+	contract text: (activation contract ifNil: [ '' ] ifNotNil: [ :val | val address ]).
 	input subwidget text: (String streamContents: [ :str | activation call contractInput printOn: str ]).
-	transferValue text: activation call callValue unsignedValue .
+	transferValue text: activation call callValue unsignedValue.
 	context text: activation contextualAccount printString.
 	gas text: activation gas unsignedValue printString.
-	gasPrice  text: activation gasPrice  unsignedValue printString.
+	gasPrice text: activation gasPrice unsignedValue printString.
+	return text: activation return printString
 ]
 
 { #category : #accessing }
@@ -116,7 +124,10 @@ FogEVMActivationView >> initializeWidgets [
 	context label: 'Context:'.
 	input := self instantiate: LabelledContainer.
 	input label: 'Input:'.
-	input subwidget: self newText.	 
+	input subwidget: self newText.
+	return := self instantiate: LabelledContainer.
+	return label: 'Return:'.
+	return subwidget: self newText.
 	transferValue := self instantiate: LabelledTextInput.
 	transferValue label: 'Value:'.
 	gas := self instantiate: LabelledTextInput.
@@ -124,7 +135,7 @@ FogEVMActivationView >> initializeWidgets [
 	gasPrice := self instantiate: LabelledTextInput.
 	gasPrice label: 'Gas price:'.
 	empty := self newLabel.
-	empty label: ''.
+	empty label: ''
 ]
 
 { #category : #accessing }
@@ -135,6 +146,16 @@ FogEVMActivationView >> input [
 { #category : #accessing }
 FogEVMActivationView >> input: anObject [
 	input := anObject
+]
+
+{ #category : #accessing }
+FogEVMActivationView >> refresh [ 
+	self bindValues
+]
+
+{ #category : #accessing }
+FogEVMActivationView >> return [
+	^ return
 ]
 
 { #category : #accessing }
