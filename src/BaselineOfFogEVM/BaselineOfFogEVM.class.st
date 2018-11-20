@@ -10,7 +10,7 @@ BaselineOfFogEVM >> baseline: spec [
 	spec
 		for: #common
 		do: [ spec blessing: #baseline.
-			spec baseline: 'FogDB' with: [ spec repository: 'github://smartanvil/fog' ].
+			spec baseline: 'FogDB' with: [ spec repository: 'github://smartanvil/Fog' ].
 			spec baseline: 'FastTableExtentions' with: [ spec repository: 'github://sbragagnolo/FastTableExtention/src' ].
 			spec baseline: 'ParametrizedTests' with: [ spec repository: 'github://tesonep/ParametrizedTests' ].
 			spec baseline: 'FileDialog' with: [ spec repository: 'github://peteruhnak/file-dialog' ].
