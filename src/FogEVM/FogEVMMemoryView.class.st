@@ -1,3 +1,6 @@
+"
+The memory view encapsulates a fast grid, and the articulation with the memory data source. It provides a view for the memory object.
+"
 Class {
 	#name : #FogEVMMemoryView,
 	#superclass : #ComposablePresenter,

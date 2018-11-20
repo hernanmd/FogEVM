@@ -1,3 +1,6 @@
+"
+The memory source makes the interpretation of the memory object for the fast grid.
+"
 Class {
 	#name : #FogEVMMemorySource,
 	#superclass : #FGGridDataSource,

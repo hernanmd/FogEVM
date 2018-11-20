@@ -1,3 +1,6 @@
+"
+This subclass shows the methods of the 'class' side of the contract, allowing to generate the input required for a typical deploy 
+"
 Class {
 	#name : #FogEVMInputGenerationForDeploy,
 	#superclass : #FogEVMBytecodeLoadingWidget,
@@ -5,7 +8,7 @@ Class {
 		'constructor',
 		'contract'
 	],
-	#category : #'FogEVM-UIDebugger-Open'
+	#category : #'FogEVM-UIDebugger-OpenWizard'
 }
 
 { #category : #specs }
@@ -35,7 +38,7 @@ FogEVMInputGenerationForDeploy >> constructor [
 { #category : #initialization }
 FogEVMInputGenerationForDeploy >> initializeWidgets [
 	super initializeWidgets.
-	constructor := self instantiate: FogEVMMethodAsInputView.
+	constructor := self instantiate: FogEVMMethodAsInputDialog.
 	
 ]
 

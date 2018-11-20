@@ -1,3 +1,12 @@
+"
+The interpreter builder is the model behind the OpenWizard UI. 
+It provides the logic for accessing to: available values, default values and Fog session related information. 
+It has the responsibility of eventually building a fully functional interpreter, with the bytecode ready to be executed.
+
+For tracking usually used configurations it use two class variables: registeredContracts registeredStorages. 
+
+
+"
 Class {
 	#name : #FogEVMInterpreterBuilder,
 	#superclass : #Object,

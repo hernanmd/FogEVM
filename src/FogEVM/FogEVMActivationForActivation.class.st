@@ -1,9 +1,12 @@
+"
+Activation for activation extends the activation view, but in a way that works for preparing an activation for executing a method over an already existing contract
+"
 Class {
 	#name : #FogEVMActivationForActivation,
 	#superclass : #FogEVMActivationView,
 	#traits : 'TComposableWizardWidget',
 	#classTraits : 'TComposableWizardWidget classTrait',
-	#category : #'FogEVM-UIDebugger-Open'
+	#category : #'FogEVM-UIDebugger-OpenWizard'
 }
 
 { #category : #specs }
@@ -102,8 +105,9 @@ FogEVMActivationForActivation >> setUp: aFogEVMInterpreterBuilder [
 { #category : #accessing }
 FogEVMActivationForActivation >> widgetAsNext [
 	input text: model input.
-	from text: '0x81bfba8301a073a010e9fb71fab514e53d1cc3f0'.	"(self createRegistryFor: self session coinBase length: 20) printString."
-	gasPrice text: 1.
-	gas text: '3000000'.
+	from text
+		ifEmpty: [ from text: '0x81bfba8301a073a010e9fb71fab514e53d1cc3f0'.	"(self createRegistryFor: self session coinBase length: 20) printString."
+			gasPrice text: 1.
+			gas text: '3000000' ].
 	^ self
 ]

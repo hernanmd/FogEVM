@@ -1,3 +1,6 @@
+"
+This screen allows to execute configure the transference of money from an account to an other one.
+"
 Class {
 	#name : #FogEVMEtherTransferSettings,
 	#superclass : #ComposablePresenter,
@@ -10,7 +13,7 @@ Class {
 		'empty',
 		'amount'
 	],
-	#category : #'FogEVM-UIDebugger-Open'
+	#category : #'FogEVM-UIDebugger-OpenWizard'
 }
 
 { #category : #specs }

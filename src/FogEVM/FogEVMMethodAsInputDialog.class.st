@@ -1,5 +1,10 @@
+"
+This component allows to choose a method, and configure it for execution. 
+In order to give a the needed binary information (used as input in a tipical transaction ), it defines the message: 
+#generateInput: aSession and: aContractDescription.
+"
 Class {
-	#name : #FogEVMMethodAsInputView,
+	#name : #FogEVMMethodAsInputDialog,
 	#superclass : #ComposablePresenter,
 	#instVars : [
 		'parameters',
@@ -12,11 +17,11 @@ Class {
 		'resolvedParameters',
 		'methodsList'
 	],
-	#category : #'FogEVM-UIDebugger-Open'
+	#category : #'FogEVM-UIDebugger-Tools'
 }
 
 { #category : #specs }
-FogEVMMethodAsInputView class >> defaultSpec [
+FogEVMMethodAsInputDialog class >> defaultSpec [
 	<spec>
 	^ SpecLayout composed
 		newColumn: [ :m | 
@@ -34,19 +39,19 @@ FogEVMMethodAsInputView class >> defaultSpec [
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> constructor: aFogConstructorMirror [
+FogEVMMethodAsInputDialog >> constructor: aFogConstructorMirror [
 	methodsList items: {aFogConstructorMirror }.
 	methodsList setSelectedItem: aFogConstructorMirror.
 	self setLabels.
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> generateInput: aSession and: aContractDescription [
+FogEVMMethodAsInputDialog >> generateInput: aSession and: aContractDescription [
 	^ methodsList selectedItem encodeUsing: aSession for: aContractDescription with: (resolvedParameters reverse collect: #value)
 ]
 
 { #category : #initialization }
-FogEVMMethodAsInputView >> initializeWidgets [
+FogEVMMethodAsInputDialog >> initializeWidgets [
 	methodsList := self newList.
 	methodsList
 		items: {};
@@ -67,17 +72,17 @@ FogEVMMethodAsInputView >> initializeWidgets [
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> input [
+FogEVMMethodAsInputDialog >> input [
 	^ input
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> isDone [
+FogEVMMethodAsInputDialog >> isDone [
 	^ parametersToGo ifNil: [ false ] ifNotNil: [ parametersToGo isEmpty ]
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> manageSelectedMethod: aSelected [
+FogEVMMethodAsInputDialog >> manageSelectedMethod: aSelected [
 	aSelected
 		ifNotNil: [ resolvedParameters := OrderedCollection new.
 			parametersToGo := aSelected parameters associations copy.
@@ -91,28 +96,28 @@ FogEVMMethodAsInputView >> manageSelectedMethod: aSelected [
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> methods: aCollection [
+FogEVMMethodAsInputDialog >> methods: aCollection [
 	methodsList items: aCollection.
 	aCollection ifNotEmpty: [ methodsList setSelectedItem: aCollection anyOne ]
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> methodsList [
+FogEVMMethodAsInputDialog >> methodsList [
 	^ methodsList
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> parameters [
+FogEVMMethodAsInputDialog >> parameters [
 	^ parameters
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> pop [
+FogEVMMethodAsInputDialog >> pop [
 	^ pop
 ]
 
 { #category : #initialization }
-FogEVMMethodAsInputView >> popParameter [
+FogEVMMethodAsInputDialog >> popParameter [
 	| param |
 	self assert: methodsList selectedItem isNotNil.
 	param := resolvedParameters removeFirst.
@@ -122,12 +127,12 @@ FogEVMMethodAsInputView >> popParameter [
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> push [
+FogEVMMethodAsInputDialog >> push [
 	^ push
 ]
 
 { #category : #pushing }
-FogEVMMethodAsInputView >> pushParameter [
+FogEVMMethodAsInputDialog >> pushParameter [
 	self assert: methodsList selectedItem isNotNil.
 	
 	resolvedParameters addFirst: (parametersToGo first -> input text).
@@ -138,7 +143,7 @@ FogEVMMethodAsInputView >> pushParameter [
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> setLabels [
+FogEVMMethodAsInputDialog >> setLabels [
 	input text: ''.
 	parametersToGo
 		ifEmpty: [ type label: 'Accept'.
@@ -148,6 +153,6 @@ FogEVMMethodAsInputView >> setLabels [
 ]
 
 { #category : #accessing }
-FogEVMMethodAsInputView >> type [
+FogEVMMethodAsInputDialog >> type [
 	^ type
 ]

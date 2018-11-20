@@ -1,3 +1,6 @@
+"
+This object allows to visualiza all the previously executed instructions
+"
 Class {
 	#name : #FogEVMBytecodeExecutionPreviewHistoric,
 	#superclass : #ComposablePresenter,

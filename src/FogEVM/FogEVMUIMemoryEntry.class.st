@@ -1,3 +1,6 @@
+"
+This object is used to wrap the association based memory entry of the tipical memory manager object. Is used for allowing the visualization as tree in a fasttable view
+"
 Class {
 	#name : #FogEVMUIMemoryEntry,
 	#superclass : #Object,
@@ -13,8 +16,12 @@ FogEVMUIMemoryEntry >> association: anAssoc [
 ]
 
 { #category : #accessing }
-FogEVMUIMemoryEntry >> entries [ 
-	^ { }
+FogEVMUIMemoryEntry >> entries [
+	^ association key = #'&contract'
+		ifTrue: [ {(FogEVMUIMemoryEntry new
+				association: #bytecode -> association value bytecode;
+				yourself)} ]
+		ifFalse: [ {} ]
 ]
 
 { #category : #accessing }

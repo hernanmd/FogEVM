@@ -1,3 +1,6 @@
+"
+The activation view allow to see the current activation configuration. 
+"
 Class {
 	#name : #FogEVMActivationView,
 	#superclass : #ComposablePresenter,
@@ -17,7 +20,7 @@ Class {
 	#classInstVars : [
 		'mainLabel'
 	],
-	#category : #'FogEVM-UIDebugger-Tools'
+	#category : #'FogEVM-UIDebugger-View'
 }
 
 { #category : #specs }

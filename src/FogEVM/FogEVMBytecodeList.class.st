@@ -1,3 +1,6 @@
+"
+Bytecode list is a list that shows the byte code in the debugger.
+"
 Class {
 	#name : #FogEVMBytecodeList,
 	#superclass : #ComposablePresenter,

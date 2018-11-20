@@ -1,3 +1,6 @@
+"
+This subclass shows the methods of the instance side of the contract, allowing to generate the input required for a typical method activation
+"
 Class {
 	#name : #FogEVMInputGenerationForActivation,
 	#superclass : #FogEVMBytecodeLoadingWidget,
@@ -5,7 +8,7 @@ Class {
 		'methods',
 		'contract'
 	],
-	#category : #'FogEVM-UIDebugger-Open'
+	#category : #'FogEVM-UIDebugger-OpenWizard'
 }
 
 { #category : #specs }
@@ -30,7 +33,7 @@ FogEVMInputGenerationForActivation class >> defaultSpec [
 { #category : #initialization }
 FogEVMInputGenerationForActivation >> initializeWidgets [
 	super initializeWidgets.
-	methods := self instantiate: FogEVMMethodAsInputView.
+	methods := self instantiate: FogEVMMethodAsInputDialog.
 	
 ]
 
@@ -52,6 +55,6 @@ FogEVMInputGenerationForActivation >> methods [
 
 { #category : #initialization }
 FogEVMInputGenerationForActivation >> setUp: aFogEVMInterpreterBuilder [
-	aFogEVMInterpreterBuilder input: (methods generateInput: self session and: contract).
+	aFogEVMInterpreterBuilder input: (methods generateInput: model session and: contract).
 	aFogEVMInterpreterBuilder sourceCode: sourceCode
 ]

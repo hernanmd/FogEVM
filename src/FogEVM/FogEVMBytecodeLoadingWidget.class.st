@@ -1,3 +1,9 @@
+"
+This widget allows to open an existing solidity file, compiling, allowing the generation of a typical input of a transaction. 
+It bases the defaults and traking of commonly used configurations in the model.
+
+This behaviours define one of the main dependancies  with the project FogDB (Since it uses the contract description and the compiling utils)
+"
 Class {
 	#name : #FogEVMBytecodeLoadingWidget,
 	#superclass : #ComposablePresenter,
@@ -12,7 +18,7 @@ Class {
 		'package',
 		'sourceCode'
 	],
-	#category : #'FogEVM-UIDebugger-Open'
+	#category : #'FogEVM-UIDebugger-OpenWizard'
 }
 
 { #category : #specs }
@@ -31,21 +37,6 @@ FogEVMBytecodeLoadingWidget class >> defaultSpec [
 						newRow: #contractSelector height: 25;
 						add: #empty height: 25 ];
 				newColumn: #empty width: 10 ]
-]
-
-{ #category : #initialization }
-FogEVMBytecodeLoadingWidget >> availableInterpreters [
-	^ {FogEVMAbstractInterpreter} , FogEVMAbstractInterpreter allSubclasses
-]
-
-{ #category : #initialization }
-FogEVMBytecodeLoadingWidget >> availableMemory [
-	^ {FogEVMMemory} , FogEVMMemory allSubclasses
-]
-
-{ #category : #initialization }
-FogEVMBytecodeLoadingWidget >> availableStorage [
-		^ {FogEVMMemoryStorage} , FogEVMMemoryStorage allSubclasses
 ]
 
 { #category : #accessing }

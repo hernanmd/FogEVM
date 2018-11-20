@@ -1,3 +1,6 @@
+"
+The interpreter view shows the current values of the general information of the running environment, such as block hash, number, gas limit, etc
+"
 Class {
 	#name : #FogEVMInterpreterView,
 	#superclass : #ComposablePresenter,
@@ -11,7 +14,7 @@ Class {
 		'activationStack',
 		'empty'
 	],
-	#category : #'FogEVM-UIDebugger-Tools'
+	#category : #'FogEVM-UIDebugger-View'
 }
 
 { #category : #specs }

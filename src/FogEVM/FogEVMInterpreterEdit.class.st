@@ -1,3 +1,8 @@
+"
+This screen of the wizards allows to define the used strategy of the interpreter information resolution, such us, current block, stamp, etc. 
+
+The main two available strategies are, to delegate to a local GETH installation, or to mockup with user defined (or randomly generated) data.
+"
 Class {
 	#name : #FogEVMInterpreterEdit,
 	#superclass : #FogEVMInterpreterView,
@@ -8,7 +13,7 @@ Class {
 		'nodeDelegate',
 		'useFogValues'
 	],
-	#category : #'FogEVM-UIDebugger-Open'
+	#category : #'FogEVM-UIDebugger-OpenWizard'
 }
 
 { #category : #specs }

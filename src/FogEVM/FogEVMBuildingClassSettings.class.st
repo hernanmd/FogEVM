@@ -1,3 +1,7 @@
+"
+The settings screen of the wizard allows the user to do some specific tuning as taking some specific classes, defining the length of the memory grid, etc.
+It also allows the user to give a specific GETH installation (needed in case of wanting to use fresh data)
+"
 Class {
 	#name : #FogEVMBuildingClassSettings,
 	#superclass : #ComposablePresenter,
@@ -14,7 +18,7 @@ Class {
 		'eraseAllStorages',
 		'eraseOneStorage'
 	],
-	#category : #'FogEVM-UIDebugger-Open'
+	#category : #'FogEVM-UIDebugger-OpenWizard'
 }
 
 { #category : #specs }

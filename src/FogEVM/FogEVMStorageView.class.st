@@ -1,3 +1,6 @@
+"
+Storage view uses a fast table with some extention methods and a tree data source for being able to properly expose the storage for each contract.
+"
 Class {
 	#name : #FogEVMStorageView,
 	#superclass : #ComposablePresenter,

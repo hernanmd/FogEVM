@@ -12,8 +12,10 @@ Class {
 }
 
 { #category : #getting }
-FogEVMMemory >> copyFrom: anInteger to: anInteger2 [
-	^ layout copyFrom: anInteger + 1 to: anInteger2 + 1
+FogEVMMemory >> copyFrom: aNumber to: otherNumber [
+	| to |
+	to := layout size min: otherNumber + 1.
+	^ (layout copyFrom: aNumber + 1 to: to) , (ByteArray new: otherNumber - to + 1)
 ]
 
 { #category : #accessing }

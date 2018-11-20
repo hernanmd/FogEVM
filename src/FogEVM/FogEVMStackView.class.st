@@ -1,3 +1,6 @@
+"
+The stack view provides a fast table for watching the stack of the interpreter
+"
 Class {
 	#name : #FogEVMStackView,
 	#superclass : #ComposablePresenter,

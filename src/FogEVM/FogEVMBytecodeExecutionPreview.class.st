@@ -1,3 +1,6 @@
+"
+This component allow to see an object execution preview. 
+"
 Class {
 	#name : #FogEVMBytecodeExecutionPreview,
 	#superclass : #ComposablePresenter,

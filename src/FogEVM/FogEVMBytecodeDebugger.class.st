@@ -1,3 +1,21 @@
+"
+This is the main Presenter of the debugger.
+
+This presenter is divided in 
+-------------------------------------------------------------------------------------------------------------------
+ #menu                                                                                                            |
+-------------------------------------------------------------------------------------------------------------------
+|   #leftSideTabs    	|   #bytecode        	|	#stack	 |                    #executed                           	   |
+|							|							|			 |						   #preview 											|
+|							|							|			 |-------------------------------------------------------------
+|							|							|			 |						   #resoruces 										|
+-------------------------------------------------------------------------------------------------------------------
+|	#downSideTabs																																|
+-------------------------------------------------------------------------------------------------------------------
+	
+The presenter main actions are located in the protocol #actions.
+Most of the state of the debugger comes from the interpreter.
+"
 Class {
 	#name : #FogEVMBytecodeDebugger,
 	#superclass : #ComposablePresenter,

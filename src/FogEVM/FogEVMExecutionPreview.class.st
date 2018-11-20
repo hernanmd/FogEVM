@@ -1,3 +1,7 @@
+"
+The execution preview is an object that is contructed by observing the stack, to predict the parameters that it will use. 
+It is also able to check the stack, to retreeve the result (push) of this operation, regarding to the stack.
+"
 Class {
 	#name : #FogEVMExecutionPreview,
 	#superclass : #Object,
