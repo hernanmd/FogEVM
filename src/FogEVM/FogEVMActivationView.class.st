@@ -15,7 +15,8 @@ Class {
 		'empty',
 		'gas',
 		'gasPrice',
-		'transferValue'
+		'transferValue',
+		'returnBinary'
 	],
 	#classInstVars : [
 		'mainLabel'
@@ -40,8 +41,9 @@ FogEVMActivationView class >> defaultSpec [
 						add: #transferValue height: 25;
 						add: #gas height: 25;
 						add: #gasPrice height: 25;
-						add: #input ;
+						add: #input height: 50;
 						add: #return;
+						add: #returnBinary height: 25;
 						add: #empty height: 25 ];
 				newColumn: #empty width: 10 ]
 ]
@@ -67,7 +69,8 @@ FogEVMActivationView >> bindValues [
 	context text: activation contextualAccount printString.
 	gas text: activation gas unsignedValue printString.
 	gasPrice text: activation gasPrice unsignedValue printString.
-	return text: activation return printString
+	return text: activation returnDebuggableValue asString.
+	returnBinary text: activation return hex asString.
 ]
 
 { #category : #accessing }
@@ -128,9 +131,15 @@ FogEVMActivationView >> initializeWidgets [
 	input := self instantiate: LabelledContainer.
 	input label: 'Input:'.
 	input subwidget: self newText.
+	
+	
 	return := self instantiate: LabelledContainer.
 	return label: 'Return:'.
 	return subwidget: self newText.
+	
+	returnBinary := self instantiate: LabelledTextInput.
+	returnBinary label: 'Binary Return:'.
+	
 	transferValue := self instantiate: LabelledTextInput.
 	transferValue label: 'Value:'.
 	gas := self instantiate: LabelledTextInput.
@@ -159,6 +168,11 @@ FogEVMActivationView >> refresh [
 { #category : #accessing }
 FogEVMActivationView >> return [
 	^ return
+]
+
+{ #category : #accessing }
+FogEVMActivationView >> returnBinary [
+	^ returnBinary
 ]
 
 { #category : #accessing }

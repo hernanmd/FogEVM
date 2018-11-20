@@ -1070,6 +1070,7 @@ FogEVMAbstractInterpreter >> visitSstore: aFogVMSstore [
 	| storageAddress value address |
 	storageAddress := self pop.
 	value := self pop.
+	self halt .
 	address := FogEVMRegistry forValue: storageAddress unsignedValue bytesLength: 32.
 	value := (self storageFor: self currentActivation contractAddress ) atStorage: address put: value
 ]

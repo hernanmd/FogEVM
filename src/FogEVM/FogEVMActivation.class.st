@@ -22,7 +22,7 @@ FogEVMActivation >> breakOnAddress: anAddress [
 	^ (self executableMemory at: (self indexForMemoryAddress: anAddress)) breakpoint: true.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 FogEVMActivation >> bytecodeSize [
 	^ contract bytecode bytecodeSize
 ]
@@ -134,6 +134,11 @@ FogEVMActivation >> initializeInstructionPointer [
 { #category : #testing }
 FogEVMActivation >> isContractDeploy [
 	^ call contractAddress isNil
+]
+
+{ #category : #'debugger ui' }
+FogEVMActivation >> isDebuggable [
+	^ false
 ]
 
 { #category : #testing }

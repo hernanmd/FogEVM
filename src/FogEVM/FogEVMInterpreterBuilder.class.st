@@ -26,7 +26,8 @@ Class {
 		'binaryData',
 		'useFogValues',
 		'session',
-		'sourceCode'
+		'sourceCode',
+		'returningType'
 	],
 	#classVars : [
 		'registeredContracts',
@@ -150,8 +151,9 @@ FogEVMInterpreterBuilder >> from: from to: to contract: contractAddress context:
 	call gas: gas.
 	call gasPrice: gasPrice.
 	contractsCodeAddress := contractAddress.
-	activation := FogEVMActivation new.
+	activation := FogEVMDebuggableActivation  new.
 	activation contextualAccount: contextAddress.
+	activation returningType: returningType .
 	activation call: call.
 	^ activation
 ]
@@ -169,8 +171,9 @@ FogEVMInterpreterBuilder >> input [
 ]
 
 { #category : #settings }
-FogEVMInterpreterBuilder >> input: aString [
+FogEVMInterpreterBuilder >> input: aString returningType: aType [
 	binaryData := aString.
+	returningType := aType.
 	
 ]
 

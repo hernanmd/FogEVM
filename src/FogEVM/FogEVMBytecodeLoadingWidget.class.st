@@ -93,6 +93,7 @@ FogEVMBytecodeLoadingWidget >> manageSelectedContract: anItem [
 { #category : #initialization }
 FogEVMBytecodeLoadingWidget >> manageSelectedFile: anItem [
 	anItem ifNotNil: [
+	sourceCode := anItem key readStream upToEnd.
 	contractSelector items: anItem value descriptions asOrderedCollection]
 ]
 
@@ -111,12 +112,8 @@ FogEVMBytecodeLoadingWidget >> openFileDialog [
 			('All files' -> #())};
 		openModal.
 	file
-		ifNotNil: [ 
-			
-			
-			sourceCode := file readStream upToEnd.
-			package := model loadPackageForFileReference: file.
+		ifNotNil: [ package := model loadPackageForFileReference: file.
 			fileSelector items: model loadedPackages.
-			fileSelector setSelectedItem: package.
-"			contractSelector items: fileSelector selectedItem value descriptions asOrderedCollection "]
+			fileSelector setSelectedItem: package
+			"			contractSelector items: fileSelector selectedItem value descriptions asOrderedCollection " ]
 ]

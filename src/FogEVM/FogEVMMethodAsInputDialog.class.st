@@ -47,7 +47,10 @@ FogEVMMethodAsInputDialog >> constructor: aFogConstructorMirror [
 
 { #category : #accessing }
 FogEVMMethodAsInputDialog >> generateInput: aSession and: aContractDescription [
-	^ methodsList selectedItem encodeUsing: aSession for: aContractDescription with: (resolvedParameters reverse collect: #value)
+	^ methodsList selectedItem
+		encodeUsing: aSession
+		for: aContractDescription
+		with: (resolvedParameters reverse collect: #value)
 ]
 
 { #category : #initialization }
@@ -140,6 +143,11 @@ FogEVMMethodAsInputDialog >> pushParameter [
 	parametersToGo removeFirst.
 	
 	self setLabels.
+]
+
+{ #category : #accessing }
+FogEVMMethodAsInputDialog >> returningType [
+	^ methodsList selectedItem returnType
 ]
 
 { #category : #accessing }

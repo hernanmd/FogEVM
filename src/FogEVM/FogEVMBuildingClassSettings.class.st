@@ -113,6 +113,7 @@ FogEVMBuildingClassSettings >> initializeWidgets [
 	kind := self instantiate: LabelledDropList.
 	kind items: {#Deploy . #Activate . #Transfer}.
 	kind label: 'Transaction'.
+	kind setSelectedItem: #Activate.
 	self setDefaults
 ]
 

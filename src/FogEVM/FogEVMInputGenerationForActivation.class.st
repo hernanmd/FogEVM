@@ -55,6 +55,8 @@ FogEVMInputGenerationForActivation >> methods [
 
 { #category : #initialization }
 FogEVMInputGenerationForActivation >> setUp: aFogEVMInterpreterBuilder [
-	aFogEVMInterpreterBuilder input: (methods generateInput: model session and: contract).
+	aFogEVMInterpreterBuilder
+		input: (methods generateInput: model session and: contract)
+		returningType: methods returningType.
 	aFogEVMInterpreterBuilder sourceCode: sourceCode
 ]
