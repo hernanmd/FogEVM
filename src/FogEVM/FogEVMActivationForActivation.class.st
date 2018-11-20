@@ -59,14 +59,14 @@ FogEVMActivationForActivation >> createRegistryFor: aString length: anInteger [
 { #category : #accessing }
 FogEVMActivationForActivation >> initializeWidgets [
 	super initializeWidgets.
-	from autoAccept.
 	to := self instantiate: LabelledDropList .
-	contract autoAccept.
-	context autoAccept.
-	input autoAccept.
-	transferValue autoAccept.
-	gas autoAccept.
-	gasPrice autoAccept
+	from autoAccept: true.
+	contract autoAccept: true.
+	context autoAccept: true.
+	input autoAccept: true.
+	transferValue autoAccept: true.
+	gas autoAccept: true.
+	gasPrice autoAccept: true
 ]
 
 { #category : #accessing }

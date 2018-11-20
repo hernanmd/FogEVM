@@ -74,20 +74,20 @@ FogEVMActivationForDeploy >> createByteArrayFor: aString [
 FogEVMActivationForDeploy >> createRegistryFor: aString length: anInteger [
 	^ aString isEmpty
 		ifTrue: [ FogEVMRegistry forValue: 0 bytesLength: anInteger ]
-		ifFalse: [  FogEVMRegistry forValue: aString asNumber  bytesLength: anInteger ]
+		ifFalse: [  FogEVMRegistry fromPrintString: aString length: anInteger ]
 ]
 
 { #category : #initialization }
 FogEVMActivationForDeploy >> initializeWidgets [
 	super initializeWidgets.
-	from autoAccept.
-	to autoAccept.
-	contract autoAccept.
-	context autoAccept.
-	input autoAccept.
-	transferValue autoAccept.
-	gas autoAccept.
-	gasPrice autoAccept
+	from autoAccept: true.
+	to autoAccept: true.
+	contract autoAccept: true.
+	context autoAccept: true.
+	input autoAccept: true.
+	transferValue autoAccept: true.
+	gas autoAccept: true.
+	gasPrice autoAccept: true
 ]
 
 { #category : #accessing }

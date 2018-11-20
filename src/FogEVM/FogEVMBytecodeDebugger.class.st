@@ -10,14 +10,14 @@ Class {
 		'store',
 		'memory',
 		'interpreter',
-		'empty',
-		'restart',
-		'execute',
-		'stepControl',
 		'interpreterView',
 		'menu',
-		'sideTabs',
-		'code'
+		'leftSideTabs',
+		'code',
+		'resources',
+		'downSideTabs',
+		'logs',
+		'errors'
 	],
 	#category : #'FogEVM-UIDebugger'
 }
@@ -31,12 +31,7 @@ FogEVMBytecodeDebugger class >> defaultSpec [
 				newRow: #menu height: self toolbarHeight;
 				newRow: [ :mainRow | 
 					mainRow
-						newColumn: [ :col | 
-							col newRow: #sideTabs	";
-								newRow: #interpreterView " ]
-							width:
-							(self defaultFont widthOfString: '16rB4EBF466889C4A0239379125A7D0F9C4E8BF2A14')
-									+ 12;
+						newColumn: [ :col | col newRow: #leftSideTabs ] width: (self defaultFont widthOfString: '16rB4EBF466889C4A0239379125A7D0F9C4E8BF2A14') + 12;
 						newColumn: #bytecode width: 250;
 						newColumn: #stack width: 150;
 						newColumn: [ :secondHalf | 
@@ -46,10 +41,9 @@ FogEVMBytecodeDebugger class >> defaultSpec [
 										newColumn: [ :previewArea | 
 											previewArea
 												newRow: #executed;
-												newRow: #preview height: 30 ] ]
-"									height: 330;";
-								newRow: #memory;
-								newRow: #store ] ] ];
+												newRow: #preview height: 30 ] ];
+								newRow: #resources ] ];
+				newRow: #downSideTabs height: 100 ];
 		yourself
 ]
 
@@ -65,17 +59,18 @@ FogEVMBytecodeDebugger class >> generalMenu: aBuilder [
 { #category : #specs }
 FogEVMBytecodeDebugger class >> menuCommandOn: aBuilder [
 	<worldMenu>
-	
 	(aBuilder item: #Debugger)
 		parent: #Solidity;
 		order: 320;
-		action: [ self new openWithSpec extent: 1280.0 @ 771.0 ];
+		action: [ self new openWithSpec
+				extent: 1280.0 @ 771.0;
+				title: 'Smart-Anvil EVM Debugger' ];
 		help: 'Debugging solidity bytecode';
 		icon: self taskbarIcon.
 	aBuilder withSeparatorAfter
 ]
 
-{ #category : #initialization }
+{ #category : #convenience }
 FogEVMBytecodeDebugger >> bindComponents [
 	context activation: interpreter currentActivation.
 	bytecode elements: interpreter currentActivation executableMemory.
@@ -88,6 +83,8 @@ FogEVMBytecodeDebugger >> bindComponents [
 	stack stack: interpreter stack.
 	store storage: interpreter storage.
 	memory memory: interpreter memory.
+	logs items: interpreter logs.
+	errors items: interpreter errors.
 	interpreterView interpreter: interpreter
 ]
 
@@ -106,14 +103,9 @@ FogEVMBytecodeDebugger >> context: anObject [
 	context := anObject
 ]
 
-{ #category : #weirdos }
-FogEVMBytecodeDebugger >> empty [
-	^ empty ifNil: [ empty := FogEVMEmpty new ]
-]
-
 { #category : #accessing }
-FogEVMBytecodeDebugger >> execute [
-	^ execute
+FogEVMBytecodeDebugger >> downSideTabs [
+	^ downSideTabs
 ]
 
 { #category : #accessing }
@@ -132,59 +124,34 @@ FogEVMBytecodeDebugger >> initializeWidgets [
 	executed := self instantiate: FogEVMBytecodeExecutionPreviewHistoric.
 	preview := self instantiate: FogEVMBytecodeExecutionPreview.
 	stack := self instantiate: FogEVMStackView.
-	store := self instantiate: FogEVMStorageView.
-	memory := self instantiate: FogEVMMemoryView.
+
+	self installResources.
 	self installContextualdata.
-	self installButtons.
 	self installMenu.
-	
+	self installLogs.	
 	
 
-]
-
-{ #category : #initialization }
-FogEVMBytecodeDebugger >> installButtons [
-	restart := self newButton
-		icon: (self iconNamed: #refresh);
-		action: [ self restartInterpreter ];
-		yourself.
-	stepControl := self newButton
-		icon: (self iconNamed: #glamorousInto);
-		action: [ self stepOneInstructionOnInterpreter ].
-	execute := self newButton
-		icon: (self iconNamed: #smallDoIt);
-		action: [ self runInterpreter ]
 ]
 
 { #category : #initialization }
 FogEVMBytecodeDebugger >> installContextualdata [
-	| tab |
-	sideTabs := self newTabManager. 
+	leftSideTabs := self newTabManager.
 	context := self instantiate: FogEVMActivationView.
 	interpreterView := self instantiate: FogEVMInterpreterView.
 	code := self newText.
-	
+	leftSideTabs
+		addTab: (self newTab: 'Activation context' for: context);
+		addTab: (self newTab: 'Interpreter context' for: interpreterView);
+		addTab: (self newTab: 'Solidity code' for: code)
+]
 
-	tab := self newTab.
-	tab closeable: false.
-	tab
-		label: 'Activation context';
-		presenter: context.
-	sideTabs addTab: tab. 
-	
-	tab := self newTab.
-	tab closeable: false.
-	tab
-		label: 'Interpreter context';
-		presenter: interpreterView.
-	sideTabs addTab: tab. 
-	tab := self newTab.
-	tab closeable: false.
-	tab
-		label: 'Solidity code';
-		presenter: code.
-	sideTabs addTab: tab. 
-	
+{ #category : #initialization }
+FogEVMBytecodeDebugger >> installLogs [
+	downSideTabs := self newTabManager.
+	logs := self newList.
+	errors := self newList.
+	downSideTabs addTab: (self newTab: 'Logs' for: logs).
+	downSideTabs addTab: (self newTab: 'Errors' for: errors)
 ]
 
 { #category : #initialization }
@@ -231,7 +198,13 @@ FogEVMBytecodeDebugger >> installMenu [
 ]
 
 { #category : #initialization }
-FogEVMBytecodeDebugger >> installToolbars [
+FogEVMBytecodeDebugger >> installResources [
+	resources := self newTabManager.
+	store := self instantiate: FogEVMStorageView.
+	memory := self instantiate: FogEVMMemoryView.
+	resources
+		addTab: (self newTab: 'Memory' for: memory);
+		addTab: (self newTab: 'Store' for: store)
 ]
 
 { #category : #accessing }
@@ -239,16 +212,21 @@ FogEVMBytecodeDebugger >> interpreter [
 	^ interpreter
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 FogEVMBytecodeDebugger >> interpreter: anInterpreter [
 	interpreter := anInterpreter .
 	self bindComponents.
 	
 ]
 
-{ #category : #accssing }
+{ #category : #accessing }
 FogEVMBytecodeDebugger >> interpreterView [
 	^ interpreterView
+]
+
+{ #category : #accessing }
+FogEVMBytecodeDebugger >> leftSideTabs [
+	^ leftSideTabs
 ]
 
 { #category : #accessing }
@@ -261,13 +239,24 @@ FogEVMBytecodeDebugger >> menu [
 	^ menu
 ]
 
+{ #category : #convenience }
+FogEVMBytecodeDebugger >> newTab: aTitle for: aWidget [
+	| tab |
+	tab := self newTab.
+	tab closeable: false.
+	tab
+		label: aTitle;
+		presenter: aWidget.
+	^ tab
+]
+
 { #category : #notifications }
 FogEVMBytecodeDebugger >> noteBreakpoint [
 	self transferData.
 	self inform: 'Breakpoint reached'
 ]
 
-{ #category : #opening }
+{ #category : #actions }
 FogEVMBytecodeDebugger >> openSolidityFile [
 	| wizard steps activationBranch deployBranch |
 	wizard := ComposableWizard new.
@@ -277,7 +266,7 @@ FogEVMBytecodeDebugger >> openSolidityFile [
 	deployBranch := steps on: [ :widget :model | model isDeploy ] stepTo: [ FogEVMInputGenerationForDeploy new ].
 	(deployBranch addStep: [ FogEVMActivationForDeploy new ]) addStep: [ FogEVMInterpreterEdit new ].
 	steps on: [ :widget :model | model isTransference ] stepTo: [ FogEVMEtherTransferSettings new ].
-	wizard openOnModel: FogEVMInterpreterBuilder new.
+	(wizard openOnModel: FogEVMInterpreterBuilder new) title: ' Contract opening wizard'.
 	wizard
 		onAcceptDo: [ :builder | 
 			self interpreter: builder build.
@@ -291,11 +280,11 @@ FogEVMBytecodeDebugger >> preview [
 ]
 
 { #category : #accessing }
-FogEVMBytecodeDebugger >> restart [
-	^ restart
+FogEVMBytecodeDebugger >> resources [
+	^ resources
 ]
 
-{ #category : #initialization }
+{ #category : #actions }
 FogEVMBytecodeDebugger >> restartInterpreter [
 	interpreter restart.
 	executed restart.
@@ -303,7 +292,7 @@ FogEVMBytecodeDebugger >> restartInterpreter [
 	self bindComponents.
 ]
 
-{ #category : #running }
+{ #category : #actions }
 FogEVMBytecodeDebugger >> runInterpreter [
 	| firstIteration |
 	firstIteration := true. 
@@ -317,29 +306,19 @@ FogEVMBytecodeDebugger >> runInterpreter [
 	self transferData.
 ]
 
-{ #category : #initialization }
-FogEVMBytecodeDebugger >> sideTabs [
-	^ sideTabs
-]
-
 { #category : #accessing }
 FogEVMBytecodeDebugger >> stack [
 	^ stack
 ]
 
-{ #category : #initialization }
-FogEVMBytecodeDebugger >> stepControl [
-	^ stepControl
-]
-
-{ #category : #'interpreter actions' }
+{ #category : #convenience }
 FogEVMBytecodeDebugger >> stepOne [
 	interpreter currentActivation isFinished
 		ifFalse: [ interpreter executeNextInstruction ].
 	self transferPreview
 ]
 
-{ #category : #'interpreter actions' }
+{ #category : #actions }
 FogEVMBytecodeDebugger >> stepOneInstructionOnInterpreter [
 	interpreter currentActivation isFinished
 		ifTrue: [ ^ self ].
@@ -352,7 +331,7 @@ FogEVMBytecodeDebugger >> store [
 	^ store
 ]
 
-{ #category : #initialization }
+{ #category : #convenience }
 FogEVMBytecodeDebugger >> transferData [
 	context activation: interpreter currentActivation.
 	bytecode ip: interpreter currentActivation nextInstruction.
@@ -360,12 +339,13 @@ FogEVMBytecodeDebugger >> transferData [
 	executed refresh.
 	stack refresh.
 	store storage: interpreter storage.
+	logs items: interpreter logs.
+	errors items: interpreter errors.
 	store refresh.
-	memory refresh.
-	
+	memory refresh
 ]
 
-{ #category : #initialization }
+{ #category : #convenience }
 FogEVMBytecodeDebugger >> transferPreview [
 	preview preview loadResultFrom: interpreter stack.
 	executed register: preview preview.

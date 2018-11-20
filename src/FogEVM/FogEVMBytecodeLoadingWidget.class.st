@@ -82,9 +82,10 @@ FogEVMBytecodeLoadingWidget >> initializeWidgets [
 		items: {};
 		displayBlock: [ :item | item name ];
 		whenSelectedItemChanged: [ :item :old | self manageSelectedContract: item ].
-	fileSelector := self instantiate: LabelledTextInput.
-	fileSelector label: ' Solidity File '.
-	fileSelector enabled: false.
+	fileSelector := self instantiate: LabelledDropList.
+	fileSelector label: 'Solidity File'.
+	fileSelector displayBlock: [ :x | x key ].
+	fileSelector whenSelectedItemChanged: [ :item :old | self manageSelectedFile: item. ].
 	chooseFileButton := self newButton.
 	chooseFileButton
 		icon: (self iconNamed: #smallOpen);
@@ -99,6 +100,18 @@ FogEVMBytecodeLoadingWidget >> manageSelectedContract: anItem [
 ]
 
 { #category : #initialization }
+FogEVMBytecodeLoadingWidget >> manageSelectedFile: anItem [
+	anItem ifNotNil: [
+	contractSelector items: anItem value descriptions asOrderedCollection]
+]
+
+{ #category : #initialization }
+FogEVMBytecodeLoadingWidget >> model: aModel [
+	model := aModel.
+	fileSelector items: model loadedPackages.
+]
+
+{ #category : #initialization }
 FogEVMBytecodeLoadingWidget >> openFileDialog [
 	| file |
 	file := FDOpenFileDialog new
@@ -107,20 +120,12 @@ FogEVMBytecodeLoadingWidget >> openFileDialog [
 			('All files' -> #())};
 		openModal.
 	file
-		ifNotNil: [ fileSelector text: file asString.
+		ifNotNil: [ 
+			
+			
 			sourceCode := file readStream upToEnd.
-			package := self session loadPackageForFileReference: file.
-			contractSelector items: package descriptions asOrderedCollection ]
-]
-
-{ #category : #initialization }
-FogEVMBytecodeLoadingWidget >> session [
-	^ model session
-]
-
-{ #category : #building }
-FogEVMBytecodeLoadingWidget >> setUp: aFogEVMInterpreterBuilder [
-	self halt.
-		contractSelector selectedItem 
-
+			package := model loadPackageForFileReference: file.
+			fileSelector items: model loadedPackages.
+			fileSelector setSelectedItem: package.
+"			contractSelector items: fileSelector selectedItem value descriptions asOrderedCollection "]
 ]

@@ -17,10 +17,10 @@ Class {
 		'binaryData',
 		'useFogValues',
 		'session',
-		'shouldIinstallContract',
 		'sourceCode'
 	],
 	#classVars : [
+		'registeredContracts',
 		'registeredStorages'
 	],
 	#classInstVars : [
@@ -147,6 +147,13 @@ FogEVMInterpreterBuilder >> from: from to: to contract: contractAddress context:
 	^ activation
 ]
 
+{ #category : #'as yet unclassified' }
+FogEVMInterpreterBuilder >> generateContractHashFor: aFogEVMByteCode [
+	| number |
+	number := Number readFrom: (Keccak hashMessage: aFogEVMByteCode hash + DateAndTime now asUnixTime) asByteArray hex readStream base: 16.
+	^ FogEVMRegistry forValue: number bytesLength: 20
+]
+
 { #category : #accessing }
 FogEVMInterpreterBuilder >> input [
 	^ binaryData
@@ -185,6 +192,24 @@ FogEVMInterpreterBuilder >> isTransference [
 	^ kind = #Transfer
 ]
 
+{ #category : #'default values' }
+FogEVMInterpreterBuilder >> loadPackageForFileReference: aFile [
+	| package |
+	package := self session loadPackageForFileReference: aFile.
+	self registeredContracts at: aFile put: package.
+	^ package
+]
+
+{ #category : #'default values' }
+FogEVMInterpreterBuilder >> loadedPackages [
+	^ self registeredContracts associations
+]
+
+{ #category : #settings }
+FogEVMInterpreterBuilder >> registeredContracts [
+	^ registeredContracts ifNil: [ registeredContracts := Dictionary new ] 
+]
+
 { #category : #settings }
 FogEVMInterpreterBuilder >> registeredStorages [
 	^ registeredStorages ifNil: [ registeredStorages := Set new ] 
@@ -197,7 +222,7 @@ FogEVMInterpreterBuilder >> resolveContract [
 			executing := FogEVMByteCode fromBinary: binaryData.
 			contract := FogEVMContract new
 				bytecode: executing;
-				address: (FogEVMRegistry forValue: (Keccak hashMessage: executing hash asString) asByteArray hex asNumber bytesLength: 20);
+				address: (self generateContractHashFor:executing );
 				yourself.
 			interpreter installContract: contract at: contract address.
 			contract ]

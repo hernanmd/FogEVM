@@ -75,7 +75,7 @@ FogEVMInterpreterView >> initializeWidgets [
 	blockNumber label: 'Block Number'.
 	blockHash := self instantiate: LabelledTextInput.
 	blockHash label: 'Block hash'.
-	empty := FogEVMEmpty new
+	empty := self newLabel.
 ]
 
 { #category : #initialization }

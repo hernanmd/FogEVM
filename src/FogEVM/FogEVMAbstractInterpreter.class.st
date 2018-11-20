@@ -222,6 +222,11 @@ FogEVMAbstractInterpreter >> currentInstructionPointer [
 	^ FogEVMRegistry forValue: self currentActivation currentInstructionPointer  bytesLength: 8
 ]
 
+{ #category : #accessing }
+FogEVMAbstractInterpreter >> errors [
+	^ errors
+]
+
 { #category : #actions }
 FogEVMAbstractInterpreter >> executeNextInstruction [
 	| instruction |
