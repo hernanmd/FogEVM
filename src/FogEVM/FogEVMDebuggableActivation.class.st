@@ -18,12 +18,13 @@ FogEVMDebuggableActivation >> isDebuggable [
 { #category : #accessing }
 FogEVMDebuggableActivation >> returnDebuggableValue [
 	| value |
+	returningType isEmptyType
+		ifTrue: [ ^ '' ].
 	value := (return isKindOf: FogEVMRegistry)
 		ifTrue: [ return byteArray ]
 		ifFalse: [ return ].
 	value isEmptyOrNil
 		ifTrue: [ ^ return ].
-	returningType isEmptyType ifTrue: [ ^'' ].
 	^ returningType unpack: return hex using: FogHexadecimalPacker new
 ]
 

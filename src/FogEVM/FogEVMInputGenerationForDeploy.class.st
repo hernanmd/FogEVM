@@ -57,6 +57,6 @@ FogEVMInputGenerationForDeploy >> manageSelectedContract: anObject [
 FogEVMInputGenerationForDeploy >> setUp: aFogEVMInterpreterBuilder [
 	aFogEVMInterpreterBuilder
 		input: (constructor generateInput: model session and: contract)
-		returningType: nil.
+		returningType: FogTypeEmpty new.
 	aFogEVMInterpreterBuilder sourceCode: sourceCode
 ]

@@ -174,7 +174,6 @@ FogEVMInterpreterBuilder >> input [
 FogEVMInterpreterBuilder >> input: aString returningType: aType [
 	binaryData := aString.
 	returningType := aType.
-	
 ]
 
 { #category : #settings }
