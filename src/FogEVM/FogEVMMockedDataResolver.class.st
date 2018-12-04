@@ -1,3 +1,13 @@
+"
+The interpreter delegates into a dataResolver to fetch general environmental information. 
+
+The mocked data resolver allows the user to set arbitrary environmental information about the running node. 
+
+Use the setters for setting up the data you want the interpreter to use. 
+
+interpreter := FogEVMSimulatorInterpreter new.
+interpreter dataResolver: FogEVMMockedDataResolver new. 
+"
 Class {
 	#name : #FogEVMMockedDataResolver,
 	#superclass : #Object,

@@ -1,3 +1,11 @@
+"
+An activation is the response to a call, as a context in smalltalk or other languages. 
+
+This object is in charge of holding the bytecode to execute, the instruction pointer of this activation, as well it does control the management of stop, revert and return.
+An activation lasts as much as the related running function / method.
+
+
+"
 Class {
 	#name : #FogEVMActivation,
 	#superclass : #Object,

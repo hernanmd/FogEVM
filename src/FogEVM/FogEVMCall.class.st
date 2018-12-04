@@ -1,4 +1,6 @@
 "
+A Call is the representation of the call, or activation, in Ethereum way. 
+
 callValue represnets the money transferred with the execution. 
 callerAddress is the address of the caller
 contractAddress is the addrress of the contract 

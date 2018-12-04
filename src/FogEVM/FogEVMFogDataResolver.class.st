@@ -1,3 +1,14 @@
+"
+The interpreter delegates into a dataResolver to fetch general environmental information. 
+
+The fig data resolver allows the user to use an already existing geth installation for fetching this information. 
+
+Use the #fog: setter for setting up FogSession you want the resolver to use. 
+
+interpreter := FogEVMSimulatorInterpreter new.
+interpreter dataResolver: FogEVMFogDataResolver new fog: Fog createDefaultConnection session. 
+
+"
 Class {
 	#name : #FogEVMFogDataResolver,
 	#superclass : #Object,
