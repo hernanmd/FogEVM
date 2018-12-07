@@ -751,7 +751,7 @@ FogEVMAbstractInterpreter >> visitGt: aFogVMGt [
 	| element1 element2 |
 	element1 := self pop.
 	element2 := self pop.
-	self push: (element1 unsignedGT: element2)
+	self push: (element1 unsignedGreaterThan: element2)
 ]
 
 { #category : #'visit - boolean alebra' }
