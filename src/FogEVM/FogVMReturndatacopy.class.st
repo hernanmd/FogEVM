@@ -9,29 +9,33 @@ Class {
 
 { #category : #generated }
 FogVMReturndatacopy class >> byteCode [
+<doc>
 	^ '0x3e'
 ]
 
 { #category : #generated }
 FogVMReturndatacopy class >> expectedPops [
+<doc>
 		^3.
 	
 ]
 
 { #category : #generated }
 FogVMReturndatacopy class >> expectedPushes [
+<doc>
 		^0.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMReturndatacopy class >> gas [
+<doc>
 		^ self gasTable at: #gasReturnDataCopy.
-
 ]
 
 { #category : #generated }
 FogVMReturndatacopy class >> goCode [
+<doc>
 	^ 'func opReturnDataCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		memOffset  = stack.pop()
@@ -51,12 +55,13 @@ FogVMReturndatacopy class >> goCode [
 
 { #category : #'as yet unclassified' }
 FogVMReturndatacopy class >> memoryUsage [
+<doc>
 		^ self memoryTable at: #memoryReturnDataCopy.
-
 ]
 
 { #category : #generated }
 FogVMReturndatacopy class >> mnemonic [
+<doc>
 		^'RETURNDATACOPY'.
 	
 ]

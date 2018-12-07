@@ -9,30 +9,34 @@ Class {
 
 { #category : #generated }
 FogVMShr class >> byteCode [
+<doc>
 		^'0x1c'.
 	
 ]
 
 { #category : #generated }
 FogVMShr class >> expectedPops [
+<doc>
 		^2.
 	
 ]
 
 { #category : #generated }
 FogVMShr class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMShr class >> gas [
+<doc>
 		^ self gasTable at: #GasFastestStep.
-
 ]
 
 { #category : #generated }
 FogVMShr class >> goCode [
+<doc>
 	^ 'func opSHR(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// Note, second operand is left in the stack; accumulate result into it, and no need to push it afterwards
 	shift, value := math.U256(stack.pop()), math.U256(stack.peek())
@@ -55,6 +59,7 @@ FogVMShr class >> goCode [
 
 { #category : #generated }
 FogVMShr class >> mnemonic [
+<doc>
 		^'SHR'.
 	
 ]

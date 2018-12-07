@@ -9,35 +9,40 @@ Class {
 
 { #category : #generated }
 FogVMCallcode class >> byteCode [
+<doc>
 		^'0xf2'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCallcode class >> description [ 
+<doc>
 	^ 'Message-call into this account with an alternative accounts code'
 ]
 
 { #category : #generated }
 FogVMCallcode class >> expectedPops [
+<doc>
 		^7.
 	
 ]
 
 { #category : #generated }
 FogVMCallcode class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCallcode class >> gas [
+<doc>
 		^ self gasTable at: #gasCallCode.
-
 ]
 
 { #category : #generated }
 FogVMCallcode class >> goCode [
+<doc>
 	^ 'func opCallCode(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// Pop gas. The actual gas is in interpreter.evm.callGasTemp.
 	interpreter.intPool.put(stack.pop())
@@ -69,18 +74,19 @@ FogVMCallcode class >> goCode [
 
 { #category : #'as yet unclassified' }
 FogVMCallcode class >> memoryUsage [
+<doc>
 		^ self memoryTable at: #memoryCall.
-
 ]
 
 { #category : #generated }
 FogVMCallcode class >> mnemonic [
+<doc>
 		^'CALLCODE'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCallcode class >> returns [
+<doc>
 		^ true.
-
 ]

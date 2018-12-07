@@ -9,35 +9,40 @@ Class {
 
 { #category : #generated }
 FogVMCodecopy class >> byteCode [
+<doc>
 		^'0x39'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCodecopy class >> description [ 
+<doc>
 	^ 'Copy code running in current environment to memory'
 ]
 
 { #category : #generated }
 FogVMCodecopy class >> expectedPops [
+<doc>
 		^3.
 	
 ]
 
 { #category : #generated }
 FogVMCodecopy class >> expectedPushes [
+<doc>
 		^0.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCodecopy class >> gas [
+<doc>
 		^ self gasTable at: #gasCodeCopy.
-
 ]
 
 { #category : #generated }
 FogVMCodecopy class >> goCode [
+<doc>
 	^ 'func opCodeCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		memOffset  = stack.pop()
@@ -53,12 +58,13 @@ FogVMCodecopy class >> goCode [
 
 { #category : #'as yet unclassified' }
 FogVMCodecopy class >> memoryUsage [
+<doc>
 		^ self memoryTable at: #memoryCodeCopy.
-
 ]
 
 { #category : #generated }
 FogVMCodecopy class >> mnemonic [
+<doc>
 		^'CODECOPY'.
 	
 ]

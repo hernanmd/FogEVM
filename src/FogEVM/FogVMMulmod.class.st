@@ -9,35 +9,40 @@ Class {
 
 { #category : #generated }
 FogVMMulmod class >> byteCode [
+<doc>
 		^'0x09'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMMulmod class >> description [ 
+<doc>
 	^ 'Modulo multiplication operation'
 ]
 
 { #category : #generated }
 FogVMMulmod class >> expectedPops [
+<doc>
 		^3.
 	
 ]
 
 { #category : #generated }
 FogVMMulmod class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMMulmod class >> gas [
+<doc>
 		^ self gasTable at: #GasMidStep.
-
 ]
 
 { #category : #generated }
 FogVMMulmod class >> goCode [
+<doc>
 	^ 'func opMulmod(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y, z := stack.pop(), stack.pop(), stack.pop()
 	if z.Cmp(bigZero) > 0 {
@@ -58,6 +63,7 @@ FogVMMulmod class >> goCode [
 
 { #category : #generated }
 FogVMMulmod class >> mnemonic [
+<doc>
 		^'MULMOD'.
 	
 ]

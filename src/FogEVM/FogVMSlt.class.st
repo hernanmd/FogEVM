@@ -9,35 +9,40 @@ Class {
 
 { #category : #generated }
 FogVMSlt class >> byteCode [
+<doc>
 		^'0x12'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSlt class >> description [ 
+<doc>
 	^ 'Signed less-than comparison'
 ]
 
 { #category : #generated }
 FogVMSlt class >> expectedPops [
+<doc>
 		^2.
 	
 ]
 
 { #category : #generated }
 FogVMSlt class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSlt class >> gas [
+<doc>
 		^ self gasTable at: #GasFastestStep.
-
 ]
 
 { #category : #generated }
 FogVMSlt class >> goCode [
+<doc>
 	^ 'func opSlt(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := stack.pop(), stack.peek()
 
@@ -64,6 +69,7 @@ FogVMSlt class >> goCode [
 
 { #category : #generated }
 FogVMSlt class >> mnemonic [
+<doc>
 		^'SLT'.
 	
 ]

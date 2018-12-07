@@ -9,35 +9,40 @@ Class {
 
 { #category : #generated }
 FogVMSmod class >> byteCode [
+<doc>
 		^'0x07'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSmod class >> description [ 
+<doc>
 	^ 'Signed modulo remainder operation'
 ]
 
 { #category : #generated }
 FogVMSmod class >> expectedPops [
+<doc>
 		^2.
 	
 ]
 
 { #category : #generated }
 FogVMSmod class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSmod class >> gas [
+<doc>
 		^ self gasTable at: #GasFastStep.
-
 ]
 
 { #category : #generated }
 FogVMSmod class >> goCode [
+<doc>
 	^ 'func opSmod(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := math.S256(stack.pop()), math.S256(stack.pop())
 	res := interpreter.intPool.getZero()
@@ -59,6 +64,7 @@ FogVMSmod class >> goCode [
 
 { #category : #generated }
 FogVMSmod class >> mnemonic [
+<doc>
 		^'SMOD'.
 	
 ]

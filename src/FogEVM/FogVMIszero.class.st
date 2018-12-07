@@ -9,35 +9,40 @@ Class {
 
 { #category : #generated }
 FogVMIszero class >> byteCode [
+<doc>
 		^'0x15'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMIszero class >> description [ 
+<doc>
 	^ 'Simple not operator'
 ]
 
 { #category : #generated }
 FogVMIszero class >> expectedPops [
+<doc>
 		^1.
 	
 ]
 
 { #category : #generated }
 FogVMIszero class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMIszero class >> gas [
+<doc>
 		^ self gasTable at: #GasFastestStep.
-
 ]
 
 { #category : #generated }
 FogVMIszero class >> goCode [
+<doc>
 	^ 'func opIszero(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x := stack.peek()
 	if x.Sign() > 0 {
@@ -50,6 +55,7 @@ FogVMIszero class >> goCode [
 
 { #category : #generated }
 FogVMIszero class >> mnemonic [
+<doc>
 		^'ISZERO'.
 	
 ]

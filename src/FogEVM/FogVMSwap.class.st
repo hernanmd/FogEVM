@@ -9,16 +9,19 @@ Class {
 
 { #category : #generated }
 FogVMSwap class >> byteCode [
+<doc>
 	^'no apply' 
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSwap class >> description [ 
+<doc>
 	^ 'Exchange 1st and 2nd stack items'
 ]
 
 { #category : #generated }
 FogVMSwap class >> fetchGoCode [
+<doc>
 | stream lowcaseStream selector bytes goCode |
 	stream := 'instructions.go' asFileReference readStream.
 	lowcaseStream := stream contents asLowercase readStream.
@@ -36,6 +39,7 @@ FogVMSwap class >> fetchGoCode [
 
 { #category : #generated }
 FogVMSwap class >> goCode [
+<doc>
 	^ 'func makeSwap(size int64) executionFunc {
 	// switch n + 1 otherwise n would be swapped with n
 	size++
@@ -46,6 +50,7 @@ FogVMSwap class >> goCode [
 
 { #category : #'go configuration' }
 FogVMSwap class >> validateStack: aString [
+<doc>
 	| stream pushes |
 	stream := aString readStream.
 	stream upTo: $(.

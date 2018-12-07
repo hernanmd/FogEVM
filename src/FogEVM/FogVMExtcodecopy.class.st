@@ -9,35 +9,40 @@ Class {
 
 { #category : #generated }
 FogVMExtcodecopy class >> byteCode [
+<doc>
 		^'0x3c'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMExtcodecopy class >> description [ 
+<doc>
 	^ 'Copy an accounts code to memory'
 ]
 
 { #category : #generated }
 FogVMExtcodecopy class >> expectedPops [
+<doc>
 		^4.
 	
 ]
 
 { #category : #generated }
 FogVMExtcodecopy class >> expectedPushes [
+<doc>
 		^0.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMExtcodecopy class >> gas [
+<doc>
 		^ self gasTable at: #gasExtCodeCopy.
-
 ]
 
 { #category : #generated }
 FogVMExtcodecopy class >> goCode [
+<doc>
 	^ 'func opExtCodeCopy(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		addr       = common.BigToAddress(stack.pop())
@@ -58,12 +63,13 @@ FogVMExtcodecopy class >> goCode [
 
 { #category : #'as yet unclassified' }
 FogVMExtcodecopy class >> memoryUsage [
+<doc>
 		^ self memoryTable at: #memoryExtCodeCopy.
-
 ]
 
 { #category : #generated }
 FogVMExtcodecopy class >> mnemonic [
+<doc>
 		^'EXTCODECOPY'.
 	
 ]

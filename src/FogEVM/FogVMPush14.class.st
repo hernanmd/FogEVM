@@ -9,22 +9,25 @@ Class {
 
 { #category : #'as yet unclassified' }
 FogVMPush14 class >> byteCode [ 
+<doc>
 	^'0x6d'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMPush14 class >> description [ 
+<doc>
 	^ 'Place 14 byte item on stack'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMPush14 class >> gas [
+<doc>
 		^ self gasTable at: #gasPush.
-
 ]
 
 { #category : #generated }
 FogVMPush14 class >> goCode [
+<doc>
 	^ 'func makePush(size uint64, pushByteSize int) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		codeLen := len(contract.Code)
@@ -52,6 +55,7 @@ FogVMPush14 class >> goCode [
 
 { #category : #'as yet unclassified' }
 FogVMPush14 class >> mnemonic [
+<doc>
 	^ 'PUSH14'
 ]
 

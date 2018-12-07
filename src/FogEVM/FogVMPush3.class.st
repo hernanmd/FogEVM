@@ -9,22 +9,25 @@ Class {
 
 { #category : #'as yet unclassified' }
 FogVMPush3 class >> byteCode [ 
+<doc>
 	^'0x62'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMPush3 class >> description [ 
+<doc>
 	^ 'Place 3 byte item on stack'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMPush3 class >> gas [
+<doc>
 		^ self gasTable at: #gasPush.
-
 ]
 
 { #category : #generated }
 FogVMPush3 class >> goCode [
+<doc>
 	^ 'func makePush(size uint64, pushByteSize int) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		codeLen := len(contract.Code)
@@ -52,6 +55,7 @@ FogVMPush3 class >> goCode [
 
 { #category : #'as yet unclassified' }
 FogVMPush3 class >> mnemonic [
+<doc>
 	^ 'PUSH3'
 ]
 

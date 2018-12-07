@@ -636,25 +636,9 @@ FogEVMInstruction class >> gasCost: aString [
 ' format: {gasTag})
 ]
 
-{ #category : #testing }
-FogEVMInstruction class >> halts [
-	^ false 
-]
-
 { #category : #'go configuration - crawling pandora box' }
-FogEVMInstruction class >> halts: aString [
-	| stream boolean |
-	stream := aString trimBoth readStream.
-	stream upTo: $(.
-	boolean := stream atEnd
-		ifTrue: [ stream position: 0.
-			stream upTo: $, ]
-		ifFalse: [ stream upTo: $) ].
-	^ self class
-		compile:
-			('halts
-		^ {1}.
-' format: {boolean})
+FogEVMInstruction class >> halts [
+	^ false
 ]
 
 { #category : #accessing }

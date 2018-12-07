@@ -9,32 +9,37 @@ Class {
 
 { #category : #'as yet unclassified' }
 FogVMSwap11 class >> byteCode [ 
+<doc>
 	^'0x9a'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSwap11 class >> description [ 
+<doc>
 	^ 'Exchange 1st and 11 stack items.'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSwap11 class >> expectedPops [
+<doc>
 	^ 12
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSwap11 class >> expectedPushes [
+<doc>
 	^ 12
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSwap11 class >> gas [
+<doc>
 		^ self gasTable at: #gasSwap.
-
 ]
 
 { #category : #generated }
 FogVMSwap11 class >> goCode [
+<doc>
 	^ 'func makeSwap(size int64) executionFunc {
 	// switch n + 1 otherwise n would be swapped with n
 	size++
@@ -45,5 +50,6 @@ FogVMSwap11 class >> goCode [
 
 { #category : #'as yet unclassified' }
 FogVMSwap11 class >> mnemonic [
+<doc>
 	^ 'SWAP11'
 ]

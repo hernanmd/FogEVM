@@ -9,35 +9,40 @@ Class {
 
 { #category : #generated }
 FogVMCall class >> byteCode [
+<doc>
 		^'0xf1'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCall class >> description [ 
+<doc>
 	^ 'Message-call into an account'
 ]
 
 { #category : #generated }
 FogVMCall class >> expectedPops [
+<doc>
 		^7.
 	
 ]
 
 { #category : #generated }
 FogVMCall class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCall class >> gas [
+<doc>
 		^ self gasTable at: #gasCall.
-
 ]
 
 { #category : #generated }
 FogVMCall class >> goCode [
+<doc>
 	^ '
 func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// Pop gas. The actual gas in interpreter.evm.callGasTemp.
@@ -71,18 +76,19 @@ func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory 
 
 { #category : #'as yet unclassified' }
 FogVMCall class >> memoryUsage [
+<doc>
 		^ self memoryTable at: #memoryCall.
-
 ]
 
 { #category : #generated }
 FogVMCall class >> mnemonic [
+<doc>
 		^'CALL'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCall class >> returns [
+<doc>
 		^ true.
-
 ]

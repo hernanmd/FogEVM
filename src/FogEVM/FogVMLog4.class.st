@@ -9,34 +9,39 @@ Class {
 
 { #category : #generated }
 FogVMLog4 class >> byteCode [
+<doc>
 		^'0xa4'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMLog4 class >> description [ 
+<doc>
 	^ 'Append log record with four topics'
 ]
 
 { #category : #generated }
 FogVMLog4 class >> expectedPops [
+<doc>
 		^6.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMLog4 class >> expectedPushes [
+<doc>
 	^ 0
 ]
 
 { #category : #'as yet unclassified' }
 FogVMLog4 class >> gas [
+<doc>
 		^ self gasTable at: #makeGasLog.
-
 ]
 
 { #category : #generated }
 FogVMLog4 class >> goCode [
+<doc>
 	^ 'func makeLog(size int) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		topics := make([]common.Hash, size)
@@ -65,18 +70,19 @@ FogVMLog4 class >> goCode [
 
 { #category : #'as yet unclassified' }
 FogVMLog4 class >> memoryUsage [
+<doc>
 		^ self memoryTable at: #memoryLog.
-
 ]
 
 { #category : #generated }
 FogVMLog4 class >> mnemonic [
+<doc>
 		^'LOG4'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMLog4 class >> writes [
+<doc>
 		^ true.
-
 ]

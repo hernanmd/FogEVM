@@ -9,11 +9,13 @@ Class {
 
 { #category : #number }
 FogVMLog class >> byteCode [
+<doc>
 	^ 'no-meaning'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMLog class >> fetchGoCode [
+<doc>
 	| stream lowcaseStream selector bytes goCode |
 	stream := 'instructions.go' asFileReference readStream.
 	lowcaseStream := stream contents asLowercase readStream.
@@ -31,6 +33,7 @@ FogVMLog class >> fetchGoCode [
 
 { #category : #generated }
 FogVMLog class >> goCode [
+<doc>
 	^ 'func makeLog(size int) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		topics := make([]common.Hash, size)

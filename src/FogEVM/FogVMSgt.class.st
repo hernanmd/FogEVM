@@ -9,35 +9,40 @@ Class {
 
 { #category : #generated }
 FogVMSgt class >> byteCode [
+<doc>
 		^'0x13'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSgt class >> description [ 
+<doc>
 	^ 'Signed greater-than comparison'
 ]
 
 { #category : #generated }
 FogVMSgt class >> expectedPops [
+<doc>
 		^2.
 	
 ]
 
 { #category : #generated }
 FogVMSgt class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSgt class >> gas [
+<doc>
 		^ self gasTable at: #GasFastestStep.
-
 ]
 
 { #category : #generated }
 FogVMSgt class >> goCode [
+<doc>
 	^ 'func opSgt(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := stack.pop(), stack.peek()
 
@@ -64,6 +69,7 @@ FogVMSgt class >> goCode [
 
 { #category : #generated }
 FogVMSgt class >> mnemonic [
+<doc>
 		^'SGT'.
 	
 ]

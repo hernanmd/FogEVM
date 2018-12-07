@@ -9,35 +9,40 @@ Class {
 
 { #category : #generated }
 FogVMSdiv class >> byteCode [
+<doc>
 		^'0x05'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSdiv class >> description [ 
+<doc>
 	^ 'Signed integer division operation (truncated)'
 ]
 
 { #category : #generated }
 FogVMSdiv class >> expectedPops [
+<doc>
 		^2.
 	
 ]
 
 { #category : #generated }
 FogVMSdiv class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSdiv class >> gas [
+<doc>
 		^ self gasTable at: #GasFastStep.
-
 ]
 
 { #category : #generated }
 FogVMSdiv class >> goCode [
+<doc>
 	^ 'func opSdiv(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := math.S256(stack.pop()), math.S256(stack.pop())
 	res := interpreter.intPool.getZero()
@@ -59,6 +64,7 @@ FogVMSdiv class >> goCode [
 
 { #category : #generated }
 FogVMSdiv class >> mnemonic [
+<doc>
 		^'SDIV'.
 	
 ]

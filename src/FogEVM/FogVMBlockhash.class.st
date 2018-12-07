@@ -9,35 +9,40 @@ Class {
 
 { #category : #generated }
 FogVMBlockhash class >> byteCode [
+<doc>
 		^'0x40'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMBlockhash class >> description [ 
+<doc>
 	^ 'Get the hash of one of the 256 most recent complete blocks'
 ]
 
 { #category : #generated }
 FogVMBlockhash class >> expectedPops [
+<doc>
 		^1.
 	
 ]
 
 { #category : #generated }
 FogVMBlockhash class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMBlockhash class >> gas [
+<doc>
 		^ self gasTable at: #GasExtStep.
-
 ]
 
 { #category : #generated }
 FogVMBlockhash class >> goCode [
+<doc>
 	^ 'func opBlockhash(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	num := stack.pop()
 
@@ -53,6 +58,7 @@ FogVMBlockhash class >> goCode [
 
 { #category : #generated }
 FogVMBlockhash class >> mnemonic [
+<doc>
 		^'BLOCKHASH'.
 	
 ]

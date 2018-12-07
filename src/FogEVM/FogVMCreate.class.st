@@ -10,32 +10,37 @@ Class {
 
 { #category : #generated }
 FogVMCreate class >> byteCode [
+<doc>
 		^'0xf0'.
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCreate class >> description [ 
+<doc>
 	^ 'Create a new account with associated code'
 ]
 
 { #category : #generated }
 FogVMCreate class >> expectedPops [
+<doc>
 	^ 3
 ]
 
 { #category : #generated }
 FogVMCreate class >> expectedPushes [
+<doc>
 	^ 1
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCreate class >> gas [
+<doc>
 		^ self gasTable at: #gasCreate.
-
 ]
 
 { #category : #generated }
 FogVMCreate class >> goCode [
+<doc>
 	^ 'func opCreate(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	var (
 		value        = stack.pop()
@@ -71,24 +76,25 @@ FogVMCreate class >> goCode [
 
 { #category : #'as yet unclassified' }
 FogVMCreate class >> memoryUsage [
+<doc>
 		^ self memoryTable at: #memoryCreate.
-
 ]
 
 { #category : #generated }
 FogVMCreate class >> mnemonic [
+<doc>
 		^'CREATE'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCreate class >> returns [
+<doc>
 		^ true.
-
 ]
 
 { #category : #'as yet unclassified' }
 FogVMCreate class >> writes [
+<doc>
 		^ true.
-
 ]

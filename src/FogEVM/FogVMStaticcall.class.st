@@ -9,29 +9,33 @@ Class {
 
 { #category : #generated }
 FogVMStaticcall class >> byteCode [
+<doc>
 	^ '0xf6'
 ]
 
 { #category : #generated }
 FogVMStaticcall class >> expectedPops [
+<doc>
 		^6.
 	
 ]
 
 { #category : #generated }
 FogVMStaticcall class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMStaticcall class >> gas [
+<doc>
 		^ self gasTable at: #gasStaticCall.
-
 ]
 
 { #category : #generated }
 FogVMStaticcall class >> goCode [
+<doc>
 	^ 'func opStaticCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// Pop gas. The actual gas is in interpreter.evm.callGasTemp.
 	interpreter.intPool.put(stack.pop())
@@ -59,18 +63,19 @@ FogVMStaticcall class >> goCode [
 
 { #category : #'as yet unclassified' }
 FogVMStaticcall class >> memoryUsage [
+<doc>
 		^ self memoryTable at: #memoryStaticCall.
-
 ]
 
 { #category : #generated }
 FogVMStaticcall class >> mnemonic [
+<doc>
 		^'STATICCALL'.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMStaticcall class >> returns [
+<doc>
 		^ true.
-
 ]

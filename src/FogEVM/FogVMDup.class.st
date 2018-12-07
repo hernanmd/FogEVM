@@ -9,16 +9,19 @@ Class {
 
 { #category : #'as yet unclassified' }
 FogVMDup class >> byteCode [
+<doc>
 	^ 'no-apply '
 ]
 
 { #category : #'as yet unclassified' }
 FogVMDup class >> description [ 
+<doc>
 	^ 'Place 1 byte item on stack'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMDup class >> fetchGoCode [
+<doc>
 	| stream lowcaseStream selector bytes goCode |
 	stream := 'instructions.go' asFileReference readStream.
 	lowcaseStream := stream contents asLowercase readStream.
@@ -36,6 +39,7 @@ FogVMDup class >> fetchGoCode [
 
 { #category : #generated }
 FogVMDup class >> goCode [
+<doc>
 	^ 'func makeDup(size int64) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		stack.dup(interpreter.intPool, int(size))
@@ -48,6 +52,7 @@ FogVMDup class >> goCode [
 
 { #category : #generated }
 FogVMDup class >> validateStack: aString [
+<doc>
 	| stream pushes |
 	stream := aString readStream.
 	stream upTo: $(.

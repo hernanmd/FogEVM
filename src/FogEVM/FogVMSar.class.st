@@ -9,30 +9,34 @@ Class {
 
 { #category : #generated }
 FogVMSar class >> byteCode [
+<doc>
 		^'0x1d'.
 	
 ]
 
 { #category : #generated }
 FogVMSar class >> expectedPops [
+<doc>
 		^2.
 	
 ]
 
 { #category : #generated }
 FogVMSar class >> expectedPushes [
+<doc>
 		^1.
 	
 ]
 
 { #category : #'as yet unclassified' }
 FogVMSar class >> gas [
+<doc>
 		^ self gasTable at: #GasFastestStep.
-
 ]
 
 { #category : #generated }
 FogVMSar class >> goCode [
+<doc>
 	^ 'func opSAR(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	// Note, S256 returns (potentially) a new bigint, so were popping, not peeking this one
 	shift, value := math.U256(stack.pop()), math.S256(stack.pop())
@@ -56,6 +60,7 @@ FogVMSar class >> goCode [
 
 { #category : #generated }
 FogVMSar class >> mnemonic [
+<doc>
 		^'SAR'.
 	
 ]

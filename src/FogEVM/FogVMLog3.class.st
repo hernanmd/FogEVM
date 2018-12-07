@@ -9,27 +9,31 @@ Class {
 
 { #category : #'as yet unclassified' }
 FogVMLog3 class >> byteCode [
+<doc>
 	^ '0xa3'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMLog3 class >> expectedPops [
+<doc>
 	^ 5
 ]
 
 { #category : #'as yet unclassified' }
 FogVMLog3 class >> expectedPushes [
+<doc>
 	^ 0
 ]
 
 { #category : #'as yet unclassified' }
 FogVMLog3 class >> gas [
+<doc>
 		^ self gasTable at: #makeGasLog.
-
 ]
 
 { #category : #generated }
 FogVMLog3 class >> goCode [
+<doc>
 	^ 'func makeLog(size int) executionFunc {
 	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 		topics := make([]common.Hash, size)
@@ -58,17 +62,18 @@ FogVMLog3 class >> goCode [
 
 { #category : #'as yet unclassified' }
 FogVMLog3 class >> memoryUsage [
+<doc>
 		^ self memoryTable at: #memoryLog.
-
 ]
 
 { #category : #accessing }
 FogVMLog3 class >> mnemonic [
+<doc>
 	^ 'LOG3'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMLog3 class >> writes [
+<doc>
 		^ true.
-
 ]

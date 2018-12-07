@@ -12,33 +12,37 @@ Class {
 
 { #category : #generated }
 FogEVMUnknown class >> byteCode [
+<doc>
 		^ nil 
 ]
 
 { #category : #'as yet unclassified' }
 FogEVMUnknown class >> description [ 
+<doc>
 	^ 'UNKNOWN'
 ]
 
 { #category : #generated }
 FogEVMUnknown class >> expectedPops [
+<doc>
 	^ self error: 'Shouldnot be here'
-
 ]
 
 { #category : #generated }
 FogEVMUnknown class >> expectedPushes [
+<doc>
 	^ self error: 'Shouldnot be here'
-
 ]
 
 { #category : #generated }
 FogEVMUnknown class >> goCode [
+<doc>
 	^ ''
 ]
 
 { #category : #generated }
 FogEVMUnknown class >> mnemonic [ 
+<doc>
 	^ 'UNKNOWN'
 ]
 

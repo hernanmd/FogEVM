@@ -1,5 +1,7 @@
 "
-Assembly bytecode 
+ByteCode is wrappes an ordered collection of bytecode. 
+
+Besides collecting the bytecode in the program's order, and providing some basic collections features, such as #at:, #at:put:,  it also provides some bytecode as program methods as, toBinary, toHexa. It allows the usage of visitors by implementing #accept: and, last but not least, it provides readStream and writeStream based on bytecode streams. 
 "
 Class {
 	#name : #FogEVMByteCode,
@@ -7,7 +9,7 @@ Class {
 	#instVars : [
 		'content'
 	],
-	#category : 'FogEVM-ByteCode'
+	#category : #'FogEVM-ByteCode'
 }
 
 { #category : #'instance creation' }
@@ -48,11 +50,13 @@ FogEVMByteCode >> accept: anInterpreter [
 
 { #category : #collection }
 FogEVMByteCode >> at: anIdx [
+	<doc: 'returns the bytecode located at the given index'>
 	^ content at: anIdx
 ]
 
 { #category : #collection }
 FogEVMByteCode >> at: anIdx put: aValue [
+<doc: 'puts the given bytecode at the given index'>
 	content at: anIdx put: aValue
 ]
 
@@ -63,7 +67,8 @@ FogEVMByteCode >> bytecodeSize [
 
 { #category : #accessing }
 FogEVMByteCode >> content [
-	^ content := content reject: #isNil
+	<doc: 'returns the content wrapped by this collection.'>
+	^ content 
 ]
 
 { #category : #accessing }
@@ -119,6 +124,7 @@ FogEVMByteCode >> printOn: aStream [
 
 { #category : #converting }
 FogEVMByteCode >> readStream [
+	<doc: 'Returns a FogEVMByteCodeReadStream stream over this bytecode.'>
 	^ FogEVMByteCodeReadStream on: content
 ]
 
@@ -129,21 +135,23 @@ FogEVMByteCode >> sequence [
 
 { #category : #converting }
 FogEVMByteCode >> size [
+	<doc: 'returns the bytecode size'>
 	^ content size 
 ]
 
 { #category : #converting }
 FogEVMByteCode >> toBinary [
-	^ 
-			((content reject:#isNil thenCollect: #instruction)
-				inject: OrderedCollection new  writeStream
-				into: [ :acc :each | 
-					each printBinaryOn: acc.
-					acc ]) contents asByteArray 
+	<doc: 'Returns the bytecode into a it''s binary representation'>
+	^ ((content reject: #isNil thenCollect: #instruction)
+		inject: OrderedCollection new writeStream
+		into: [ :acc :each | 
+			each printBinaryOn: acc.
+			acc ]) contents asByteArray
 ]
 
 { #category : #converting }
 FogEVMByteCode >> toHexa [
+	<doc: 'Returns the bytecode into a it''s hexadecimal representation'>
 	^ ((content reject: #isNil thenCollect: #instruction)
 		inject: '' writeStream
 		into: [ :acc :each | 
@@ -158,5 +166,6 @@ FogEVMByteCode >> values [
 
 { #category : #converting }
 FogEVMByteCode >> writeStream [
+	<doc: 'Returns a FogEVMByteCodeWriteStream stream over this bytecode.'>
 	^ FogEVMByteCodeWriteStream on: self
 ]
