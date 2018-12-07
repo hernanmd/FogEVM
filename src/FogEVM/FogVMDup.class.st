@@ -9,32 +9,28 @@ Class {
 
 { #category : #'as yet unclassified' }
 FogVMDup class >> byteCode [
-<doc>
 	^ 'no-apply '
 ]
 
 { #category : #'as yet unclassified' }
-FogVMDup class >> description [ 
-<doc>
+FogVMDup class >> description [
+	<doc>
 	^ 'Place 1 byte item on stack'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMDup class >> fetchGoCode [
-<doc>
 	| stream lowcaseStream selector bytes goCode |
 	stream := 'instructions.go' asFileReference readStream.
 	lowcaseStream := stream contents asLowercase readStream.
 	selector := 'func makeDup' asLowercase.
 	lowcaseStream upToAll: selector.
 	stream position: lowcaseStream position - selector size.
-	bytes := (lowcaseStream upToAll: 'func') size + (lowcaseStream upToAll: 'func') size + (lowcaseStream upToAll: 'func') size.
+	bytes := (lowcaseStream upToAll: 'func') size + (lowcaseStream upToAll: 'func') size
+		+ (lowcaseStream upToAll: 'func') size.
 	goCode := stream next: bytes.
-	self class
-		compile:
-			('goCode
-	^ ''{1}''' format: {goCode})
-		classified: #generated
+	self class compile: ('goCode
+	^ ''{1}''' format: {goCode}) classified: #generated
 ]
 
 { #category : #generated }
@@ -52,7 +48,6 @@ FogVMDup class >> goCode [
 
 { #category : #generated }
 FogVMDup class >> validateStack: aString [
-<doc>
 	| stream pushes |
 	stream := aString readStream.
 	stream upTo: $(.

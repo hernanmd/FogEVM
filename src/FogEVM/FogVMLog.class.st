@@ -9,13 +9,11 @@ Class {
 
 { #category : #number }
 FogVMLog class >> byteCode [
-<doc>
 	^ 'no-meaning'
 ]
 
 { #category : #'as yet unclassified' }
 FogVMLog class >> fetchGoCode [
-<doc>
 	| stream lowcaseStream selector bytes goCode |
 	stream := 'instructions.go' asFileReference readStream.
 	lowcaseStream := stream contents asLowercase readStream.

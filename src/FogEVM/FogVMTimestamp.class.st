@@ -50,7 +50,6 @@ FogVMTimestamp class >> goCode [
 
 { #category : #generated }
 FogVMTimestamp class >> mnemonic [
-<doc>
-		^'TIMESTAMP'.
-	
+	<doc>
+	^ 'TIMESTAMP'
 ]

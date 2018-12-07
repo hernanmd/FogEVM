@@ -21,14 +21,12 @@ FogVMAdd class >> description [
 
 { #category : #generated }
 FogVMAdd class >> expectedPops [
-<doc>
 	<doc>
 	^ 2
 ]
 
 { #category : #generated }
 FogVMAdd class >> expectedPushes [
-<doc>
 	<doc>
 	^ 1
 ]
@@ -41,7 +39,6 @@ FogVMAdd class >> gas [
 
 { #category : #generated }
 FogVMAdd class >> goCode [
-<doc>
 	<doc>
 	^ 'func opAdd(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := stack.pop(), stack.peek()
@@ -53,7 +50,6 @@ FogVMAdd class >> goCode [
 
 { #category : #generated }
 FogVMAdd class >> mnemonic [
-<doc>
 	<doc>
 	^ 'ADD'
 ]
