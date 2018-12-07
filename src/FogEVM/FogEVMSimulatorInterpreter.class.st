@@ -1,3 +1,7 @@
+"
+Simulation interpreter is an interpreter that extends the abstract interpreter adding the environmental information gather through a DataResolver (FogEVMFogDataResolver | FogEVMMockedDataResolver), allowing to locally execute the bytecode in a sandbox. 
+
+"
 Class {
 	#name : #FogEVMSimulatorInterpreter,
 	#superclass : #FogEVMAbstractInterpreter,

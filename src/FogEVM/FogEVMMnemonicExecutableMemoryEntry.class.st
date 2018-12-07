@@ -10,7 +10,7 @@ Class {
 		'instruction',
 		'breakpoint'
 	],
-	#category : #'FogEVM-Environment-Memory'
+	#category : #'FogEVM-ByteCode-Interpreter'
 }
 
 { #category : #visiting }
@@ -21,11 +21,13 @@ FogEVMMnemonicExecutableMemoryEntry >> accept: anInterpreter with: anExecutableM
 
 { #category : #visiting }
 FogEVMMnemonicExecutableMemoryEntry >> breakpoint: aBoolean [
+	<doc: 'Receives a boolean, setting up if the interpreter should halt on this position'>
 	breakpoint := aBoolean
 ]
 
 { #category : #'as yet unclassified' }
 FogEVMMnemonicExecutableMemoryEntry >> byteNumber [
+	<doc: 'Returns the byte where the instruction is placed (in the executing memory) '>
 	^ byteNumber
 ]
 
@@ -42,18 +44,13 @@ FogEVMMnemonicExecutableMemoryEntry >> initialize [
 
 { #category : #'as yet unclassified' }
 FogEVMMnemonicExecutableMemoryEntry >> instruction [
+	<doc: 'Returns the instruction at this entry'>
 	^ instruction
 ]
 
 { #category : #'as yet unclassified' }
 FogEVMMnemonicExecutableMemoryEntry >> instruction: aFogVMPush1 [ 
 	instruction := aFogVMPush1
-]
-
-{ #category : #visiting }
-FogEVMMnemonicExecutableMemoryEntry >> manageBreakpoint [
-	breakpoint
-		ifTrue: [ self halt ]
 ]
 
 { #category : #printing }
@@ -69,10 +66,12 @@ FogEVMMnemonicExecutableMemoryEntry >> printOn: aStream [
 
 { #category : #'as yet unclassified' }
 FogEVMMnemonicExecutableMemoryEntry >> shouldBreak [
-	^ breakpoint 
+	<doc: 'It return true or false according to the entry configuration, informing if it should halt or not on the execution of this instruction'>
+	^ breakpoint
 ]
 
 { #category : #toggle }
 FogEVMMnemonicExecutableMemoryEntry >> toggleBreakpoint [
+	<doc: 'Toggles the breakpoint'>
 	self breakpoint: self shouldBreak not
 ]
