@@ -45,7 +45,7 @@ FogEVMMemory >> isEmptyOrNil [
 
 { #category : #accessing }
 FogEVMMemory >> loadFrom: anAddress bytes: aSize [
-	^ self copyFrom: anAddress to: anAddress + aSize - 1
+	^ self copyFrom: anAddress to: anAddress + aSize 
 ]
 
 { #category : #loading }
@@ -61,7 +61,7 @@ FogEVMMemory >> loadWords: addressRegistry to: offsetRegistry [
 	| address offset  |
 	address := addressRegistry unsignedValue.
 	offset := offsetRegistry unsignedValue. 
-	^ self copyFrom: address to: address + offset
+	^ self copyFrom: address to: address + offset - 1
 ]
 
 { #category : #initialization }
@@ -71,7 +71,7 @@ FogEVMMemory >> restart [
 
 { #category : #'as yet unclassified' }
 FogEVMMemory >> set: aValue at: anAddress [
-	layout at: anAddress + 1 put: aValue
+	layout at: anAddress +1 put: aValue
 ]
 
 { #category : #'as yet unclassified' }
@@ -106,9 +106,12 @@ FogEVMMemory >> storeSize [
 
 { #category : #accessing }
 FogEVMMemory >> storeWord: aRegistry startingAt: aRegistryAddress [
-	| address stream |
-	address := aRegistryAddress unsignedValue.
+	| address stream acc |
+	address := aRegistryAddress unsignedValue .
 	stream := aRegistry asWordByteArray readStream.
 	self ensureAddressAvailable: address size: FogEVMAbstractInterpreter wordSize.
-	address to: address + FogEVMAbstractInterpreter wordSize - 1 do: [ :i | self set: stream next at: i ]
+	acc := 0. 
+	address to: address + (FogEVMAbstractInterpreter wordSize -1 )do: [ :i | self set: stream next at: i. acc := acc +1. ].
+	self assert: aRegistry unsignedValue = (self loadWord: aRegistryAddress) unsignedValue.
+	self assert: acc = 32.
 ]

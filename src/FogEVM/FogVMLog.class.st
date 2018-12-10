@@ -9,7 +9,7 @@ Class {
 
 { #category : #number }
 FogVMLog class >> byteCode [
-	^ 'no-meaning'
+	^ nil
 ]
 
 { #category : #'as yet unclassified' }

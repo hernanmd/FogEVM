@@ -518,6 +518,11 @@ FogEVMInstruction class >> bootstrapInstructions [
 		and: ' Documentation says nothing about'
 ]
 
+{ #category : #accessing }
+FogEVMInstruction class >> byteCodeNumber [
+	^ self byteCode ifNil: [ -1 ] ifNotNil: [ :code | code asBKNumber ]
+]
+
 { #category : #'matching with go vm - crawling pandora box' }
 FogEVMInstruction class >> checkUnImplementedBytecodes [
 	| stream codes |
@@ -851,6 +856,10 @@ FogEVMInstruction >> isValidJumpDestination [
 { #category : #'as yet unclassified' }
 FogEVMInstruction >> loadParametersFrom: aStream [
 	
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMInstruction >> loadParametersFromByteArray: aByteStream [
 ]
 
 { #category : #'as yet unclassified' }

@@ -118,6 +118,11 @@ FogEVMActivation >> gasPrice [
 	^ call gasPrice
 ]
 
+{ #category : #accessing }
+FogEVMActivation >> hexadecimalReturn [
+	^  (return ifNil: [ return := FogEVMRegistry zero ]) hex
+]
+
 { #category : #initialization }
 FogEVMActivation >> indexForMemoryAddress: anAddress [
 	^ self indexForMemoryAddress: anAddress ifNone: [  FogEVMRuntimeError signal: 'Invalid Address. Out Of Memory' ]

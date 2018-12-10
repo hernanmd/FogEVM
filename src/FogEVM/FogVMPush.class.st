@@ -14,8 +14,8 @@ Class {
 
 { #category : #'as yet unclassified' }
 FogVMPush class >> byteCode [
-<doc>
-	^ 'no-meaning'
+	<doc>
+	^ nil
 ]
 
 { #category : #'as yet unclassified' }
@@ -122,6 +122,11 @@ FogVMPush >> isPush [
 { #category : #'as yet unclassified' }
 FogVMPush >> loadParametersFrom: anHexaStream [
 	parameter := '0x' , (anHexaStream next: bytes * 2)
+]
+
+{ #category : #'as yet unclassified' }
+FogVMPush >> loadParametersFromByteArray: anByteStream [
+	parameter := '0x' , ((anByteStream next: bytes) hex asString copyReplaceAll: '16r' with: '')
 ]
 
 { #category : #'as yet unclassified' }

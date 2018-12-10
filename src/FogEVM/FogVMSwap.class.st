@@ -9,8 +9,8 @@ Class {
 
 { #category : #generated }
 FogVMSwap class >> byteCode [
-<doc>
-	^'no apply' 
+	<doc>
+	^ nil
 ]
 
 { #category : #'as yet unclassified' }

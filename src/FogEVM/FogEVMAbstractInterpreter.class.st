@@ -582,7 +582,7 @@ FogEVMAbstractInterpreter >> visitCalldatacopy: aFogVMCalldatacopy [
 	memFrom := self pop.
 	dataFrom := self pop.
 	length := self pop.
-	loadedData := self contractInput copyFrom: dataFrom unsignedValue to: dataFrom unsignedValue + length unsignedValue.
+	loadedData := self contractInput copyFrom: dataFrom unsignedValue + 1 to: dataFrom unsignedValue + length unsignedValue.
 	self memory store: loadedData at: memFrom unsignedValue ensure: length unsignedValue
 ]
 
@@ -1012,7 +1012,7 @@ FogEVMAbstractInterpreter >> visitSha3: aFogVMSha3 [
 	| fromAddress offset kck |
 	fromAddress := self pop.
 	offset := self pop.
-	kck := self keccack256: (self memory loadWords: fromAddress to: offset).
+	kck := self keccack256: (self memory loadWords: fromAddress to: offset  ).
 	self push: kck
 ]
 
@@ -1070,7 +1070,6 @@ FogEVMAbstractInterpreter >> visitSstore: aFogVMSstore [
 	| storageAddress value address |
 	storageAddress := self pop.
 	value := self pop.
-
 	address := FogEVMRegistry forValue: storageAddress unsignedValue bytesLength: 32.
 	value := (self storageFor: self currentActivation contractAddress ) atStorage: address put: value
 ]

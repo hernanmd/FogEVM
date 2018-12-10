@@ -23,9 +23,9 @@ FogEVMDebuggableActivation >> returnDebuggableValue [
 	value := (return isKindOf: FogEVMRegistry)
 		ifTrue: [ return byteArray ]
 		ifFalse: [ return ].
-	value isEmptyOrNil
+	(value isEmptyOrNil or: [ value size = 1 and: [ value first == 0 ] ])
 		ifTrue: [ ^ return ].
-	^ returningType unpack: return hex using: FogHexadecimalPacker new
+	^ returningType unpackReturn: self hexadecimalReturn using: FogHexadecimalPacker new
 ]
 
 { #category : #accessing }

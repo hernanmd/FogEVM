@@ -20,6 +20,24 @@ Class {
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
 
+{ #category : #creation }
+FogEVMCall class >> loadDefinition: aFogCallDefinition [
+	| newCall |
+	newCall := self new.
+	newCall
+		contractInput:
+			(FogEVMRegistry fromPrintString: aFogCallDefinition data length: aFogCallDefinition data size / 2 - 1)
+				byteArray.
+	newCall callerAddress: (FogEVMRegistry fromPrintString: aFogCallDefinition from length: 20).
+	newCall
+		contractAddress:
+			(aFogCallDefinition to ifNil: [ nil ] ifNotNil: [ :to | FogEVMRegistry fromPrintString: to length: 20 ]).
+	newCall callValue: (FogEVMRegistry forValue: aFogCallDefinition value bytesLength: 8).
+	newCall gas: (FogEVMRegistry forValue: aFogCallDefinition gas bytesLength: 8).
+	newCall gasPrice: (FogEVMRegistry forValue: aFogCallDefinition gasPrice bytesLength: 8).
+	^ newCall
+]
+
 { #category : #accessing }
 FogEVMCall >> callValue [
 	^ callValue

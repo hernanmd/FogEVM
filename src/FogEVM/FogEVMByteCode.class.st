@@ -32,14 +32,37 @@ FogEVMByteCode class >> fromBinary: anHexaContent [
 		yourself
 ]
 
+{ #category : #'instance creation' }
+FogEVMByteCode class >> fromByteArray: aByteArray [
+	| stream result |
+	stream := aByteArray readStream.
+	result := OrderedCollection new.
+	[ stream atEnd ]
+		whileFalse: [ | instruction byteLocation |
+			byteLocation := stream position.
+			instruction := self instructionForNumber: (stream next).
+			instruction loadParametersFromByteArray: stream.
+			result
+				add:
+					(FogEVMMnemonicExecutableMemoryEntry new
+						byteNumber: byteLocation;
+						instruction: instruction) ].
+	^ self new
+		content: result;
+		yourself
+]
+
 { #category : #private }
 FogEVMByteCode class >> instructionFor: aCode [
-	| code |
-	code := '0x' , aCode.
+	^ self instructionForNumber: (Number readFrom: aCode readStream base: 16)
+]
+
+{ #category : #private }
+FogEVMByteCode class >> instructionForNumber: aCode [
 	^ (FogEVMInstruction allSubclasses
-		detect: [ :c | c byteCode = code ]
+		detect: [ :c | c byteCodeNumber = aCode ]
 		ifNone: [ FogEVMUnknown new
-				byteCode: code;
+				byteCode: (aCode asBKHexa: 2);
 				yourself ]) instance
 ]
 

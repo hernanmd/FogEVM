@@ -9,7 +9,7 @@ Class {
 
 { #category : #'as yet unclassified' }
 FogVMDup class >> byteCode [
-	^ 'no-apply '
+	^ nil
 ]
 
 { #category : #'as yet unclassified' }
