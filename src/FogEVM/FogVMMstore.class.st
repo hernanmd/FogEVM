@@ -64,3 +64,8 @@ FogVMMstore class >> mnemonic [
 		^'MSTORE'.
 	
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMMstore >> writesMemory [
+	^ true
+]

@@ -316,7 +316,7 @@ FogEVMBytecodeDebugger >> runInterpreter [
 	firstIteration := true. 
 	[ interpreter currentActivation isFinished ]
 		whileFalse: [ 
-			(interpreter currentActivation nextInstruction shouldBreak and: [firstIteration not])
+			(interpreter shouldBreakNow and: [firstIteration not])
 				ifTrue: [ self noteBreakpoint.
 					^ self ].
 			firstIteration := false.

@@ -180,6 +180,11 @@ FogEVMRegistry >> // aFogEVMRegistry [
 ]
 
 { #category : #'bit manipulation' }
+FogEVMRegistry >> < otherRegistry [
+	^ self unsignedLesserThan: otherRegistry 
+]
+
+{ #category : #'bit manipulation' }
 FogEVMRegistry >> << aFogEVMRegistry [
 	<doc: 'Returns the registry for the value of the shift-to-left operation'>
 	^ FogEVMRegistry forWordSizeValue: self unsignedValue << aFogEVMRegistry unsignedValue
@@ -380,6 +385,12 @@ FogEVMRegistry >> smod: aFogEVMRegistry [
 		ifFalse: [ x := self signedValue.
 			x sign * (x abs \\ y abs) ].
 	^ FogEVMRegistry forWordSizeValue: val
+]
+
+{ #category : #interval }
+FogEVMRegistry >> to: aFogEVMRegistry [
+	^ (self unsignedValue to: aFogEVMRegistry unsignedValue)
+		collect: [ :n | FogEVMRegistry forValue: n bytesLength: 32 ]
 ]
 
 { #category : #comparing }

@@ -70,3 +70,8 @@ FogVMRevert class >> reverts [
 <doc>
 	^ true
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMRevert >> readsMemory [
+	^ true
+]

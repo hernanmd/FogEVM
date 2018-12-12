@@ -64,6 +64,16 @@ FogEVMMnemonicExecutableMemoryEntry >> printOn: aStream [
 		nextPutAll: ')'
 ]
 
+{ #category : #accessing }
+FogEVMMnemonicExecutableMemoryEntry >> readsMemory [
+	^ instruction readsMemory
+]
+
+{ #category : #accessing }
+FogEVMMnemonicExecutableMemoryEntry >> readsStorage [
+	^ instruction readsStorage
+]
+
 { #category : #'as yet unclassified' }
 FogEVMMnemonicExecutableMemoryEntry >> shouldBreak [
 	<doc: 'It return true or false according to the entry configuration, informing if it should halt or not on the execution of this instruction'>
@@ -74,4 +84,14 @@ FogEVMMnemonicExecutableMemoryEntry >> shouldBreak [
 FogEVMMnemonicExecutableMemoryEntry >> toggleBreakpoint [
 	<doc: 'Toggles the breakpoint'>
 	self breakpoint: self shouldBreak not
+]
+
+{ #category : #accessing }
+FogEVMMnemonicExecutableMemoryEntry >> writesMemory [
+	^ instruction writesMemory
+]
+
+{ #category : #accessing }
+FogEVMMnemonicExecutableMemoryEntry >> writesStorage [
+	^ instruction writesStorage
 ]

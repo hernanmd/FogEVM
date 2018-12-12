@@ -787,6 +787,23 @@ FogEVMInstruction class >> writes: aString [
 ]
 
 { #category : #generated }
+FogEVMInstruction >> accept: anInterpreter [
+	| perform stackSize localMnemonic |
+	localMnemonic := self mnemonic.
+	(self mnemonic beginsWith: 'PUSH')
+		ifTrue: [ localMnemonic := 'PUSH' ].
+	(self mnemonic beginsWith: 'DUP')
+		ifTrue: [ localMnemonic := 'DUP' ].
+	(self mnemonic beginsWith: 'SWAP')
+		ifTrue: [ localMnemonic := 'SWAP' ].
+	(self mnemonic beginsWith: 'LOG')
+		ifTrue: [ localMnemonic := 'LOG' ].
+	perform := ('visit' , localMnemonic asLowercase capitalized , ':') asSymbol.
+
+	anInterpreter perform: perform withArguments: {self}
+]
+
+{ #category : #generated }
 FogEVMInstruction >> accept: anInterpreter loadedAt: byteNumber of: anExecutableMemoryReificaiton [
 	| perform stackSize localMnemonic |
 	localMnemonic := self mnemonic.
@@ -904,6 +921,26 @@ FogEVMInstruction >> printableByteCode [
 ]
 
 { #category : #'as yet unclassified' }
+FogEVMInstruction >> readsMemory [
+	^ false
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMInstruction >> readsStorage [
+	^ false
+]
+
+{ #category : #'as yet unclassified' }
 FogEVMInstruction >> size [
 	^ 1 " So far the byte code is 0~256"
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMInstruction >> writesMemory [
+	^ false
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMInstruction >> writesStorage [
+	^ false
 ]

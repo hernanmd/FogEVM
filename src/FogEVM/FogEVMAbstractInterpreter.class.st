@@ -131,6 +131,11 @@ FogEVMAbstractInterpreter class >> wordSize [
 	^ 32
 ]
 
+{ #category : #'as yet unclassified' }
+FogEVMAbstractInterpreter class >> wordSizeRegistry [
+	^ FogEVMRegistry forValue: 32 bytesLength: 1
+]
+
 { #category : #assertion }
 FogEVMAbstractInterpreter >> assertIsValidDestination: jumpDestInstruction at: newInstructionPointer [
 	jumpDestInstruction isValidJumpDestination
@@ -504,7 +509,6 @@ FogEVMAbstractInterpreter >> visitAnd: aFogVMAnd [
 	| a b |
 	a := self pop.
 	b := self pop.
-	
 	self push: (a & b)
 ]
 
@@ -621,7 +625,6 @@ FogEVMAbstractInterpreter >> visitCodecopy: aFogVMCodecopy [
 	loadingArea := self pop.
 	fromByte := self pop.
 	amountOfBytes := self pop.
-	
 	from := fromByte unsignedValue + 1 .
 	to :=  from + amountOfBytes unsignedValue - 1.
 
@@ -791,31 +794,7 @@ FogEVMAbstractInterpreter >> visitLog: aFogVMLog [
 	upTo := self pop.
 	topics := OrderedCollection new.
 	aFogVMLog logKind timesRepeat: [ topics add: self pop ].
-	self registerLog: (self memory loadFrom: fromMemory unsignedValue bytes: upTo unsignedValue) topics: topics.
-	'func makeLog(size int) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		topics := make([]common.Hash, size)
-		mStart, mSize := stack.pop(), stack.pop()
-		for i := 0; i < size; i++ {
-			topics[i] = common.BigToHash(stack.pop())
-		}
-
-		d := memory.Get(mStart.Int64(), mSize.Int64())
-		interpreter.evm.StateDB.AddLog(&types.Log{
-			Address: contract.Address(),
-			Topics:  topics,
-			Data:    d,
-			// This is a non-consensus field, but assigned here because
-			// core/state doesnt know the current block number.
-			BlockNumber: interpreter.evm.BlockNumber.Uint64(),
-		})
-
-		interpreter.intPool.put(mStart, mSize)
-		return nil, nil
-	}
-}
-
-// ma'
+	self registerLog: (self memory loadFrom: fromMemory unsignedValue bytes: upTo unsignedValue) topics: topics
 ]
 
 { #category : #'visit - comparision' }
@@ -922,10 +901,10 @@ FogEVMAbstractInterpreter >> visitPush: aFogVMPush [
 
 { #category : #'visit - flow' }
 FogEVMAbstractInterpreter >> visitReturn: aFogVMReturn [
-	| from to return |
+	| from offset return |
 	from := self pop.
-	to := self pop.
-	return := self memory loadFrom: from unsignedValue bytes: to unsignedValue.
+	offset := self pop.
+	return := self memory loadFrom: from unsignedValue bytes: offset unsignedValue.
 	self currentActivation return: return.
 	self currentActivation isContractDeploy
 		ifTrue: [ self currentActivation contract

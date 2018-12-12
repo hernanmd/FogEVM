@@ -11,12 +11,12 @@ Class {
 	#category : #'FogEVM-Environment-Storage'
 }
 
-{ #category : #accessing }
+{ #category : #read }
 FogEVMBucketStorage >> account [
 	^ self isContract ifTrue: [ self contract ] ifFalse: [ self externalAccount ]
 ]
 
-{ #category : #'balance adding' }
+{ #category : #write }
 FogEVMBucketStorage >> addBalance: aValue [
 	| currentValue |
 	currentValue := self balance + aValue.
@@ -28,32 +28,32 @@ FogEVMBucketStorage >> address: anAddress [
 	address := anAddress
 ]
 
-{ #category : #initialization }
+{ #category : #read }
 FogEVMBucketStorage >> at: anIndex [
 	^ storage getStorageAt: anIndex
 ]
 
-{ #category : #accessing }
+{ #category : #write }
 FogEVMBucketStorage >> atStorage: anAddress put: aValue [
 	storage atStorage: anAddress put: aValue
 ]
 
-{ #category : #initialization }
+{ #category : #read }
 FogEVMBucketStorage >> balance [
 	^ storage getStorageAt: #'&balance'
 ]
 
-{ #category : #accessing }
+{ #category : #read }
 FogEVMBucketStorage >> contract [
 	^ storage getStorageAt: #'&contract' ifAbsent: [ self error: 'The account is not a contract' ].
 ]
 
-{ #category : #accessing }
+{ #category : #write }
 FogEVMBucketStorage >> contract: aFogEVMContract [ 
 	^ storage atStorage:#'&contract' put: aFogEVMContract 
 ]
 
-{ #category : #initialization }
+{ #category : #read }
 FogEVMBucketStorage >> destroyed [
 	^ (storage getStorageAt: #'&destroyed') = FogEVMRegistry zero
 		ifTrue: [ FogEVMRegistry false ]
@@ -65,19 +65,19 @@ FogEVMBucketStorage >> entries [
 	^ storage entries
 ]
 
-{ #category : #accessing }
+{ #category : #read }
 FogEVMBucketStorage >> externalAccount [
 	^ storage
 		getStorageAt: #'&externalAccount'
 		ifAbsent: [ self error: 'The account is not an external account' ]
 ]
 
-{ #category : #accessing }
+{ #category : #write }
 FogEVMBucketStorage >> externalAccount: aFogEVMExternalAccount [
 	storage atStorage: #'&externalAccount' put: aFogEVMExternalAccount
 ]
 
-{ #category : #initialization }
+{ #category : #read }
 FogEVMBucketStorage >> getStorageAt: anIndex [
 	^ storage getStorageAt: anIndex
 ]
@@ -101,12 +101,12 @@ FogEVMBucketStorage >> printOn: aStream [
 	aStream nextPutAll: self class name 
 ]
 
-{ #category : #initialization }
+{ #category : #write }
 FogEVMBucketStorage >> setDestroyed [
 	^ storage atStorage: #'&destroyed' put: true .
 ]
 
-{ #category : #accessing }
+{ #category : #write }
 FogEVMBucketStorage >> withdrawBalance [
 	| balance |
 	balance := self balance.

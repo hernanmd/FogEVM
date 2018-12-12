@@ -11,14 +11,14 @@ Class {
 	#category : #'FogEVM-Environment-Memory'
 }
 
-{ #category : #getting }
+{ #category : #read }
 FogEVMMemory >> copyFrom: aNumber to: otherNumber [
 	| to |
 	to := layout size min: otherNumber + 1.
-	^ (layout copyFrom: aNumber + 1 to: to) , (ByteArray new: otherNumber - to + 1)
+	^ (layout copyFrom: aNumber + 1 to: to) , (ByteArray new: otherNumber - to )
 ]
 
-{ #category : #accessing }
+{ #category : #write }
 FogEVMMemory >> ensureAddressAvailable: anAddress size: size [
 	| newArray |
 	(anAddress + 1 + size) >= layout size
@@ -43,12 +43,12 @@ FogEVMMemory >> isEmptyOrNil [
 	self shouldBeImplemented.
 ]
 
-{ #category : #accessing }
+{ #category : #read }
 FogEVMMemory >> loadFrom: anAddress bytes: aSize [
 	^ self copyFrom: anAddress to: anAddress + aSize 
 ]
 
-{ #category : #loading }
+{ #category : #read }
 FogEVMMemory >> loadWord: aFogEVMRegistry [
 	| address value |
 	address := aFogEVMRegistry unsignedValue.
@@ -56,7 +56,7 @@ FogEVMMemory >> loadWord: aFogEVMRegistry [
 	^ FogEVMRegistry forValue: value asInteger bytesLength: FogEVMAbstractInterpreter wordSize
 ]
 
-{ #category : #load }
+{ #category : #read }
 FogEVMMemory >> loadWords: addressRegistry to: offsetRegistry [
 	| address offset  |
 	address := addressRegistry unsignedValue.
@@ -69,12 +69,12 @@ FogEVMMemory >> restart [
 	self initialize.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #write }
 FogEVMMemory >> set: aValue at: anAddress [
 	layout at: anAddress +1 put: aValue
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 FogEVMMemory >> sizeInBytes [
 	^ layout size
 ]
@@ -84,13 +84,13 @@ FogEVMMemory >> slotSize [
 	^ 32 
 ]
 
-{ #category : #accessing }
+{ #category : #write }
 FogEVMMemory >> store: aByteArray at: anAddress ensure: aLength [
 	self ensureAddressAvailable: anAddress size: aLength.
 	1 to: aLength do: [ :idx | self set: (aByteArray at: idx) at: anAddress + idx - 1 ]
 ]
 
-{ #category : #accessing }
+{ #category : #write }
 FogEVMMemory >> storeByte: aRegistry at: aRegistryAddress [
 	| address value |
 	address := aRegistryAddress unsignedValue.
@@ -99,12 +99,12 @@ FogEVMMemory >> storeByte: aRegistry at: aRegistryAddress [
 	self set: value asByteArray first at: address
 ]
 
-{ #category : #accessing }
+{ #category : #write }
 FogEVMMemory >> storeSize [
 	^ layout size
 ]
 
-{ #category : #accessing }
+{ #category : #write }
 FogEVMMemory >> storeWord: aRegistry startingAt: aRegistryAddress [
 	| address stream acc |
 	address := aRegistryAddress unsignedValue .

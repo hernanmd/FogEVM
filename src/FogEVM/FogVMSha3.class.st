@@ -77,3 +77,8 @@ FogVMSha3 class >> mnemonic [
 		^'SHA3'.
 	
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMSha3 >> readsMemory [
+	^ true
+]

@@ -67,3 +67,8 @@ FogVMCalldatacopy class >> mnemonic [
 		^'CALLDATACOPY'.
 	
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMCalldatacopy >> writesMemory [
+	^ true
+]

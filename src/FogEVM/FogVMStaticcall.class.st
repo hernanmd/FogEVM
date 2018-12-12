@@ -79,3 +79,18 @@ FogVMStaticcall class >> returns [
 <doc>
 		^ true.
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMStaticcall >> readsMemory [
+	^ true
+]
+
+{ #category : #'as yet unclassified' }
+FogVMStaticcall >> readsStorage [
+	^ true
+]
+
+{ #category : #'as yet unclassified' }
+FogVMStaticcall >> writesMemory [
+	^ true
+]

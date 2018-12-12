@@ -76,3 +76,13 @@ FogVMSelfdestruct class >> writes [
 <doc>
 		^ true.
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMSelfdestruct >> readsStorage [
+	^ true.
+]
+
+{ #category : #'as yet unclassified' }
+FogVMSelfdestruct >> writesStorage [
+	^ true
+]

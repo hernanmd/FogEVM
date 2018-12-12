@@ -62,3 +62,8 @@ FogVMLog class >> goCode [
 FogVMLog >> logKind [
 	^ self binaryBytecode - FogVMLog0 instance binaryBytecode
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMLog >> readsMemory [
+	^ true
+]

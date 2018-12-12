@@ -56,3 +56,8 @@ FogVMSload class >> mnemonic [
 		^'SLOAD'.
 	
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMSload >> readsStorage [
+	^ true
+]

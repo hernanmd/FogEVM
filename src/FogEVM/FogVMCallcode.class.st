@@ -90,3 +90,18 @@ FogVMCallcode class >> returns [
 <doc>
 		^ true.
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMCallcode >> readsMemory [
+	^ true
+]
+
+{ #category : #'as yet unclassified' }
+FogVMCallcode >> readsStorage [
+	^ true
+]
+
+{ #category : #'as yet unclassified' }
+FogVMCallcode >> writesMemory [
+	^ true
+]

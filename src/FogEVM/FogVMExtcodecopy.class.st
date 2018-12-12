@@ -73,3 +73,8 @@ FogVMExtcodecopy class >> mnemonic [
 		^'EXTCODECOPY'.
 	
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMExtcodecopy >> writesMemory [
+	^ true
+]

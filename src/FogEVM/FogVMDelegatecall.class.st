@@ -87,3 +87,18 @@ FogVMDelegatecall class >> returns [
 <doc>
 		^ true.
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMDelegatecall >> readsMemory [
+	^ true
+]
+
+{ #category : #'as yet unclassified' }
+FogVMDelegatecall >> readsStorage [
+	^ true
+]
+
+{ #category : #'as yet unclassified' }
+FogVMDelegatecall >> writesMemory [
+	^ true
+]

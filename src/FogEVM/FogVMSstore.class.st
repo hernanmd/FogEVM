@@ -64,3 +64,8 @@ FogVMSstore class >> writes [
 <doc>
 		^ true.
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMSstore >> writesStorage [
+	^ true
+]

@@ -32,8 +32,7 @@ FogEVMRPCService >> call: aCollection [
 	activation contract: relatedContract.
 	evmInterpreter pushActivation: activation.
 	evmInterpreter interpret.
-	self assert: evmInterpreter currentActivation return last isZero.
-	^ '0x', evmInterpreter currentActivation return allButLast hex
+	^ '0x', evmInterpreter currentActivation hexadecimalReturn 
 ]
 
 { #category : #initialization }

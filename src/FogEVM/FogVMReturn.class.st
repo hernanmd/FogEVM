@@ -71,3 +71,8 @@ FogVMReturn class >> mnemonic [
 FogVMReturn >> isFinishStatus [
 	^true
 ]
+
+{ #category : #testing }
+FogVMReturn >> readsMemory [
+	^ true
+]

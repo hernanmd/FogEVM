@@ -73,3 +73,8 @@ FogVMCodecopy class >> mnemonic [
 FogVMCodecopy >> isCopyCode [
 	^ true
 ]
+
+{ #category : #testing }
+FogVMCodecopy >> writesMemory [
+	^ true
+]

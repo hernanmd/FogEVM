@@ -55,3 +55,8 @@ FogVMBalance class >> mnemonic [
 		^'BALANCE'.
 	
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMBalance >> readsStorage [
+	^ true
+]

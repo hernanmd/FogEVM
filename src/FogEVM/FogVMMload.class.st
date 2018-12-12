@@ -64,3 +64,8 @@ FogVMMload class >> mnemonic [
 		^'MLOAD'.
 	
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMMload >> readsMemory [ 
+	^ true
+]

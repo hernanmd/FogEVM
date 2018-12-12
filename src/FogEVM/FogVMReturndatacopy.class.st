@@ -65,3 +65,8 @@ FogVMReturndatacopy class >> mnemonic [
 		^'RETURNDATACOPY'.
 	
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMReturndatacopy >> writesMemory [
+	^ true
+]
