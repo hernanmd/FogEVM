@@ -13,9 +13,11 @@ Class {
 
 { #category : #read }
 FogEVMMemory >> copyFrom: aNumber to: otherNumber [
-	| to |
-	to := layout size min: otherNumber + 1.
-	^ (layout copyFrom: aNumber + 1 to: to) , (ByteArray new: otherNumber - to )
+	| to ret |
+	to := layout size min: otherNumber.
+	ret := (layout copyFrom: aNumber + 1 to: to) , (ByteArray new: otherNumber - to).
+	self assert: ret size = (otherNumber - aNumber).
+	^ ret
 ]
 
 { #category : #write }
@@ -52,7 +54,7 @@ FogEVMMemory >> loadFrom: anAddress bytes: aSize [
 FogEVMMemory >> loadWord: aFogEVMRegistry [
 	| address value |
 	address := aFogEVMRegistry unsignedValue.
-	value := self copyFrom: address to: address + FogEVMAbstractInterpreter wordSize - 1.
+	value := self copyFrom: address to: address + FogEVMAbstractInterpreter wordSize.
 	^ FogEVMRegistry forValue: value asInteger bytesLength: FogEVMAbstractInterpreter wordSize
 ]
 
@@ -61,7 +63,7 @@ FogEVMMemory >> loadWords: addressRegistry to: offsetRegistry [
 	| address offset  |
 	address := addressRegistry unsignedValue.
 	offset := offsetRegistry unsignedValue. 
-	^ self copyFrom: address to: address + offset - 1
+	^ self copyFrom: address to: address + offset
 ]
 
 { #category : #initialization }
