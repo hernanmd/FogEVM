@@ -243,7 +243,7 @@ FogEVMRegistry >> booleanValue [
 { #category : #converting }
 FogEVMRegistry >> byteArray [
 	<doc: 'Returns the byte array representation of the registry''s value'>
-	^ self unsignedValue asByteArray
+	^ self unsignedValue asByteArray reverse
 ]
 
 { #category : #accessing }

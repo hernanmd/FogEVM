@@ -86,7 +86,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLDATALOAD [
 	bytecode := self createBytecodeForCALLDATALOAD: 1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter contractInput copyFrom: 1 to: 32) asInteger equals: interpreter stack pop unsignedValue
+	self assert: (interpreter contractInput copyFrom: 1 to: 32)  equals: interpreter stack pop byteArray
 ]
 
 { #category : #test }

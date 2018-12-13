@@ -586,22 +586,21 @@ FogEVMAbstractInterpreter >> visitCalldatacopy: aFogVMCalldatacopy [
 	memFrom := self pop.
 	dataFrom := self pop.
 	length := self pop.
-	loadedData := self contractInput copyFrom: dataFrom unsignedValue + 1 to: dataFrom unsignedValue + length unsignedValue.
+	loadedData := self contractInput copyFrom: dataFrom unsignedValue to: dataFrom unsignedValue + length unsignedValue - 1 .
 	self memory store: loadedData at: memFrom unsignedValue ensure: length unsignedValue
 ]
 
 { #category : #'visit - call' }
 FogEVMAbstractInterpreter >> visitCalldataload: aFogVMCalldataload [
-	| id segment upTo data |
+	| id segment  data number |
 	id := self pop.
-	id := id unsignedValue + 1.
-	upTo := id + 31 min: self contractInput size.
-	data := self contractInput copyFrom: id to: upTo.
-	data size < 32
-		ifTrue: [ data := data , (ByteArray new: 32 - data size).
-			data at: data size put: 1 ].
-	segment := data asInteger.
-	self push: (FogEVMRegistry forValue: segment bytesLength: 32)
+	id := id unsignedValue.
+
+	data := self contractInput copyFrom: id to: self contractInput size.
+	number := LargePositiveInteger new: data size.
+	data doWithIndex: [ : value : index | number digitAt: index put: value   ] .
+
+	self push: (FogEVMRegistry forValue: number bytesLength: 32)
 ]
 
 { #category : #'visit - call' }
@@ -625,8 +624,8 @@ FogEVMAbstractInterpreter >> visitCodecopy: aFogVMCodecopy [
 	loadingArea := self pop.
 	fromByte := self pop.
 	amountOfBytes := self pop.
-	from := fromByte unsignedValue + 1 .
-	to :=  from + amountOfBytes unsignedValue - 1.
+	from := fromByte unsignedValue  .
+	to :=  from + amountOfBytes unsignedValue -1  .
 
 	loadedData := self currentActivation binaryBytecode copyFrom: from to: to.
 	self memory store: loadedData at: loadingArea unsignedValue ensure: amountOfBytes unsignedValue

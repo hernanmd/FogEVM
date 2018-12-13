@@ -153,6 +153,7 @@ FogEVMRPCService >> sendTransaction: aCollection [
 			contract ]
 		ifNotNil: [ (evmInterpreter storageFor: activation call contractAddress) contract ].
 	txId := UUID new.
+	self halt.
 	transactions
 		at: txId
 		put:
