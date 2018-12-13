@@ -11,8 +11,3 @@ Class {
 FogEVMAccount >> address: aFogEVMRegistry [ 
 	address := aFogEVMRegistry
 ]
-
-{ #category : #'debugger ui' }
-FogEVMAccount >> values [
-	^ { address  }
-]

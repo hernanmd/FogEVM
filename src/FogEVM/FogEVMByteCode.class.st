@@ -182,11 +182,6 @@ FogEVMByteCode >> toHexa [
 			acc ]) contents
 ]
 
-{ #category : #'debugger ui' }
-FogEVMByteCode >> values [
-	^ {}
-]
-
 { #category : #converting }
 FogEVMByteCode >> writeStream [
 	<doc: 'Returns a FogEVMByteCodeWriteStream stream over this bytecode.'>

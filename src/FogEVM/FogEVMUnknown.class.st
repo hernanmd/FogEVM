@@ -56,12 +56,12 @@ FogEVMUnknown >> byteCode: aString [
 	byteCode := aString
 ]
 
-{ #category : #polimorf }
+{ #category : #accessing }
 FogEVMUnknown >> instance [
 	^ self
 ]
 
-{ #category : #polimorf }
+{ #category : #printing }
 FogEVMUnknown >> printOn: aStream [
 	aStream
 		nextPutAll: self mnemonic;

@@ -40,28 +40,23 @@ FogEVMMemoryStorage >> at: aKey [
 	^ self storage at: aKey
 ]
 
-{ #category : #'debugger ui' }
-FogEVMMemoryStorage >> entries [
-	^ self storage values 
-]
-
-{ #category : #'debugger ui' }
+{ #category : #accessing }
 FogEVMMemoryStorage >> initialize [
 	super initialize.
 	name := UUID new asString
 ]
 
-{ #category : #'debugger ui' }
+{ #category : #accessing }
 FogEVMMemoryStorage >> name [
 	^ String streamContents: [ :str | self printOn: str ]
 ]
 
-{ #category : #'debugger ui' }
+{ #category : #accessing }
 FogEVMMemoryStorage >> name: aName [
 	name := aName
 ]
 
-{ #category : #'debugger ui' }
+{ #category : #printing }
 FogEVMMemoryStorage >> printOn: aStream [
 	aStream nextPutAll: ' Node storage - ('.
 	aStream
@@ -84,7 +79,7 @@ FogEVMMemoryStorage >> storageFor: aContractAddress state: aStateHash [
 				yourself ]
 ]
 
-{ #category : #accesssing }
+{ #category : #accessing }
 FogEVMMemoryStorage >> storageFor: aContractAddress state: aString ifAbsent: aBlockClosure [
 	^ self storage at: aContractAddress ifAbsent: [ aBlockClosure value ]
 ]

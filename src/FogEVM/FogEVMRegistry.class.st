@@ -421,11 +421,6 @@ FogEVMRegistry >> value: anInteger [
 		ifFalse: [ value := anInteger bitAnd: mask ]
 ]
 
-{ #category : #'debugger ui' }
-FogEVMRegistry >> values [
-	^{ }
-]
-
 { #category : #'bitwise logical operations' }
 FogEVMRegistry >> xor: aFogEVMRegistry [
 	<doc: 'Returns the registry for the value of the XOR bitwise logical operation. The result uses a 32 bytes mask'>

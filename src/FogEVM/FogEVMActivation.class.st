@@ -149,11 +149,6 @@ FogEVMActivation >> isContractDeploy [
 	^ call contractAddress isNil
 ]
 
-{ #category : #'debugger ui' }
-FogEVMActivation >> isDebuggable [
-	^ false
-]
-
 { #category : #testing }
 FogEVMActivation >> isFinished [
 	^ isFinish ifNil: [ isFinish := false ]

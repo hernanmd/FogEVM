@@ -60,11 +60,6 @@ FogEVMBucketStorage >> destroyed [
 		ifFalse: [ FogEVMRegistry true ]
 ]
 
-{ #category : #'debugger ui' }
-FogEVMBucketStorage >> entries [
-	^ storage entries
-]
-
 { #category : #read }
 FogEVMBucketStorage >> externalAccount [
 	^ storage
