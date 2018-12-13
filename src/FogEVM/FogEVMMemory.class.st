@@ -14,10 +14,12 @@ Class {
 { #category : #read }
 FogEVMMemory >> copyFrom: aNumber to: otherNumber [
 	| to ret |
-	to := layout size min: otherNumber.
-	ret := (layout copyFrom: aNumber + 1 to: to) , (ByteArray new: otherNumber - to).
-	self assert: ret size = (otherNumber - aNumber).
-	^ ret
+	^ aNumber > layout size
+		ifTrue: [ ByteArray new: otherNumber - aNumber ]
+		ifFalse: [ to := layout size min: otherNumber.
+			ret := (layout copyFrom: aNumber + 1 to: to) , (ByteArray new: otherNumber - to).
+			self assert: ret size = (otherNumber - aNumber).
+			ret ]
 ]
 
 { #category : #write }

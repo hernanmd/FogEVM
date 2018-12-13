@@ -64,13 +64,20 @@ contract Sell {
 FogEVMTestOverContract >> setUp [ 	
 	super setUp.
 	interpreter := FogEVMTestInterpreter new.
+	interpreter installStorage: FogEVMMemoryStorage new.
+	interpreter installMemory: FogEVMTraceableMemory new.
 	interpreter call: FogEVMAbstractInterpreter creationCall.
 	interpreter bytecode: self class sellContractByteCode .
 ]
 
 { #category : #running }
-FogEVMTestOverContract >> testContractIsDeployed [ 
-	interpreter run. 
-	self halt. 
-	 
+FogEVMTestOverContract >> testContractIsDeployed [
+	| contractAddress |
+	interpreter run.
+	contractAddress := interpreter currentActivation contractAddress.
+	self assert: (interpreter storageFor: contractAddress) contract isNotNil.
+	self
+		assert: ((interpreter storageFor: contractAddress) getStorageAt: (FogEVMRegistry forValue: 16r0 bytesLength: 32)) unsignedValue
+		equals: 16rB4EBF466889C4A0239379125A7D0F9C4E8BF2A14.
+	
 ]
