@@ -224,7 +224,7 @@ FogEVMAbstractInterpreter >> currentInstruction [
 
 { #category : #accessing }
 FogEVMAbstractInterpreter >> currentInstructionPointer [
-	^ FogEVMRegistry forValue: self currentActivation currentInstructionPointer  bytesLength: 8
+	^ FogEVMRegistry forValue: self currentActivation currentInstructionPointer bytesLength: 8
 ]
 
 { #category : #accessing }
