@@ -10,11 +10,8 @@ BaselineOfFogEVM >> baseline: spec [
 	spec
 		for: #common
 		do: [ spec blessing: #baseline.
-			spec
-				baseline: 'TaskItShell'
-				with: [ spec repository: 'github://sbragagnolo/taskit:dev-1.1' ].
-			spec
-				baseline: 'ParametrizedTests'
-				with: [ spec repository: 'github://tesonep/ParametrizedTests' ].
-			spec package: #FogEVM with: [ spec requires: #('TaskItShell' 'ParametrizedTests') ] ]
+			spec baseline: 'TaskItShell' with: [ spec repository: 'github://sbragagnolo/taskit:dev-1.1' ].
+			spec baseline: 'ParametrizedTests' with: [ spec repository: 'github://tesonep/ParametrizedTests' ].
+			spec baseline: 'Equals' with: [ spec repository: 'github://bouraqadi/PharoMisc' ].
+			spec package: #FogEVM with: [ spec requires: #('TaskItShell' 'ParametrizedTests' 'Equals') ] ]
 ]
