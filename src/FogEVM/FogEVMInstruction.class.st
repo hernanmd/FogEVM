@@ -468,50 +468,50 @@ FogEVMInstruction class >> bootstrapInstructions [
 		and: '0'
 		and: 'Halt execution and register account for later deletion'.
 	self
-		register: (FogVMByte byteCode asBKNumber + 1) asBKHexa
+		register: (FogVMByte byteCode read0xHexadecimal + 1) write0xHexadecimal
 		and: 'SHL'
 		and: 2
 		and: 1
 		and: 'Shift val left by shift bits, filling with zero bits'.
 	self
-		register: (FogVMByte byteCode asBKNumber + 2) asBKHexa
+		register: (FogVMByte byteCode read0xHexadecimal + 2) write0xHexadecimal
 		and: 'SHR'
 		and: 2
 		and: 1
 		and: 'Shift val right by shift bits, filling with zero bits.'.
 	self
-		register: (FogVMByte byteCode asBKNumber + 3) asBKHexa
+		register: (FogVMByte byteCode read0xHexadecimal + 3) write0xHexadecimal
 		and: 'SAR'
 		and: 2
 		and: 1
 		and:
 			'The SAR instruction (arithmetic shift right) pops 2 values from the stack, first arg1 and then arg2 '.
 	self
-		register: (FogVMDelegatecall byteCode asBKNumber + 1) asBKHexa
+		register: (FogVMDelegatecall byteCode read0xHexadecimal + 1) write0xHexadecimal
 		and: 'CREATE2'
 		and: 4
 		and: 1
 		and: ' New create routine '.
 	self
-		register: (FogVMDelegatecall byteCode asBKNumber + 2) asBKHexa
+		register: (FogVMDelegatecall byteCode read0xHexadecimal + 2) write0xHexadecimal
 		and: 'STATICCALL'
 		and: 6
 		and: 1
 		and: ' Documentation shows nothuing about this'.
 	self
-		register: (FogVMExtcodecopy byteCode asBKNumber + 3) asBKHexa
+		register: (FogVMExtcodecopy byteCode read0xHexadecimal + 3) write0xHexadecimal
 		and: 'EXTCODEHASH'
 		and: 1
 		and: 1
 		and: ' opExtCodeHash returns the code hash of a specified account.'.
 	self
-		register: (FogVMExtcodecopy byteCode asBKNumber + 1) asBKHexa
+		register: (FogVMExtcodecopy byteCode read0xHexadecimal + 1) write0xHexadecimal
 		and: 'RETURNDATASIZE'
 		and: 0
 		and: 1
 		and: ' Documentation says nothing about'.
 	self
-		register: (FogVMExtcodecopy byteCode asBKNumber + 2) asBKHexa
+		register: (FogVMExtcodecopy byteCode read0xHexadecimal + 2) write0xHexadecimal
 		and: 'RETURNDATACOPY'
 		and: 3
 		and: 0
@@ -520,7 +520,7 @@ FogEVMInstruction class >> bootstrapInstructions [
 
 { #category : #accessing }
 FogEVMInstruction class >> byteCodeNumber [
-	^ self byteCode ifNil: [ -1 ] ifNotNil: [ :code | code asBKNumber ]
+	^ self byteCode ifNil: [ -1 ] ifNotNil: [ :code | code read0xHexadecimal ]
 ]
 
 { #category : #'matching with go vm - crawling pandora box' }
@@ -825,7 +825,7 @@ FogEVMInstruction >> accept: anInterpreter loadedAt: byteNumber of: anExecutable
 { #category : #accessing }
 FogEVMInstruction >> binaryBytecode [
 	| code | 
-	code := self byteCode asBKNumber asByteArray.
+	code := self byteCode read0xHexadecimal asByteArray.
 	self assert: code size= 1 .
 	^ code first
 ]

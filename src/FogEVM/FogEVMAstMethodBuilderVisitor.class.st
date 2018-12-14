@@ -85,7 +85,7 @@ FogEVMAstMethodBuilderVisitor >> installSequence: aFogEVMSequence [
 
 { #category : #'as yet unclassified' }
 FogEVMAstMethodBuilderVisitor >> isErrorHandlingJump: aJump [
-	^ aJump address isEVMLiteral and: [ aJump address literalValue asBKNumber = '0x02' asBKNumber ]
+	^ aJump address isEVMLiteral and: [ aJump address literalValue read0xHexadecimal = '0x02' read0xHexadecimal ]
 ]
 
 { #category : #accessing }
@@ -118,10 +118,10 @@ FogEVMAstMethodBuilderVisitor >> setNextStatement: aFogEVMAstJumpTag [
 FogEVMAstMethodBuilderVisitor >> statementFor: aFogEVMAstJump [
 	| address |
 	address := aFogEVMAstJump address isEVMLiteral
-		ifTrue: [ aFogEVMAstJump address literalValue asBKNumber ]
+		ifTrue: [ aFogEVMAstJump address literalValue read0xHexadecimal ]
 		ifFalse: [ aFogEVMAstJump address resolve ].
 	^ sequence statements
-		detect: [ :s | s isJumpDest and: [ s address asBKNumber = address ] ]
+		detect: [ :s | s isJumpDest and: [ s address read0xHexadecimal = address ] ]
 		ifNone: [ nil ]
 ]
 

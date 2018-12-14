@@ -61,9 +61,9 @@ FogEVMAstMessageSend >> receiver: aFogEVMAstVariable [
 { #category : #'as yet unclassified' }
 FogEVMAstMessageSend >> resolve [
 	^ receiver isEVMLiteral
-		ifTrue: [ (receiver literalValue asBKNumber
+		ifTrue: [ (receiver literalValue read0xHexadecimal
 				perform: selector
-				withArguments: (arguments collect: [ :a | a literalValue asBKNumber ])) asBKHexa ]
+				withArguments: (arguments collect: [ :a | a literalValue read0xHexadecimal ])) write0xHexadecimal ]
 		ifFalse: [ nil ]
 ]
 

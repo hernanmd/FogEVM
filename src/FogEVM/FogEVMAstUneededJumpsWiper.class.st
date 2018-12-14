@@ -57,7 +57,7 @@ FogEVMAstUneededJumpsWiper >> visitSequence: aFogEVMSequence [
 		do: [ :s | 
 			(s isJumpDest
 				and: [ previous isJump
-						and: [ s address literalValue asBKNumber = previous address literalValue asBKNumber ] ])
+						and: [ s address literalValue read0xHexadecimal = previous address literalValue read0xHexadecimal ] ])
 				ifTrue: [ toWipe
 						add: s;
 						add: previous ].
@@ -77,7 +77,7 @@ FogEVMAstUneededJumpsWiper >> wipeJumpsFrom: aMethod [
 	aMethod accept: self.
 	tags
 		select: [ :t | 
-			(jumps noneSatisfy: [ :j | j address literalValue asBKNumber = t address literalValue asBKNumber ])
+			(jumps noneSatisfy: [ :j | j address literalValue read0xHexadecimal = t address literalValue read0xHexadecimal ])
 				and: [ t ~= aMethod sequence statements first ] ]
 		thenDo: [ :t | "method sequence removeStatement: t" ]
 ]

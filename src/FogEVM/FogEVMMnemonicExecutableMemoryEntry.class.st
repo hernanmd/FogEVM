@@ -56,7 +56,7 @@ FogEVMMnemonicExecutableMemoryEntry >> instruction: aFogVMPush1 [
 { #category : #printing }
 FogEVMMnemonicExecutableMemoryEntry >> printOn: aStream [
 	aStream
-		nextPutAll: (byteNumber asBKHexa: 8);
+		nextPutAll: (byteNumber write0xHexadecimal: 8);
 		nextPutAll: ' - ';
 		nextPutAll: (instruction asString padRightTo: 50 with: Character space) ;
 		nextPutAll: ' (';

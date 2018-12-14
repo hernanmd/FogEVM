@@ -28,5 +28,5 @@ FogEVMAstSelfDestruct >> printOn: aStream [
 	account printOn: aStream.
 	aStream
 		nextPutAll: ' I: ';
-		nextPutAll: (instruction byteNumber asBKHexa: 8)
+		nextPutAll: (instruction byteNumber write0xHexadecimal: 8)
 ]

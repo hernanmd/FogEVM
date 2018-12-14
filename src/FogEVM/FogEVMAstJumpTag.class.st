@@ -31,6 +31,6 @@ FogEVMAstJumpTag >> isJumpDest [
 FogEVMAstJumpTag >> printOn: aStream [
 	aStream
 		nextPutAll: '" -> ';
-		nextPutAll: (address asBKHexa: 8);
+		nextPutAll: (address write0xHexadecimal: 8);
 		nextPutAll: ' "'
 ]

@@ -78,7 +78,7 @@ FogEVMRPCService >> getBlockByNumber: aCollection [
 FogEVMRPCService >> getStorageAt: aCollection [
 	| ref storage slotRef |
 	ref := FogEVMRegistry forValue: aCollection first asNumber bytesLength: 20.
-	slotRef := FogEVMRegistry forValue: aCollection second asBKNumber bytesLength: 32.
+	slotRef := FogEVMRegistry forValue: aCollection second read0xHexadecimal bytesLength: 32.
 	storage := self currentStorage storageFor: ref state: aCollection last.
 	^ (storage at: slotRef) asWordByteArray hex
 ]

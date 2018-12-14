@@ -65,13 +65,13 @@ FogEVMRegistry class >> false [
 FogEVMRegistry class >> forMemoryContent: aString [
 	<doc:
 		'Returns a registry for being pushed into the memory representation. The given content may be a String holding an hexadecimal representation. Each slot of memory in the memory is word-size (32)'>
-	^ self forValue: aString asBKNumber bytesLength: FogEVMAbstractInterpreter wordSize
+	^ self forValue: aString read0xHexadecimal bytesLength: FogEVMAbstractInterpreter wordSize
 ]
 
 { #category : #creating }
 FogEVMRegistry class >> forPush: aFogVMPush [
 	<doc: 'Returns a registry with the value pushed by a given push bytecode. Each push knows the value and length representation.'>
-	^ self forValue: aFogVMPush parameter asBKNumber bytesLength: aFogVMPush bytes
+	^ self forValue: aFogVMPush parameter read0xHexadecimal bytesLength: aFogVMPush bytes
 ]
 
 { #category : #creating }
@@ -86,7 +86,7 @@ FogEVMRegistry class >> forValue: anInteger bytesLength: aByteLengthSize [
 { #category : #creating }
 FogEVMRegistry class >> forWordSizeValue: aValue [
 	<doc: 'Returns a registry for the given value, with a word-sizd byte length representation (32)'>
-	^ self forValue: aValue asBKNumber bytesLength: FogEVMAbstractInterpreter wordSize
+	^ self forValue: aValue read0xHexadecimal bytesLength: FogEVMAbstractInterpreter wordSize
 ]
 
 { #category : #creating }

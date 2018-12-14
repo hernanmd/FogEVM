@@ -226,7 +226,7 @@ FogEVMDecompiler >> visitCaller: aFogVMCaller [
 
 { #category : #visiting }
 FogEVMDecompiler >> visitCallvalue: aFogVMCallvalue [ 
-	stack push: 6 asBKHexa .
+	stack push: 6 write0xHexadecimal .
 	self visitCalldataload: aFogVMCallvalue.
 ]
 
@@ -321,7 +321,7 @@ FogEVMDecompiler >> visitMload: aFogVMMload [
 	| memoryLoadNode from amount var |
 	memoryLoadNode := FogEVMAstMemoryLoad new.
 	from := self literalOrVariable: stack pop.
-	amount := self literalOrVariable: FogEVMAbstractInterpreter wordSize asBKHexa.
+	amount := self literalOrVariable: FogEVMAbstractInterpreter wordSize write0xHexadecimal.
 	memoryLoadNode fromAddress: from.
 	memoryLoadNode amountOfBytes: amount.
 	var := self assignToTemporaryVariable: memoryLoadNode.
