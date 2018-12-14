@@ -4,12 +4,13 @@ Place N bytes item on stack
 Class {
 	#name : #FogVMPush,
 	#superclass : #FogEVMInstruction,
+	#traits : 'TEquality',
 	#classTraits : 'TEquality classTrait',
 	#instVars : [
 		'bytes',
 		'parameter'
 	],
-	#category : #'FogEVM-ByteCode'
+	#category : 'FogEVM-ByteCode'
 }
 
 { #category : #'as yet unclassified' }
