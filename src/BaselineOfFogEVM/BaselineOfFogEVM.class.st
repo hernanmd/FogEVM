@@ -12,7 +12,9 @@ BaselineOfFogEVM >> baseline: spec [
 		do: [ spec blessing: #baseline.
 			spec baseline: 'TaskItShell' with: [ spec repository: 'github://sbragagnolo/taskit:dev-1.1' ].
 			spec package: #Hexadecimal with: [ spec repository: 'github://sbragagnolo/Hexadecimal' ].
+			spec package: #Keccak with: [ spec repository: 'github://smartanvil/Keccak' ].
 			spec baseline: 'ParametrizedTests' with: [ spec repository: 'github://tesonep/ParametrizedTests' ].
 			spec baseline: 'Equals' with: [ spec repository: 'github://bouraqadi/PharoMisc' ].
-			spec package: #FogEVM with: [ spec requires: #('TaskItShell' 'ParametrizedTests' 'Equals' 'Hexadecimal') ] ]
+			
+			spec package: #FogEVM with: [ spec requires: #('TaskItShell' 'ParametrizedTests' 'Equals' 'Hexadecimal' 'Keccak') ] ]
 ]

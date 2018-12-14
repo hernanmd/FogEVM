@@ -62,6 +62,17 @@ FogEVMRegistry class >> false [
 ]
 
 { #category : #creating }
+FogEVMRegistry class >> forByteArray: aByteArray bytesLength: anInteger [ 
+	| int stream rest |
+	stream := aByteArray readStream.
+	[stream peek = 0.] whileTrue: [ stream next ].
+	rest := stream upToEnd. 
+	int := LargePositiveInteger new: rest size.
+	rest doWithIndex: [ : val : i | int digitAt:i put: val ].
+	^ self forValue: int bytesLength: anInteger 
+]
+
+{ #category : #creating }
 FogEVMRegistry class >> forMemoryContent: aString [
 	<doc:
 		'Returns a registry for being pushed into the memory representation. The given content may be a String holding an hexadecimal representation. Each slot of memory in the memory is word-size (32)'>
@@ -248,7 +259,7 @@ FogEVMRegistry >> byteArray [
 
 { #category : #accessing }
 FogEVMRegistry >> byteAt: aFogEVMRegistry [
-	^ FogEVMRegistry forValue: (self byteArray at: aFogEVMRegistry unsignedValue) bytesLength: 1
+	^ FogEVMRegistry forValue: (self byteArray reverse at: aFogEVMRegistry unsignedValue) bytesLength: 1
 ]
 
 { #category : #converting }
