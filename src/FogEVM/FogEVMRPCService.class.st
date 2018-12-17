@@ -58,8 +58,10 @@ FogEVMRPCService >> evmInterpreter [
 { #category : #hashing }
 FogEVMRPCService >> generateContractHashFor: aFogEVMByteCode [
 	| number |
-	number := Number readFrom: (Keccak hashMessage: aFogEVMByteCode hash + DateAndTime now asUnixTime) asByteArray hex readStream base: 16.
-	^ FogEVMRegistry forValue: number bytesLength: 20
+	number := Number
+		readFrom: (Keccak hashMessage: aFogEVMByteCode hash + DateAndTime now asUnixTime) asByteArray hex readStream
+		base: 16.
+	^ FogEVMRegistry forByteArray: (number asByteArray copyFrom: 1 to: 20) bytesLength: 20
 ]
 
 { #category : #testing }
@@ -153,7 +155,6 @@ FogEVMRPCService >> sendTransaction: aCollection [
 			contract ]
 		ifNotNil: [ (evmInterpreter storageFor: activation call contractAddress) contract ].
 	txId := UUID new.
-	self halt.
 	transactions
 		at: txId
 		put:

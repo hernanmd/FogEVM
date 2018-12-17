@@ -125,12 +125,10 @@ FogEVMLoadStoreTest >> testSHA3 [
 	bytecode := self createBytecodeForMSTORE: value at: memoryStart.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	bytecode := self createBytecodeForSHA3: memoryStart + 32 - value asByteArray size to: value asByteArray size - 1 .
+	bytecode := self createBytecodeForSHA3: memoryStart + (32 - value asByteArray size) to: value asByteArray size.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self
-		assert: interpreter stack pop unsignedValue
-		equals: ('16r' , (Keccak hashEncode: value)) asNumber
+	self assert: interpreter stack pop unsignedValue equals: ('16r' , (Keccak hashEncode: value)) asNumber
 ]
 
 { #category : #test }

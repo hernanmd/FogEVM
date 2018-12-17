@@ -73,20 +73,21 @@ FogEVMEnvironmentalInformationAccessTest >> testCALLDATACOPY [
 	bytecode := self createBytecodeForCALLDATACOPY: 1 data: 3 length: 5.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter memory loadFrom: 1 bytes: 5) equals: (interpreter contractInput copyFrom: 3 to: 7)
+	self assert: (interpreter memory loadFrom: 1 bytes: 5) equals: (interpreter contractInput copyFrom: 3+1 to: (5+3))
 ]
 
 { #category : #test }
 FogEVMEnvironmentalInformationAccessTest >> testCALLDATALOAD [
-	| bytecode |
+	| bytecode data |
 	"should test over 
 		func opCallDataLoad(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetBytes(getDataBig(contract.Input, stack.pop(), big32)))
 	"
-	bytecode := self createBytecodeForCALLDATALOAD: 1.
+	bytecode := self createBytecodeForCALLDATALOAD: 0.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: (interpreter contractInput copyFrom: 1 to: 32)  equals: interpreter stack pop byteArray
+	data := interpreter stack pop .
+	self assert: (interpreter contractInput copyFrom: 1 to: 32)  equals: data byteArray
 ]
 
 { #category : #test }
@@ -151,7 +152,7 @@ FogEVMEnvironmentalInformationAccessTest >> testCODECOPY [
 
 	interpreter.intPool.put(memOffset, codeOffset, length)
 	retu"
-	bytecode := self createBytecodeForCODECOPY: 2 code: 1 length: 3.
+	bytecode := self createBytecodeForCODECOPY: 2 code: 0 length: 3.
 	interpreter bytecode: bytecode.
 	interpreter run.
 	self assert: (interpreter memory loadFrom: 2 bytes: 3) equals: (bytecode toBinary copyFrom: 1 to:  3)

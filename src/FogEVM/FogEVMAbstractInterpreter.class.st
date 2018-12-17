@@ -586,21 +586,21 @@ FogEVMAbstractInterpreter >> visitCalldatacopy: aFogVMCalldatacopy [
 	memFrom := self pop.
 	dataFrom := self pop.
 	length := self pop.
-	loadedData := self contractInput copyFrom: dataFrom unsignedValue to: dataFrom unsignedValue + length unsignedValue - 1 .
+	loadedData := self contractInput
+		copyFrom: dataFrom unsignedValue + 1
+		to: dataFrom unsignedValue + length unsignedValue.
 	self memory store: loadedData at: memFrom unsignedValue ensure: length unsignedValue
 ]
 
 { #category : #'visit - call' }
 FogEVMAbstractInterpreter >> visitCalldataload: aFogVMCalldataload [
-	| id segment  data number |
-	id := self pop.
-	id := id unsignedValue.
-
-	data := self contractInput copyFrom: id to: self contractInput size.
-	number := LargePositiveInteger new: data size.
-	data doWithIndex: [ : value : index | number digitAt: index put: value   ] .
-
-	self push: (FogEVMRegistry forValue: number bytesLength: 32)
+	| id data |
+	id := self pop unsignedValue.
+	data := self contractInput
+		copyFrom: id + 1
+		to: (self contractInput size min: FogEVMAbstractInterpreter wordSize).
+	self
+		push: (FogEVMRegistry forValue: data asInteger bytesLength: FogEVMAbstractInterpreter wordSize)
 ]
 
 { #category : #'visit - call' }
@@ -620,15 +620,17 @@ FogEVMAbstractInterpreter >> visitCallvalue: aFogVMCallvalue [
 
 { #category : #'visit - call' }
 FogEVMAbstractInterpreter >> visitCodecopy: aFogVMCodecopy [
-	| loadingArea fromByte from amountOfBytes loadedData  to |
+	| loadingArea fromByte from amountOfBytes loadedData to |
 	loadingArea := self pop.
 	fromByte := self pop.
 	amountOfBytes := self pop.
-	from := fromByte unsignedValue  .
-	to :=  from + amountOfBytes unsignedValue -1  .
-
-	loadedData := self currentActivation binaryBytecode copyFrom: from to: to.
-	self memory store: loadedData at: loadingArea unsignedValue ensure: amountOfBytes unsignedValue
+	
+	from := fromByte unsignedValue.
+	to := from + amountOfBytes unsignedValue.
+	
+	loadedData := self currentActivation binaryBytecode copyFrom: from + 1 to: to.
+	
+	self memory store: loadedData at: loadingArea unsignedValue ensure: amountOfBytes unsignedValue.
 	"
 	hexa := program toHexa.
 	hexa := hexa copyFrom: 3 to: hexa size.

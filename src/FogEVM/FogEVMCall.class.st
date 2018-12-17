@@ -25,9 +25,7 @@ FogEVMCall class >> loadDefinition: aFogCallDefinition [
 	| newCall |
 	newCall := self new.
 	newCall
-		contractInput:
-			(FogEVMRegistry fromPrintString: aFogCallDefinition data length: aFogCallDefinition data size / 2 - 1)
-				byteArray.
+		contractInput:(Hexadecimal new readHexadecimalByteArray:  aFogCallDefinition data).
 	newCall callerAddress: (FogEVMRegistry fromPrintString: aFogCallDefinition from length: 20).
 	newCall
 		contractAddress:
