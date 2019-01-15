@@ -298,7 +298,7 @@ FogEVMAbstractInterpreter >> isConfigurable [
 { #category : #convenience }
 FogEVMAbstractInterpreter >> keccack256: aString [
 	| kck |
-	kck := Keccak hashEncode: aString.
+	kck := (Keccak hashMessage: aString) asByteArray hex.
 	kck := FogEVMRegistry forValue: ('16r' , kck) asNumber bytesLength: 32.
 	^ kck
 ]
