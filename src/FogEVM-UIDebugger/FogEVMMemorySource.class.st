@@ -37,7 +37,7 @@ FogEVMMemorySource >> cellColumn: colIndex row: rowIndex [
 		ifTrue: [ FGGridCell new
 				row: rowIndex;
 				column: colIndex;
-				addMorph: (memory loadFrom: dataId bytes: 0) hex asMorph;
+				addMorph: (memory loadFrom: dataId bytes: 1) hex asMorph;
 				color: (self colorFor: dataId);
 				width: (self columnWidth: colIndex);
 				height: (self rowHeight: rowIndex);

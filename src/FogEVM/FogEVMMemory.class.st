@@ -111,11 +111,13 @@ FogEVMMemory >> storeSize [
 { #category : #write }
 FogEVMMemory >> storeWord: aValueRegistry startingAt: anAddressRegistry [
 	| address stream acc |
-	address := anAddressRegistry unsignedValue .
+	address := anAddressRegistry unsignedValue.
 	stream := aValueRegistry asWordByteArray readStream.
 	self ensureAddressAvailable: address size: FogEVMAbstractInterpreter wordSize.
-	acc := 0. 
-	address to: address + (FogEVMAbstractInterpreter wordSize - 1) do: [ :i | self set: stream next at: i. acc := acc +1. ].
+	acc := 0.
+	address to: address + (FogEVMAbstractInterpreter wordSize - 1) do: [ :i | 
+		self set: stream next at: i.
+		acc := acc + 1 ].
 	self assert: aValueRegistry unsignedValue = (self loadWord: anAddressRegistry) unsignedValue.
-	self assert: acc = 32.
+	self assert: acc = 32
 ]

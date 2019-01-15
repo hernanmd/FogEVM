@@ -62,20 +62,16 @@ FogEVMRegistry class >> false [
 ]
 
 { #category : #creating }
-FogEVMRegistry class >> forByteArray: aByteArray bytesLength: anInteger [ 
-	| int stream rest |
-	stream := aByteArray readStream.
-	[stream peek = 0.] whileTrue: [ stream next ].
-	rest := stream upToEnd. 
-	int := LargePositiveInteger new: rest size.
-	rest doWithIndex: [ : val : i | int digitAt:i put: val ].
-	^ self forValue: int bytesLength: anInteger 
+FogEVMRegistry class >> forByteArray: aByteArray bytesLength: anInteger [
+	self assert: aByteArray size <= FogEVMAbstractInterpreter wordSize.
+	^ self forValue: aByteArray asInteger bytesLength: anInteger
 ]
 
 { #category : #creating }
 FogEVMRegistry class >> forMemoryContent: aString [
 	<doc:
 		'Returns a registry for being pushed into the memory representation. The given content may be a String holding an hexadecimal representation. Each slot of memory in the memory is word-size (32)'>
+	self assert: aString size < (FogEVMAbstractInterpreter wordSize * 2).
 	^ self forValue: aString read0xHexadecimal bytesLength: FogEVMAbstractInterpreter wordSize
 ]
 
@@ -88,6 +84,8 @@ FogEVMRegistry class >> forPush: aFogVMPush [
 { #category : #creating }
 FogEVMRegistry class >> forValue: anInteger bytesLength: aByteLengthSize [
 	<doc: 'Returns a registry with a given value and a given byte length representation'>
+	anInteger isLarge
+		ifTrue: [ self assert: anInteger size  <= aByteLengthSize ].
 	^ self new
 		mask: (self createMaskFor: aByteLengthSize);
 		value: anInteger;
@@ -102,8 +100,8 @@ FogEVMRegistry class >> forWordSizeValue: aValue [
 
 { #category : #creating }
 FogEVMRegistry class >> fromPrintString: aString length: aByteLength [
-<doc: 'Returns a registry for the given string, and a given bytes length. This string representation is the same used by the FogEVMRegistry>>printOn:.'>
-	^ self forValue: (aString copyReplaceAll: '0x' with: '16r') asNumber bytesLength: aByteLength
+	<doc: 'Returns a registry for the given string, and a given bytes length. This string representation is the same used by the FogEVMRegistry>>printOn:.'>
+	^ self forValue: (Hexadecimal new readHexadecimal: aString) bytesLength: aByteLength
 ]
 
 { #category : #accessing }
@@ -254,12 +252,12 @@ FogEVMRegistry >> booleanValue [
 { #category : #converting }
 FogEVMRegistry >> byteArray [
 	<doc: 'Returns the byte array representation of the registry''s value'>
-	^ self unsignedValue asByteArray reverse
+	^ self unsignedValue asByteArray
 ]
 
 { #category : #accessing }
 FogEVMRegistry >> byteAt: aFogEVMRegistry [
-	^ FogEVMRegistry forValue: (self byteArray reverse at: aFogEVMRegistry unsignedValue) bytesLength: 1
+	^ FogEVMRegistry forValue: (self byteArray at: aFogEVMRegistry unsignedValue) bytesLength: 1
 ]
 
 { #category : #converting }

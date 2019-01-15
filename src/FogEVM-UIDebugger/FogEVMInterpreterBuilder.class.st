@@ -161,8 +161,10 @@ FogEVMInterpreterBuilder >> from: from to: to contract: contractAddress context:
 { #category : #'as yet unclassified' }
 FogEVMInterpreterBuilder >> generateContractHashFor: aFogEVMByteCode [
 	| number |
-	number := Number readFrom: (Keccak hashMessage: aFogEVMByteCode hash + DateAndTime now asUnixTime) asByteArray hex readStream base: 16.
-	^ FogEVMRegistry forValue: number bytesLength: 20
+	number := Number
+		readFrom: (Keccak hashMessage: aFogEVMByteCode hash + DateAndTime now asUnixTime) asByteArray hex readStream
+		base: 16.
+	^ FogEVMRegistry forByteArray: (number asByteArray copyFrom: 1 to: 20) bytesLength: 20
 ]
 
 { #category : #accessing }

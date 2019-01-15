@@ -65,7 +65,7 @@ FogEVMLogicGateTest >> testNOT [
 	bytecode := self createBytecodeForNOT: 1.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 0.
+	self assert: interpreter stack pop equals: 0.
 	
 	bytecode := self createBytecodeForNOT: 0.
 	interpreter bytecode: bytecode.
