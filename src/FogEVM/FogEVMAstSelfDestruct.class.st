@@ -25,8 +25,5 @@ FogEVMAstSelfDestruct >> account: aFogEVMAstVariable [
 { #category : #printing }
 FogEVMAstSelfDestruct >> printOn: aStream [
 	aStream nextPutAll: 'SELF-DESTRUCT Account: '.
-	account printOn: aStream.
-	aStream
-		nextPutAll: ' I: ';
-		nextPutAll: (instruction byteNumber write0xHexadecimal: 8)
+	account printOn: aStream
 ]

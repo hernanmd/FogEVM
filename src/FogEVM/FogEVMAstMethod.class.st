@@ -17,7 +17,7 @@ FogEVMAstMethod >> accept: aFogEVMAstUneededJumpsWiper [
 { #category : #initialization }
 FogEVMAstMethod >> initialize [
 	super initialize. 
-	sequence := FogEVMSequence new
+	sequence := FogEVMAstSequence new
 ]
 
 { #category : #printing }

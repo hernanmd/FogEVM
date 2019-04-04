@@ -67,7 +67,7 @@ Class {
 		'binary',
 		'runtime'
 	],
-	#category : #'FogEVM-ByteCode-Interpreter-Tests'
+	#category : #'FogEVM-ByteCode-Streaming-Tests'
 }
 
 { #category : #'as yet unclassified' }

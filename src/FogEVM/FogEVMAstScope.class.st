@@ -2,10 +2,12 @@ Class {
 	#name : #FogEVMAstScope,
 	#superclass : #FogEVMAstNode,
 	#instVars : [
-		'id',
 		'temporaries',
 		'sequence',
-		'finishesAt'
+		'finishesAt',
+		'stack',
+		'parent',
+		'trace'
 	],
 	#category : #'FogEVM-DecompilerAST'
 }
@@ -20,26 +22,60 @@ FogEVMAstScope >> addTemporary: aFogEVMAstVariable [
 	temporaries add: aFogEVMAstVariable
 ]
 
-{ #category : #'as yet unclassified' }
-FogEVMAstScope >> finishesAt: aFogEVMMnemonicExecutableMemoryEntry [
-	finishesAt := aFogEVMMnemonicExecutableMemoryEntry
+{ #category : #testing }
+FogEVMAstScope >> alreadyProcessedInstruction: anInstruction [
+	^ (self getProcessedInstruction: anInstruction ifNone: [ nil ]) isNotNil
 ]
 
-{ #category : #'as yet unclassified' }
-FogEVMAstScope >> id: anInteger [
-	id := anInteger
+{ #category : #testing }
+FogEVMAstScope >> getProcessedInstruction: anInstruction [
+	^ self getProcessedInstruction: anInstruction ifNone: [ self error ]
+]
+
+{ #category : #testing }
+FogEVMAstScope >> getProcessedInstruction: anInstruction ifNone: aBlock [
+	^ sequence statements
+		detect: [ :s | s instructions anySatisfy: [ :i |i = anInstruction] ]
+		ifNone: [ parent
+				ifNil: [ aBlock value ]
+				ifNotNil: [ parent getProcessedInstruction: anInstruction ifNone: aBlock ] ]
 ]
 
 { #category : #initialization }
 FogEVMAstScope >> initialize [
 	super initialize.
 	temporaries := OrderedCollection new. 
-	sequence := FogEVMSequence new .
+	sequence := FogEVMAstSequence new .
+	trace := OrderedCollection new.
+]
+
+{ #category : #initialization }
+FogEVMAstScope >> initializeWith: aParent [
+	parent := aParent.
+	stack := parent ifNil: [ Stack new ] ifNotNil: [ parent stack deepCopy ].
+	
+]
+
+{ #category : #testing }
+FogEVMAstScope >> isClosed [
+	^ sequence isClosed
 ]
 
 { #category : #'as yet unclassified' }
 FogEVMAstScope >> linkJumpsTo: aCollection [
 	sequence statements select: #isJump thenDo: [ :s | self halt ]
+]
+
+{ #category : #initialization }
+FogEVMAstScope >> newScope [
+	^ self class new
+		initializeWith: self;
+		yourself
+]
+
+{ #category : #initialization }
+FogEVMAstScope >> parent [
+	^ parent
 ]
 
 { #category : #printing }
@@ -61,12 +97,22 @@ FogEVMAstScope >> sequence [
 	^ sequence
 ]
 
+{ #category : #accessing }
+FogEVMAstScope >> stack [
+	^ stack
+]
+
 { #category : #'as yet unclassified' }
 FogEVMAstScope >> temporaries [
-	^ temporaries
+	^ (parent ifNil: [ {} ] ifNotNil: [ parent temporaries ]) , temporaries
 ]
 
 { #category : #accessing }
 FogEVMAstScope >> temporaries: aCollectionOfTemporaries [
 	temporaries := aCollectionOfTemporaries
+]
+
+{ #category : #initialization }
+FogEVMAstScope >> trace [
+	^ trace
 ]

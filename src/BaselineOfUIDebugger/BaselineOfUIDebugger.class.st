@@ -12,8 +12,16 @@ BaselineOfUIDebugger >> baseline: spec [
 		do: [ spec blessing: #baseline.
 			spec baseline: 'FogLive' with: [ spec repository: 'github://smartanvil/Fog' ].
 			spec baseline: 'FogEVM' with: [ spec repository: 'github://smartanvil/FogEVM' ].
-			spec baseline: 'FastTableExtentions' with: [ spec repository: 'github://sbragagnolo/FastTableExtention/src' ].
-			spec baseline: 'SpecWizard' with: [ spec repository: 'github://sbragagnolo/specwizard' ].
-			spec baseline: 'FileDialog' with: [ spec repository: 'github://peteruhnak/file-dialog' ].
-			spec package: #'FogEVM-UIDebugger' with: [ spec requires: #('FogEVM' 'FogLive' 'ParametrizedTests' 'FileDialog') ] ]
+			spec
+				baseline: 'FastTableExtentions'
+				with: [ spec repository: 'github://sbragagnolo/FastTableExtention/src' ].
+			spec
+				baseline: 'SpecWizard'
+				with: [ spec repository: 'github://sbragagnolo/specwizard' ].
+			spec
+				baseline: 'FileDialog'
+				with: [ spec repository: 'github://peteruhnak/file-dialog' ].
+			spec
+				package: #'FogEVM-UIDebugger'
+				with: [ spec requires: #('FogEVM' 'FogLive' 'FileDialog') ] ]
 ]

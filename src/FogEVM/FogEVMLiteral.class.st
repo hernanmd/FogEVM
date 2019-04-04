@@ -48,6 +48,11 @@ FogEVMLiteral >> isEVMVariable [
 	^ false 
 ]
 
+{ #category : #testing }
+FogEVMLiteral >> isGenerated [
+	^ false
+]
+
 { #category : #'as yet unclassified' }
 FogEVMLiteral >> isStorageAccess [
 	^ false 
@@ -73,4 +78,9 @@ FogEVMLiteral >> printOn: aStream [
 				ifTrue: [ value copyReplaceAll: '0x' with: '16r' ]
 				ifFalse: [ value ])
 	"	aStream nextPutAll: ')'"
+]
+
+{ #category : #reading }
+FogEVMLiteral >> read [
+	^ value read0xHexadecimal 
 ]

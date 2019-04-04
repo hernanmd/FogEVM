@@ -49,6 +49,11 @@ FogEVMAstMessageSend >> printOn: aStream [
 ]
 
 { #category : #'as yet unclassified' }
+FogEVMAstMessageSend >> read [
+	^ receiver read perform: selector withArguments:( arguments collect:#read )
+]
+
+{ #category : #'as yet unclassified' }
 FogEVMAstMessageSend >> receiver [
 	^ receiver
 ]
@@ -65,6 +70,11 @@ FogEVMAstMessageSend >> resolve [
 				perform: selector
 				withArguments: (arguments collect: [ :a | a literalValue read0xHexadecimal ])) write0xHexadecimal ]
 		ifFalse: [ nil ]
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMAstMessageSend >> selector [
+	^ selector
 ]
 
 { #category : #'as yet unclassified' }

@@ -805,7 +805,7 @@ FogEVMInstruction >> accept: anInterpreter [
 
 { #category : #generated }
 FogEVMInstruction >> accept: anInterpreter loadedAt: byteNumber of: anExecutableMemoryReificaiton [
-	| perform stackSize localMnemonic |
+	| perform stackSize localMnemonic result |
 	localMnemonic := self mnemonic.
 	(self mnemonic beginsWith: 'PUSH')
 		ifTrue: [ localMnemonic := 'PUSH' ].
@@ -818,8 +818,10 @@ FogEVMInstruction >> accept: anInterpreter loadedAt: byteNumber of: anExecutable
 	perform := ('visit' , localMnemonic asLowercase capitalized , ':') asSymbol.
 	stackSize := anInterpreter stackSize.
 	"self manageBreakpointFor: anExecutableMemoryReificaiton atMethod: anInterpreter class >> perform."
-	anInterpreter perform: perform withArguments: {self}.
-	self assert: anInterpreter stackSize = (stackSize - (self expectedPops - self expectedPushes))
+	result := anInterpreter perform: perform withArguments: {self}.
+	self
+		assert: anInterpreter stackSize = (stackSize - (self expectedPops - self expectedPushes)).
+	^ result
 ]
 
 { #category : #accessing }
@@ -912,7 +914,7 @@ FogEVMInstruction >> printHexaOn: aStream [
 { #category : #printing }
 FogEVMInstruction >> printOn: aStream [
 	aStream
-		nextPutAll: self mnemonic
+		nextPutAll: self mnemonic; nextPut:$( ;nextPutAll: self printableByteCode ; nextPut:$)
 ]
 
 { #category : #generated }

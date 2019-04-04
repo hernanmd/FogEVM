@@ -1,11 +1,11 @@
 Class {
-	#name : #FogEVMLogicGateTest,
+	#name : #FogEVMDecompileLogicGateTest,
 	#superclass : #FogEVMUnitaryTest,
-	#category : #'FogEVM-ByteCode-Interpreter-Tests'
+	#category : #'FogEVM-Decompiler-Tests'
 }
 
 { #category : #test }
-FogEVMLogicGateTest >> testAND [
+FogEVMDecompileLogicGateTest >> testAND [
 	| bytecode |
 	"should test over 
 		func opAnd(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
@@ -33,7 +33,7 @@ FogEVMLogicGateTest >> testAND [
 ]
 
 { #category : #test }
-FogEVMLogicGateTest >> testISZERO [
+FogEVMDecompileLogicGateTest >> testISZERO [
 	| bytecode |
 	"should test over 
 		func opIszero(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
@@ -55,7 +55,7 @@ FogEVMLogicGateTest >> testISZERO [
 ]
 
 { #category : #test }
-FogEVMLogicGateTest >> testNOT [
+FogEVMDecompileLogicGateTest >> testNOT [
 	| bytecode |
 	"should test over 
 		func opNot(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
@@ -75,7 +75,7 @@ FogEVMLogicGateTest >> testNOT [
 ]
 
 { #category : #test }
-FogEVMLogicGateTest >> testOR [
+FogEVMDecompileLogicGateTest >> testOR [
 		|  bytecode  |
 		
 		"should test over 
@@ -107,7 +107,7 @@ FogEVMLogicGateTest >> testOR [
 ]
 
 { #category : #test }
-FogEVMLogicGateTest >> testXOR [
+FogEVMDecompileLogicGateTest >> testXOR [
 		|  bytecode  |
 		
 		"should test over 

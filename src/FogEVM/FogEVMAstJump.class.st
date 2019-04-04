@@ -2,7 +2,8 @@ Class {
 	#name : #FogEVMAstJump,
 	#superclass : #FogEVMAstNode,
 	#instVars : [
-		'address'
+		'address',
+		'destination'
 	],
 	#category : #'FogEVM-DecompilerAST'
 }
@@ -20,6 +21,11 @@ FogEVMAstJump >> address [
 { #category : #accessing }
 FogEVMAstJump >> address: aFogEVMAstVariable [ 
 	address := aFogEVMAstVariable
+]
+
+{ #category : #testing }
+FogEVMAstJump >> deepCopy [
+	^ self 
 ]
 
 { #category : #testing }

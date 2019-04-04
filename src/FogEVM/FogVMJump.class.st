@@ -4,7 +4,10 @@ Alter the program counter
 Class {
 	#name : #FogVMJump,
 	#superclass : #FogEVMInstruction,
-	#category : 'FogEVM-ByteCode'
+	#instVars : [
+		'scope'
+	],
+	#category : #'FogEVM-ByteCode'
 }
 
 { #category : #generated }
@@ -71,4 +74,10 @@ FogVMJump class >> mnemonic [
 { #category : #testing }
 FogVMJump >> isStrictJump [
 	^ true 
+]
+
+{ #category : #testing }
+FogVMJump >> scope: aFogEVMAstScope [
+	scope := aFogEVMAstScope
+	
 ]

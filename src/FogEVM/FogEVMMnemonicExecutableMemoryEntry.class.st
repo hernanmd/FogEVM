@@ -15,7 +15,7 @@ Class {
 
 { #category : #visiting }
 FogEVMMnemonicExecutableMemoryEntry >> accept: anInterpreter with: anExecutableMemoryReificaiton [ 
-	instruction accept: anInterpreter loadedAt: byteNumber of: self .
+	^ instruction accept: anInterpreter loadedAt: byteNumber of: self .
 	
 ]
 

@@ -287,7 +287,7 @@ FogEVMRandomizedTest >> testPOP [
 	bytecode := self createBytecodeForPOP: x.
 	interpreter bytecode: bytecode.
 	interpreter run.
-	self assert: interpreter stack size equals: x
+	self assert: interpreter stack size equals: 0
 ]
 
 { #category : #test }

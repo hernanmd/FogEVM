@@ -2,14 +2,26 @@ Class {
 	#name : #FogEVMAstNode,
 	#superclass : #Object,
 	#instVars : [
-		'instruction'
+		'instructions'
 	],
 	#category : #'FogEVM-DecompilerAST'
 }
 
 { #category : #'as yet unclassified' }
-FogEVMAstNode >> instruction: aFogEVMMnemonicExecutableMemoryEntry [ 
-	instruction := aFogEVMMnemonicExecutableMemoryEntry
+FogEVMAstNode >> initialize [
+	super initialize.
+	instructions := OrderedCollection  new.
+	
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMAstNode >> instruction: aFogEVMMnemonicExecutableMemoryEntry [
+	instructions add: aFogEVMMnemonicExecutableMemoryEntry
+]
+
+{ #category : #enumerating }
+FogEVMAstNode >> instructions [
+	^ instructions
 ]
 
 { #category : #testing }
@@ -35,6 +47,11 @@ FogEVMAstNode >> isEVMVariable [
 { #category : #testing }
 FogEVMAstNode >> isEndingState [
 	^ false.
+]
+
+{ #category : #testing }
+FogEVMAstNode >> isGenerated [
+	^ false
 ]
 
 { #category : #'as yet unclassified' }

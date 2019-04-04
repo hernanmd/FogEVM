@@ -4,10 +4,15 @@ Class {
 	#instVars : [
 		'address'
 	],
-	#category : #'FogEVM-Envinronment-Objects'
+	#category : #'FogEVM-Environment-Objects'
 }
 
 { #category : #accessing }
 FogEVMAccount >> address: aFogEVMRegistry [ 
 	address := aFogEVMRegistry
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMAccount >> values [
+	^ { address  }
 ]

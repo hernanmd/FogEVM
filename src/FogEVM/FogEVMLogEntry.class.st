@@ -5,7 +5,7 @@ Class {
 		'topics',
 		'content'
 	],
-	#category : #'FogEVM-Envinronment-Objects'
+	#category : #'FogEVM-Environment-Objects'
 }
 
 { #category : #accessing }

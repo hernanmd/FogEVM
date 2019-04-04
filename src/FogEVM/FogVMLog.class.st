@@ -67,3 +67,8 @@ FogVMLog >> logKind [
 FogVMLog >> readsMemory [
 	^ true
 ]
+
+{ #category : #'as yet unclassified' }
+FogVMLog >> topicsAmount [ 
+	^ self class expectedPops - 2
+]

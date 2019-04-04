@@ -61,7 +61,8 @@ FogEVMByteCode class >> instructionFor: aCode [
 FogEVMByteCode class >> instructionForNumber: aCode [
 	^ (FogEVMInstruction allSubclasses
 		detect: [ :c | c byteCodeNumber = aCode ]
-		ifNone: [ FogEVMUnknown new
+		ifNone: [ 
+			FogEVMUnknown new
 				byteCode: (aCode write0xHexadecimal: 2);
 				yourself ]) instance
 ]

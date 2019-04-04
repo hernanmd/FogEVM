@@ -7,14 +7,14 @@ Class {
 		'toNode',
 		'inMethodBody',
 		'method',
-		'scope',
 		'sequence',
 		'nextNode',
 		'currentStatement',
 		'hasEntered',
-		'visitedStatements'
+		'visitedStatements',
+		'scopeVar'
 	],
-	#category : 'FogEVM-Decompiler'
+	#category : #'FogEVM-Decompiler-Vitamins'
 }
 
 { #category : #visiting }
@@ -51,7 +51,7 @@ FogEVMAstMethodBuilderVisitor >> buildConditionalAbstractStructureForThrowing: a
 
 { #category : #extraction }
 FogEVMAstMethodBuilderVisitor >> extractFrom: aFogEVMAstScope [ 
-	scope := aFogEVMAstScope.
+	scopeVar := aFogEVMAstScope.
 	method := FogEVMAstMethod new.
 	aFogEVMAstScope accept: self .
 ]
@@ -146,11 +146,6 @@ FogEVMAstMethodBuilderVisitor >> visitJump: aJump [
 		ifFalse: [ self visitAstNode: aJump.
 			self setNextStatement: (self statementFor: aJump) ].
 	visitedStatements add: nextNode
-]
-
-{ #category : #visiting }
-FogEVMAstMethodBuilderVisitor >> visitScope: aFogEVMAstScope [
-	aFogEVMAstScope sequence accept: self
 ]
 
 { #category : #'as yet unclassified' }

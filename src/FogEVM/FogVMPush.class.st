@@ -158,8 +158,8 @@ FogVMPush >> printHexaOn: aStream [
 FogVMPush >> printOn: aStream [
 	aStream
 		nextPutAll: self mnemonic;
-		nextPutAll: ' ';
-		nextPutAll: self asPushableRegistry printString
+		nextPutAll: ' '.
+	parameter ifNotNil: [ aStream nextPutAll: self asPushableRegistry printString ]
 ]
 
 { #category : #'as yet unclassified' }

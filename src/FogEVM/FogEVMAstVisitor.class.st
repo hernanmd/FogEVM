@@ -1,8 +1,17 @@
 Class {
 	#name : #FogEVMAstVisitor,
 	#superclass : #Object,
-	#category : 'FogEVM-Decompiler'
+	#instVars : [
+		'scopes'
+	],
+	#category : #'FogEVM-Decompiler-Vitamins'
 }
+
+{ #category : #visiting }
+FogEVMAstVisitor >> initialize [
+	super initialize.
+	scopes := OrderedCollection new.
+]
 
 { #category : #visiting }
 FogEVMAstVisitor >> visitAssignation: aFogEVMAssignation [
@@ -14,16 +23,6 @@ FogEVMAstVisitor >> visitAssignation: aFogEVMAssignation [
 { #category : #visiting }
 FogEVMAstVisitor >> visitAstNode: aFogEVMAstNode [
 	" pass "
-]
-
-{ #category : #visiting }
-FogEVMAstVisitor >> visitCallData: aFogEVMAstCallData [ 
-	self visitAstNode: aFogEVMAstCallData
-]
-
-{ #category : #visiting }
-FogEVMAstVisitor >> visitCallDataSize: aFogEVMAstCallDataSize [ 
-	self visitAstNode: aFogEVMAstCallDataSize
 ]
 
 { #category : #visiting }
@@ -46,18 +45,21 @@ FogEVMAstVisitor >> visitCodeCopy: aFogEVMAstCodeCopy [
 FogEVMAstVisitor >> visitConditionalJump: aFogEVMAstConditionalJump [
 	self visitAstNode: aFogEVMAstConditionalJump.
 	aFogEVMAstConditionalJump condition accept: self.
-	aFogEVMAstConditionalJump address accept: self
+	aFogEVMAstConditionalJump address accept: self.
+	aFogEVMAstConditionalJump destination accept: self
 ]
 
 { #category : #visiting }
 FogEVMAstVisitor >> visitJump: aFogEVMAstJump [
 	self visitAstNode: aFogEVMAstJump.
-	aFogEVMAstJump address accept: self
+	aFogEVMAstJump address accept: self.
+	aFogEVMAstJump destination accept: self
 ]
 
 { #category : #visiting }
 FogEVMAstVisitor >> visitJumpTag: aFogEVMAstJumpTag [
-	self visitAstNode: aFogEVMAstJumpTag
+	self visitAstNode: aFogEVMAstJumpTag.
+	aFogEVMAstJumpTag scope ifNotNil: [ :s | s accept: self ]
 ]
 
 { #category : #visiting }
@@ -93,9 +95,17 @@ FogEVMAstVisitor >> visitReturn: aFogEVMAstReturn [
 ]
 
 { #category : #visiting }
+FogEVMAstVisitor >> visitRevert: aFogEVMAstRevert [ 
+	self visitAstNode: aFogEVMAstRevert.
+	aFogEVMAstRevert message accept: self
+]
+
+{ #category : #visiting }
 FogEVMAstVisitor >> visitScope: aFogEVMAstScope [
-	self visitAstNode: aFogEVMAstScope.
-	aFogEVMAstScope sequence accept: self
+	(scopes includes: aFogEVMAstScope)
+		ifFalse: [ scopes add: aFogEVMAstScope.
+			self visitAstNode: aFogEVMAstScope.
+			aFogEVMAstScope sequence accept: self ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -126,6 +136,12 @@ FogEVMAstVisitor >> visitStorageStore: aFogEVMAstStorageStore [
 	self visitAstNode: aFogEVMAstStorageStore.
 	aFogEVMAstStorageStore address accept: self.
 	aFogEVMAstStorageStore value accept: self
+]
+
+{ #category : #visiting }
+FogEVMAstVisitor >> visitThrow: aFogEVMAstRevert [
+	self visitAstNode: aFogEVMAstRevert.
+	aFogEVMAstRevert message accept: self
 ]
 
 { #category : #visiting }

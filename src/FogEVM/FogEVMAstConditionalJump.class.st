@@ -3,7 +3,8 @@ Class {
 	#superclass : #FogEVMAstNode,
 	#instVars : [
 		'address',
-		'condition'
+		'condition',
+		'destination'
 	],
 	#category : #'FogEVM-DecompilerAST'
 }
@@ -34,6 +35,21 @@ FogEVMAstConditionalJump >> condition: aFogEVMAstVariable [
 ]
 
 { #category : #testing }
+FogEVMAstConditionalJump >> deepCopy [
+	^ self 
+]
+
+{ #category : #accessing }
+FogEVMAstConditionalJump >> destination [
+	^ destination
+]
+
+{ #category : #accessing }
+FogEVMAstConditionalJump >> destination: aJumpDestination [
+	destination := aJumpDestination
+]
+
+{ #category : #testing }
 FogEVMAstConditionalJump >> isConditionalJump [
 	^ true
 ]
@@ -50,4 +66,9 @@ FogEVMAstConditionalJump >> printOn: aStream [
 	aStream nextPutAll: ') ifTrue: [ interpreter jumpTo: '.
 	address  printOn: aStream.
 	aStream nextPutAll: '] '
+]
+
+{ #category : #accessing }
+FogEVMAstConditionalJump >> scope [
+	^ destination
 ]

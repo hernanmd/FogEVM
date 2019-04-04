@@ -5,7 +5,7 @@ Class {
 		'bytecode',
 		'address'
 	],
-	#category : #'FogEVM-Envinronment-Objects'
+	#category : #'FogEVM-Environment-Objects'
 }
 
 { #category : #accessing }
@@ -26,4 +26,9 @@ FogEVMContract >> bytecode [
 { #category : #accessing }
 FogEVMContract >> bytecode: aFogEVMByteCode [ 
 	bytecode := aFogEVMByteCode
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMContract >> values [
+	^ { address . bytecode }
 ]

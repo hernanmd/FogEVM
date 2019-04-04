@@ -6,7 +6,7 @@ Class {
 		'condition',
 		'found'
 	],
-	#category : 'FogEVM-Decompiler'
+	#category : #'FogEVM-Decompiler-Vitamins'
 }
 
 { #category : #'as yet unclassified' }

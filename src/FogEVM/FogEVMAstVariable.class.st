@@ -6,7 +6,8 @@ Class {
 		'createdAt',
 		'type',
 		'constant',
-		'value'
+		'value',
+		'lastValue'
 	],
 	#classInstVars : [
 		'lastNumber'
@@ -44,15 +45,33 @@ FogEVMAstVariable >> copy [
 	^ self  
 ]
 
+{ #category : #accessing }
+FogEVMAstVariable >> createdAt [
+	^ createdAt
+]
+
 { #category : #'as yet unclassified' }
 FogEVMAstVariable >> createdAt: aFogEVMMnemonicExecutableMemoryEntry [
 	createdAt := aFogEVMMnemonicExecutableMemoryEntry
+]
+
+{ #category : #accessing }
+FogEVMAstVariable >> deepCopy [
+	^ self  
 ]
 
 { #category : #printing }
 FogEVMAstVariable >> initialize [
 	super initialize.
 	constant := false. 
+]
+
+{ #category : #accessing }
+FogEVMAstVariable >> isAccessible [
+	[ self read ]
+		on: Error
+		do: [ ^ false ].
+	^ true
 ]
 
 { #category : #printing }
@@ -70,9 +89,9 @@ FogEVMAstVariable >> isGenerated [
 	^ name isNil or: [ name beginsWith: 'TVar']
 ]
 
-{ #category : #'as yet unclassified' }
-FogEVMAstVariable >> literalValue [
-	self shouldBeImplemented.
+{ #category : #accessing }
+FogEVMAstVariable >> lastValue: aFogEVMLiteral [ 
+	lastValue := aFogEVMLiteral 
 ]
 
 { #category : #accessing }
@@ -97,6 +116,11 @@ FogEVMAstVariable >> printOn: aStream [
 					^ self ] ].
 	aStream nextPutAll: ' '.
 	aStream nextPutAll: self name
+]
+
+{ #category : #reading }
+FogEVMAstVariable >> read [
+	^ lastValue read
 ]
 
 { #category : #'as yet unclassified ' }

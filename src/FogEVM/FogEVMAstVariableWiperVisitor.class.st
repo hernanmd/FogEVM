@@ -5,14 +5,30 @@ Class {
 		'readWriteTracker',
 		'state',
 		'assignationValue',
-		'currentScope'
+		'scopesTracking'
 	],
-	#category : 'FogEVM-Decompiler'
+	#category : #'FogEVM-Decompiler-Vitamins'
 }
 
 { #category : #'as yet unclassified' }
 FogEVMAstVariableWiperVisitor >> anyScopeHasChanged [
 	^ readWriteTracker keys anySatisfy: [ :v | v isEVMVariable not ]
+]
+
+{ #category : #visiting }
+FogEVMAstVariableWiperVisitor >> currentScope [
+	^ scopesTracking top
+]
+
+{ #category : #visiting }
+FogEVMAstVariableWiperVisitor >> currentScope: aScope [
+ 	scopesTracking push: aScope.
+]
+
+{ #category : #visiting }
+FogEVMAstVariableWiperVisitor >> initialize [
+	super initialize.
+	scopesTracking := Stack new
 ]
 
 { #category : #'as yet unclassified' }
@@ -21,9 +37,15 @@ FogEVMAstVariableWiperVisitor >> readWriteTracker [
 ]
 
 { #category : #visiting }
+FogEVMAstVariableWiperVisitor >> releaseScope [
+	scopesTracking pop.
+]
+
+{ #category : #visiting }
 FogEVMAstVariableWiperVisitor >> visitAssignation: aFogEVMAssignation [
 	(aFogEVMAssignation value = aFogEVMAssignation variable or: [ aFogEVMAssignation variable isEVMVariable not ])
-		ifTrue: [ currentScope sequence removeStatement: aFogEVMAssignation ]
+		ifTrue: [ 
+			self currentScope sequence removeStatement: aFogEVMAssignation ]
 		ifFalse: [ state := #writing.
 			assignationValue := aFogEVMAssignation value.
 			aFogEVMAssignation variable accept: self.
@@ -33,11 +55,11 @@ FogEVMAstVariableWiperVisitor >> visitAssignation: aFogEVMAssignation [
 
 { #category : #visiting }
 FogEVMAstVariableWiperVisitor >> visitScope: aFogEVMAstScope [
-	currentScope := aFogEVMAstScope.
+	self currentScope: aFogEVMAstScope.
 	aFogEVMAstScope temporaries: (aFogEVMAstScope temporaries select: #isEVMVariable).
 	aFogEVMAstScope temporaries do: [ :t | self visitVariableDefinition: t ].
-	aFogEVMAstScope sequence accept: self.
-	currentScope := nil
+	super visitScope: aFogEVMAstScope.
+	self releaseScope
 ]
 
 { #category : #'as yet unclassified' }
@@ -57,8 +79,8 @@ FogEVMAstVariableWiperVisitor >> visitVariable: aFogEVMAstVariable [
 FogEVMAstVariableWiperVisitor >> visitVariableDefinition: aFogEVMAstVariable [
 	self readWriteTracker
 		at: aFogEVMAstVariable
-		ifPresent: [ :d | (d at: #scopes) add: currentScope ]
-		ifAbsentPut: [ {(#scopes -> {currentScope} asSet).
+		ifPresent: [ :d | (d at: #scopes) add: self currentScope ]
+		ifAbsentPut: [ {(#scopes -> {self currentScope} asSet).
 			(#read -> 0).
 			(#write -> 0)} asDictionary ]
 ]

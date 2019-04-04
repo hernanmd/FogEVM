@@ -15,7 +15,8 @@ Class {
 		'selectedMethod',
 		'parametersToGo',
 		'resolvedParameters',
-		'methodsList'
+		'methodsList',
+		'noConstructor'
 	],
 	#category : #'FogEVM-UIDebugger-Tools'
 }
@@ -40,21 +41,27 @@ FogEVMMethodAsInputDialog class >> defaultSpec [
 
 { #category : #accessing }
 FogEVMMethodAsInputDialog >> constructor: aFogConstructorMirror [
-	methodsList items: {aFogConstructorMirror }.
-	methodsList setSelectedItem: aFogConstructorMirror.
-	self setLabels.
+	
+	aFogConstructorMirror ifNil: [ noConstructor := true. ]
+		ifNotNil: [
+		   methodsList items: {aFogConstructorMirror}.
+			methodsList setSelectedItem: aFogConstructorMirror.
+			self setLabels ]
 ]
 
 { #category : #accessing }
 FogEVMMethodAsInputDialog >> generateInput: aSession and: aContractDescription [
-	^ methodsList selectedItem
-		encodeUsing: aSession
-		for: aContractDescription
-		with: (resolvedParameters reverse collect: #value)
+	^ noConstructor
+		ifTrue: [ aContractDescription binary ]
+		ifFalse: [ methodsList selectedItem
+				encodeUsing: aSession
+				for: aContractDescription
+				with: (resolvedParameters reverse collect: #value) ]
 ]
 
 { #category : #initialization }
 FogEVMMethodAsInputDialog >> initializeWidgets [
+	noConstructor := false.
 	methodsList := self newList.
 	methodsList
 		items: {};
@@ -66,7 +73,7 @@ FogEVMMethodAsInputDialog >> initializeWidgets [
 	input autoAccept: true.
 	type := self newLabel.
 	push := self newButton.
-	resolvedParameters := {  }.
+	resolvedParameters := {}.
 	push label: 'Push'.
 	push action: [ self pushParameter ].
 	pop := self newButton.
@@ -81,7 +88,7 @@ FogEVMMethodAsInputDialog >> input [
 
 { #category : #accessing }
 FogEVMMethodAsInputDialog >> isDone [
-	^ parametersToGo ifNil: [ false ] ifNotNil: [ parametersToGo isEmpty ]
+	^ parametersToGo ifNil: [ noConstructor ] ifNotNil: [ parametersToGo isEmpty ]
 ]
 
 { #category : #accessing }

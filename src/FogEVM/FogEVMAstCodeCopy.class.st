@@ -43,3 +43,13 @@ FogEVMAstCodeCopy >> loadingArea [
 FogEVMAstCodeCopy >> loadingArea: aFogEVMAstVariable [ 
 	loadingArea := aFogEVMAstVariable
 ]
+
+{ #category : #'as yet unclassified' }
+FogEVMAstCodeCopy >> printOn: aStream [
+	loadingArea printOn: aStream .
+	aStream nextPutAll: '= CODECOPY(From: '.
+	from printOn: aStream.
+	aStream nextPutAll: ' Offset: '.
+	amount  printOn: aStream.
+	aStream nextPutAll: ') '
+]

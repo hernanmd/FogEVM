@@ -6,7 +6,7 @@ Class {
 		'tags',
 		'jumps'
 	],
-	#category : 'FogEVM-Decompiler'
+	#category : #'FogEVM-Decompiler-Vitamins'
 }
 
 { #category : #visiting }

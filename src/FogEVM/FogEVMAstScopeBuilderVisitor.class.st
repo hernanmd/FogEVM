@@ -1,7 +1,7 @@
 Class {
 	#name : #FogEVMAstScopeBuilderVisitor,
 	#superclass : #FogEVMAstMethodBuilderVisitor,
-	#category : 'FogEVM-Decompiler'
+	#category : #'FogEVM-Decompiler-Vitamins'
 }
 
 { #category : #'as yet unclassified' }

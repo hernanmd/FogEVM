@@ -3,7 +3,8 @@ Class {
 	#superclass : #FogEVMAstNode,
 	#instVars : [
 		'address',
-		'value'
+		'value',
+		'isByteStore'
 	],
 	#category : #'FogEVM-DecompilerAST'
 }
@@ -21,6 +22,16 @@ FogEVMAstMemoryStore >> address [
 { #category : #'as yet unclassified' }
 FogEVMAstMemoryStore >> address: aFogEVMAstVariable [ 
 	address := aFogEVMAstVariable
+]
+
+{ #category : #accessing }
+FogEVMAstMemoryStore >> isByteStore [
+	^ isByteStore ifNil: [ false ]
+]
+
+{ #category : #accessing }
+FogEVMAstMemoryStore >> isByteStore: aValue [
+	isByteStore := aValue
 ]
 
 { #category : #printing }
