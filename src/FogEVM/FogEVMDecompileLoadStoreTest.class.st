@@ -18,160 +18,157 @@ FogEVMDecompileLoadStoreTest class >> testParameters [
 
 { #category : #test }
 FogEVMDecompileLoadStoreTest >> generator: aGenerator [
-	value := 128 + (aGenerator nextInt: 256 * 31).
-	memoryStart := 1 + (aGenerator nextInt: 10).
+	| hex |
+	hex := Hexadecimal new.
+	value := hex write0xHexadecimal: 128 + (aGenerator nextInt: 256 * 31).
+	memoryStart := hex write0xHexadecimal: 1 + (aGenerator nextInt: 10).
 	generator := aGenerator
 ]
 
 { #category : #test }
 FogEVMDecompileLoadStoreTest >> testMLOAD [
-	| bytecode |
-	"should test over 
-		func opMload(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	offset := stack.pop()
-	val := interpreter.intPool.get().SetBytes(memory.Get(offset.Int64(), 32))
-	stack.push(val)
-
-	interpreter.intPool.put(offset)
-	return "
-	bytecode := self createBytecodeForMSTORE: value at: memoryStart.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	bytecode := self createBytecodeForMLOAD: memoryStart.
-	interpreter bytecode: bytecode.
-	interpreter hackedRun .
-	self assert: interpreter stack pop unsignedValue equals: value
+	| sequence |
+	"MLOAD(Address)->
+	   sequence + 
+	    address := Address.
+	    value := MemoryLoad(address, WordSize)
+	   stack +
+	    value
+	"
+	sequence := self decompile: (self createBytecodeForMLOAD: memoryStart).
+	self assert: sequence statements size equals: 2.
+	self assert: sequence instructions size equals: 3.
+	sequence statements do: [ :s | self assertIsAssignment: s ].
+	self assert: (sequence statements last value isKindOf: FogEVMAstMemoryLoad).
+	self assert: sequence statements first variable equals: sequence statements last value fromAddress.
+	self assert: sequence statements last value amountOfBytes read equals: FogEVMAbstractInterpreter wordSize.
+	self assert: decompiler scope stack size equals: 1.
+	self assert: decompiler scope stack pop equals: sequence statements last variable
 ]
 
 { #category : #test }
 FogEVMDecompileLoadStoreTest >> testMSIZE [
-	| bytecode |
-	"should test over 
-		func opMsize(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	stack.push(interpreter.intPool.get().SetInt64(int64(memory.Len())))
-	return "
-	bytecode := self createBytecodeForMSIZE.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter pop unsignedValue equals: 0.
-	interpreter memory
-		storeWord: (FogEVMRegistry forValue: value bytesLength: value asByteArray size )
-		startingAt: (FogEVMRegistry forValue: 0 bytesLength: 32).
-	interpreter hackedRun.
-	self assert: interpreter pop unsignedValue equals: 32 .
-	
+	| sequence |
+	"MSIZE->
+	  sequence + 
+	   runtime := Runtime
+	   size := runtime memorySize. 
+	  stack +
+	   size
+	"
+	sequence := self decompile: self createBytecodeForMSIZE.
+	self assert: sequence statements size equals: 2.
+	self assert: sequence instructions size equals: 2.
+	self assertIsAssignment: sequence statements first.
+	self assertIsMessageSend: sequence statements last value.
+	self assert: sequence statements last value receiver equals: sequence statements first variable.
+	self assertIsRuntimeGlobal: sequence statements first value . 
+	self assert: sequence statements last variable equals: decompiler scope stack pop.
+
 ]
 
 { #category : #test }
 FogEVMDecompileLoadStoreTest >> testMSTORE [
-	| bytecode |
-	"should test over 
-		func opMstore(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	// pop value of the stack
-	mStart, val := stack.pop(), stack.pop()
-	memory.Set32(mStart.Uint64(), val)
-
-	interpreter.intPool.put(mStart, val)
-	return"
-	bytecode := self createBytecodeForMSTORE: value at: memoryStart.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	
-	self assert: interpreter stack isEmpty.
-	self assert: interpreter memory sizeInBytes equals: memoryStart+ 32 
+	| sequence |
+	"MSTORE(Value, Address)->
+	  sequence + 
+	   value := Value.
+	   address := Address.
+	   MemoryStore(value, address, WordSize).
+	  stack + 
+	"
+	sequence := self decompile: (self createBytecodeForMSTORE: value at: memoryStart).
+	self assert: sequence statements size equals: 3.
+	self assert: sequence instructions size equals: 4.
+	self assert: decompiler scope stack isEmpty.
+	self assert: (sequence statements last isKindOf: FogEVMAstMemoryStore).
+	self assert: sequence statements last address equals: sequence statements second variable.
+	self assert: sequence statements last value equals: sequence statements first variable.
+	self assert: sequence statements last amount read equals: FogEVMAbstractInterpreter wordSize
 ]
 
 { #category : #test }
 FogEVMDecompileLoadStoreTest >> testMSTORE8 [
-		|  bytecode  |
-		
-		"should test over 
-		func opMstore8(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	off, val := stack.pop().Int64(), stack.pop().Int64()
-	memory.store[off] = byte(val & 0xff)
-
-	retur"
-	
-	bytecode := self createBytecodeForMSTORE8: value at: memoryStart.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	
-	self assert: interpreter stack isEmpty.
-	self assert: interpreter memory sizeInBytes equals: memoryStart + 1  "Base 0"
+	| sequence |
+	"MSTORE(Value, Address)->
+	  sequence + 
+	   value := Value.
+	   address := Address.
+	   MemoryStore(value, address, ByteSize).
+	  stack + 
+	"
+	sequence := self decompile: (self createBytecodeForMSTORE8: value at: memoryStart).
+	self assert: sequence statements size equals: 3.
+	self assert: sequence instructions size equals: 4.
+	self assert: decompiler scope stack isEmpty.
+	self assert: (sequence statements last isKindOf: FogEVMAstMemoryStore).
+	self assert: sequence statements last address equals: sequence statements second variable.
+	self assert: sequence statements last value equals: sequence statements first variable.
+	self assert: sequence statements last amount read equals: FogEVMAbstractInterpreter byteSize
 ]
 
 { #category : #test }
 FogEVMDecompileLoadStoreTest >> testSHA3 [
-	| bytecode hashedValue |
-	"should test over 
-		func opSha3(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	offset, size := stack.pop(), stack.pop()
-	data := memory.Get(offset.Int64(), size.Int64())
-
-	if interpreter.hasher == nil {
-		interpreter.hasher = sha3.NewKeccak256().(keccakState)
-	} else {
-		interpreter.hasher.Reset()
-	}
-	interpreter.hasher.Write(data)
-	interpreter.hasher.Read(interpreter.hasherBuf[:])
-
-	evm := interpreter.evm
-	if evm.vmConfig.EnablePreimageRecording {
-		evm.StateDB.AddPreimage(interpreter.hasherBuf, data)
-	}
-	stack.push(interpreter.intPool.get().SetBytes(interpreter.hasherBuf[:]))
-
-	interpreter.intPool.put(offset, size)
-	return n"
-	bytecode := self createBytecodeForMSTORE: value at: memoryStart.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	bytecode := self createBytecodeForSHA3: memoryStart to: 32.
-	interpreter bytecode: bytecode.
-	interpreter hackedRun .
-	hashedValue := (Keccak hashMessage: value asByteArray reverse) asByteArray hex.
-	self assert: interpreter stack pop unsignedValue equals: ('16r' , hashedValue) asNumber
+	| sequence |
+	"
+	SHA3(Address, Size) ->
+	 sequence +
+	  address := Address.
+	  size := Size.
+	  value := MemoryLoad(address, size).
+	  runtime := Runtime.
+	  sha := runtime sha3: value. 
+	 stack +
+	  sha
+	"
+	sequence := self decompile: (self createBytecodeForSHA3: memoryStart to: '0x20').
+	self assert: sequence statements size equals: 5.
+	self assert: sequence instructions size equals: 4.
+	sequence statements do: [ :s | self assertIsAssignment: s ].
+	self assertIsRuntimeGlobal: sequence statements fourth value.
+	self assert: sequence statements second variable equals: sequence statements third value fromAddress.
+	self assert: sequence statements first variable equals: sequence statements third value amountOfBytes.
+	self assertIsBinaryOperation: sequence statements last value selector: #sha3:.
+	self assert: decompiler scope stack size equals: 1.
+	self assert: decompiler scope stack pop equals: sequence statements last variable
 ]
 
 { #category : #test }
 FogEVMDecompileLoadStoreTest >> testSLOAD [
-		|  bytecode  |
-		
-		"should test over 
-		func opSload(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	loc := stack.peek()
-	val := interpreter.evm.StateDB.GetState(contract.Address(), common.BigToHash(loc))
-	loc.SetBytes(val.Bytes())
-	return "
-	bytecode := self createBytecodeForSSTORE: value at: memoryStart.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	bytecode := self createBytecodeForSLOAD: memoryStart.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: value
+	| sequence |
+	"SLOAD(Address)->
+	   sequence + 
+	    address := Address.
+	    value := StorageLoad(address, WordSize)
+	   stack +
+	    value
+	"
+	sequence := self decompile: (self createBytecodeForSLOAD: memoryStart).
+	self assert: sequence statements size equals: 2.
+	self assert: sequence instructions size equals: 3.
+	sequence statements do: [ :s | self assertIsAssignment: s ].
+	self assert: (sequence statements last value isKindOf: FogEVMAstStorageLoad).
+	self assert: sequence statements first variable equals: sequence statements last value address.
+	self assert: sequence statements last value amount read equals: FogEVMAbstractInterpreter wordSize.
+	self assert: decompiler scope stack size equals: 1.
+	self assert: decompiler scope stack pop equals: sequence statements last variable
 ]
 
 { #category : #test }
 FogEVMDecompileLoadStoreTest >> testSSTORE [
-	| bytecode |
-	"should test over 
-		func opSstore(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	loc := common.BigToHash(stack.pop())
-	val := stack.pop()
-	interpreter.evm.StateDB.SetState(contract.Address(), loc, common.BigToHash(val))
-
-	interpreter.intPool.put(val)
-	return"
-	bytecode := self createBytecodeForSSTORE: value at: memoryStart.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack isEmpty.
-	self
-		assert:
-			((interpreter storageFor: interpreter currentActivation contractAddress )
-				getStorageAt: (FogEVMRegistry forValue: memoryStart bytesLength: 32))
-				unsignedValue 
-		equals: value
+	| sequence |
+	"SSTORE(Value, Address)->
+	  sequence + 
+	   value := Value.
+	   address := Address.
+	   MemoryStore(value, address).
+	  stack + 
+	"
+	sequence := self decompile: (self createBytecodeForSSTORE: value at: memoryStart).
+	self assert: sequence statements size equals: 3.
+	self assert: sequence instructions size equals: 4.
+	self assert: decompiler scope stack isEmpty.
+	self assert: (sequence statements last isKindOf: FogEVMAstStorageStore).
+	self assert: sequence statements last address equals: sequence statements second variable.
+	self assert: sequence statements last value equals: sequence statements first variable
 ]

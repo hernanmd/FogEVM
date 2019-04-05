@@ -1,139 +1,88 @@
 Class {
 	#name : #FogEVMDecompileLogicGateTest,
 	#superclass : #FogEVMUnitaryTest,
+	#traits : 'DecompilerAssertions',
+	#classTraits : 'DecompilerAssertions classTrait',
 	#category : #'FogEVM-Decompiler-Tests'
 }
 
 { #category : #test }
 FogEVMDecompileLogicGateTest >> testAND [
-	| bytecode |
-	"should test over 
-		func opAnd(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.pop()
-	stack.push(x.And(x, y))
-
-	interpreter.intPool.put(y)
-	return ni"
-	bytecode := self createBytecodeForAND: 1 and: 1.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 1.
-	bytecode := self createBytecodeForAND: 1 and: 0.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 0.
-	bytecode := self createBytecodeForAND: 0 and: 1.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 0.
-	bytecode := self createBytecodeForAND: 0 and: 0.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 0
+	| sequence |
+	"AND(A,B)->
+	  sequence +
+	    a := A.
+		 b := B.
+		 value := a and: b
+	  stack + 
+	    value
+	"
+	sequence := self decompile: (self createBytecodeForAND: '0x1' and: '0x1').
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #and:
 ]
 
 { #category : #test }
 FogEVMDecompileLogicGateTest >> testISZERO [
-	| bytecode |
-	"should test over 
-		func opIszero(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x := stack.peek()
-	if x.Sign() > 0 {
-		x.SetUint64(0)
-	} else {
-		x.SetUint64(1)
-	}
-	return"
-	bytecode := self createBytecodeForISZERO: 1.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 0.
-	bytecode := self createBytecodeForISZERO: 0.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 1
+	| sequence |
+	"ISZERO(A)->
+	  sequence +
+	    a := A.
+		 value := a = 0
+	  stack + 
+	    value
+	"
+	sequence := self decompile: (self createBytecodeForISZERO: '0x1').
+	self assert: sequence statements size equals: 2.
+	self assert: sequence instructions size equals: 3.
+	self assertIsBinaryOperation: sequence statements last value selector: #equals:.
+	self assert: decompiler scope stack size equals: 1.
+	self assert: decompiler scope stack pop equals: sequence statements last variable
 ]
 
 { #category : #test }
 FogEVMDecompileLogicGateTest >> testNOT [
-	| bytecode |
-	"should test over 
-		func opNot(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x := stack.peek()
-	math.U256(x.Not(x))
-	return ni"
-	bytecode := self createBytecodeForNOT: 1.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	
-	self assert: interpreter stack pop unsignedValue equals: 16rFE.
-	
-	bytecode := self createBytecodeForNOT: 0.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 16rFF
+	| sequence |
+	"NOT(A) ->
+	 sequence +
+     a := A.
+     notA := a negated.
+	 stack +
+	  notA
+   "
+	sequence := self decompile: (self createBytecodeForNOT: '0x1').
+	self assert: sequence instructions size equals: 3.
+	self assert: sequence statements size equals: 2.
+	sequence statements do: [ :s | self assertIsAssignment: s ].
+	self assertIsMessageSend: sequence statements last value.
+	self assert: sequence statements first variable equals: sequence statements last value receiver
 ]
 
 { #category : #test }
 FogEVMDecompileLogicGateTest >> testOR [
-		|  bytecode  |
-		
-		"should test over 
-		func opOr(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	y.Or(x, y)
-
-	interpreter.intPool.put(x)
-	return nil"
-	bytecode := self createBytecodeForOR: 1 and: 1.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 1.
-	
-	bytecode := self createBytecodeForOR: 1 and: 0.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 1.
-	
-	bytecode := self createBytecodeForOR: 0 and: 1.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 1.
-	
-	bytecode := self createBytecodeForOR: 0 and: 0.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 0
+	| sequence |
+	"OR(A,B)->
+	  sequence +
+	    a := A.
+		 b := B.
+		 value := a or: b
+	  stack + 
+	    value
+	"
+	sequence := self decompile: (self createBytecodeForOR: '0x1' and: '0x1').
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #or:
 ]
 
 { #category : #test }
 FogEVMDecompileLogicGateTest >> testXOR [
-		|  bytecode  |
-		
-		"should test over 
-		func opXor(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	x, y := stack.pop(), stack.peek()
-	y.Xor(x, y)
-
-	interpreter.intPool.put(x)
-	return ni"
-	bytecode := self createBytecodeForXOR: 1 and: 1.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 0.
-	
-	bytecode := self createBytecodeForXOR: 1 and: 0.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 1.
-	
-	bytecode := self createBytecodeForXOR: 0 and: 1.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 1.
-	
-	bytecode := self createBytecodeForXOR: 0 and: 0.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 0
+		| sequence |
+	"XOR(A,B)->
+	  sequence +
+	    a := A.
+		 b := B.
+		 value := a xor: b
+	  stack + 
+	    value
+	"
+	sequence := self decompile: (self createBytecodeForXOR: '0x1' and: '0x0').
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #xor:
 ]

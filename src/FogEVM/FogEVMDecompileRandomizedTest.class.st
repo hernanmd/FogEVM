@@ -17,43 +17,9 @@ FogEVMDecompileRandomizedTest class >> testParameters [
 	^ ParametrizedTestMatrix new forSelector: #generator addOptions: ((Integer primesUpTo: 512) collect: [ :p | Random seed: p ])
 ]
 
-{ #category : #asserting }
+{ #category : #'as yet unclassified' }
 FogEVMDecompileRandomizedTest >> assertIsBinaryOperationBytecode: sequence  selector: aSelector [
   ^ self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: aSelector
-]
-
-{ #category : #asserting }
-FogEVMDecompileRandomizedTest >> assertIsBinaryOperationBytecode: sequence stack: stack selector: aSelector [
-   "BYTECODE(A,B)->
-	  sequence +
-	    a := A.
-		 b := B.
-		 addition := a OP b
-	  stack + 
-	    addition
-	"
-	self assert: sequence statements size equals: 3.
-	self assert: sequence instructions size equals: 4.
-	self assertIsBinaryOperation: sequence statements last value selector: aSelector.
-	self assert: stack size equals: 1.
-	self assert: stack pop equals: sequence statements last variable
-]
-
-{ #category : #asserting }
-FogEVMDecompileRandomizedTest >> assertIsUnaryMessageSendBytecode: sequence stack: stack selector: aSelector [
-   "BYTECODE(A,B)->
-	  sequence +
-	    a := A.
-		 b := B.
-		 addition := a OP b
-	  stack + 
-	    addition
-	"
-	self assert: sequence statements size equals: 3.
-	self assert: sequence instructions size equals: 4.
-	self assertIsUnaryMessageSend: sequence statements last value selector: aSelector.
-	self assert: stack size equals: 1.
-	self assert: stack pop equals: sequence statements last variable
 ]
 
 { #category : #test }
@@ -78,7 +44,7 @@ FogEVMDecompileRandomizedTest >> testADD [
 	    addition
 	"
 	sequence := self decompile: (self createBytecodeForADD: x plus: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #+.
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #plus:.
 
 
 ]
@@ -102,9 +68,10 @@ FogEVMDecompileRandomizedTest >> testADDMOD [
 	self assert: sequence statements size equals: 5.
 	self assert: sequence instructions size equals: 5.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
-	self assertIsBinaryOperation: sequence statements fourth value selector: #+.
-	self assertIsBinaryOperation: sequence statements last value selector: #mod.
-	self assert: sequence statements last value receiver equals: sequence statements last value.
+	self assertIsBinaryOperation: sequence statements fourth value selector: #plus:.
+	self assertIsBinaryOperation: sequence statements last value selector: #mod:.
+	
+	self assert: sequence statements last value receiver equals: sequence statements fourth variable.
 	self assert: decompiler scope stack size equals: 1.
 	self assert: decompiler scope stack pop equals: sequence statements last variable.
 	
@@ -140,7 +107,7 @@ FogEVMDecompileRandomizedTest >> testDIV [
 	"
 	y := Hexadecimal new  write0xHexadecimal: ((Hexadecimal new readHexadecimal:  y) max: 1).
 	sequence := self decompile: (self createBytecodeForDIV: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #/
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #divide:
 ]
 
 { #category : #'test binary op bytecode' }
@@ -155,7 +122,7 @@ FogEVMDecompileRandomizedTest >> testEQ [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForEQ: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #=
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #equals:
 ]
 
 { #category : #'test binary op bytecode' }
@@ -170,7 +137,7 @@ FogEVMDecompileRandomizedTest >> testEXP [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForEXP: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #**
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #power:
 	
 ]
 
@@ -186,7 +153,7 @@ FogEVMDecompileRandomizedTest >> testGT [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForGT: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #>
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #greaterThan:
 ]
 
 { #category : #'test binary op bytecode' }
@@ -201,7 +168,7 @@ FogEVMDecompileRandomizedTest >> testLT [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForLT: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #<
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #lesserThan:
 		
 ]
 
@@ -217,7 +184,7 @@ FogEVMDecompileRandomizedTest >> testMOD [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForMOD: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #mod
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #mod:
 ]
 
 { #category : #'test binary op bytecode' }
@@ -232,7 +199,7 @@ FogEVMDecompileRandomizedTest >> testMUL [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForMUL: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #*
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #multiply:
 ]
 
 { #category : #test }
@@ -249,16 +216,18 @@ FogEVMDecompileRandomizedTest >> testMULMOD [
 	 stack +
 	  summod
 	"
-	sequence := self decompile: (self createBytecodeForMULMOD: x and: y and: z).
+sequence := self decompile: (self createBytecodeForMULMOD: x and: y and: z).
 	
 	self assert: sequence statements size equals: 5.
 	self assert: sequence instructions size equals: 5.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
-	self assertIsBinaryOperation: sequence statements fourth value selector: #*.
-	self assertIsBinaryOperation: sequence statements last value selector: #mod.
-	self assert: sequence statements last value receiver equals: sequence statements last value.
+	self assertIsBinaryOperation: sequence statements fourth value selector: #multiply:.
+	self assertIsBinaryOperation: sequence statements last value selector: #mod:.
+	
+	self assert: sequence statements last value receiver equals: sequence statements fourth variable.
 	self assert: decompiler scope stack size equals: 1.
 	self assert: decompiler scope stack pop equals: sequence statements last variable.
+	
 	
 ]
 
@@ -293,7 +262,7 @@ FogEVMDecompileRandomizedTest >> testSAR [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForSAR: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #sar
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #sar:
 ]
 
 { #category : #'test binary op bytecode' }
@@ -308,7 +277,7 @@ FogEVMDecompileRandomizedTest >> testSDIV [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForSDIV: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #sdiv
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #signedDivision:
 ]
 
 { #category : #'test binary op bytecode' }
@@ -323,7 +292,7 @@ FogEVMDecompileRandomizedTest >> testSGT [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForSGT: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #sgt
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #signedGreaterThan:
 ]
 
 { #category : #'test binary op bytecode' }
@@ -338,7 +307,7 @@ FogEVMDecompileRandomizedTest >> testSHL [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForSHL: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #<<
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #shiftLeft:
 ]
 
 { #category : #'test binary op bytecode' }
@@ -353,44 +322,25 @@ FogEVMDecompileRandomizedTest >> testSHR [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForSHR: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #>>
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #shiftRight:
 	
 ]
 
 { #category : #test }
 FogEVMDecompileRandomizedTest >> testSIGNEXTEND [
-	| bytecode |
+	| sequence |
 	"
-	
-	should test over 
-		func opSignExtend(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	back := stack.pop()
-	if back.Cmp(big.NewInt(31)) < 0 {
-		bit := uint(back.Uint64()*8 + 7)
-		num := stack.pop()
-		mask := back.Lsh(common.Big1, bit)
-		mask.Sub(mask, common.Big1)
-		if num.Bit(int(bit)) > 0 {
-			num.Or(num, mask.Not(mask))
-		} else {
-			num.And(num, mask)
-		}
-
-		stack.push(math.U256(num))
-	}
-
-	interpreter.intPool.put(back)
-	re"
-	z := (generator nextInt: 30) + 1.
-	bytecode := self createBytecodeForSIGNEXTEND: y negated  to: z.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop signedValue equals: y negated.
-	
-
-
-
-
+	SIGNEXTEND(VALUE, LENGTH) ->
+	 sequence + 
+	  value := VALUE. 
+	  length := LENGTH.
+	  extendedValue := value extend: length.
+	 stack + 
+	  extendedValue. 
+	"
+	z := Hexadecimal new write0xHexadecimal: (generator nextInt: 30) + 1.
+	sequence := self decompile: (self createBytecodeForSIGNEXTEND: y of: 16 to: z).
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #extendRepresentationTo:
 ]
 
 { #category : #'test binary op bytecode' }
@@ -405,7 +355,7 @@ FogEVMDecompileRandomizedTest >> testSLT [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForSLT: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #signedLesserThan
+	self assertIsUnaryMessageSendBytecode: sequence stack: decompiler scope stack selector: #signedIsLesserThan:
 	
 	
 ]
@@ -422,7 +372,7 @@ FogEVMDecompileRandomizedTest >> testSMOD [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForSMOD: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #smod
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #signedMod:
 	
 ]
 
@@ -438,5 +388,5 @@ FogEVMDecompileRandomizedTest >> testSUB [
 	    value
 	"
 	sequence := self decompile: (self createBytecodeForSUB: x and: y).
-	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #-
+	self assertIsBinaryOperationBytecode: sequence stack: decompiler scope stack selector: #minus:
 ]

@@ -1,190 +1,160 @@
 Class {
 	#name : #FogEVMDecompileTransactionLogTest,
 	#superclass : #FogEVMUnitaryTest,
+	#traits : 'DecompilerAssertions',
+	#classTraits : 'DecompilerAssertions classTrait',
 	#category : #'FogEVM-Decompiler-Tests'
 }
 
 { #category : #test }
 FogEVMDecompileTransactionLogTest >> testLOG0 [
-	| bytecode |
-	"should test over 
-		func makeLog(size int) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		topics := make([]common.Hash, size)
-		mStart, mSize := stack.pop(), stack.pop()
-		for i := 0; i < size; i++ {
-			topics[i] = common.BigToHash(stack.pop())
-		}
+	| sequence |
+	"
+	LOG0(MessageAddress, MessageSize, Topic [0..{i}]) ->
+	  sequence +
+	    msgAddress := MessageAddress.
+	    msgSize := MessageSize.
+	    msg := MemoryLoad(msgAddress, msgSize);
+	    topic0 := Topic[0].
+	    ...
+		 topic{i} := Topic[{i}].
+		 log := Log(msg, topic0 .. topic{i}).
+	  stack + 
+   "
+	sequence := self decompile: (self createBytecodeForLOG: 0 memory: '0x1' size: '0x10').
+	self assert: sequence statements size equals: 4 + 0.
+	self assert: sequence instructions size equals: 4 + 0.
+	sequence statements do: [ :s | self assertIsAssignment: s ].
+	self assert: (sequence statements third value isKindOf: FogEVMAstMemoryLoad).
+	self assert: sequence statements second variable equals: sequence statements third value fromAddress.
+	self assert: sequence statements first variable equals: sequence statements third value amountOfBytes.
+	self assert: (sequence statements last value isKindOf: FogEVMAstLog).
+	self assert: sequence statements last value topics size equals: 0.
+	self assert: sequence statements last value message equals: sequence statements third variable.
+	
 
-		d := memory.Get(mStart.Int64(), mSize.Int64())
-		interpreter.evm.StateDB.AddLog(&types.Log{
-			Address: contract.Address(),
-			Topics:  topics,
-			Data:    d,
-			// This is a non-consensus field, but assigned here because
-			// core/state doesnt know the current block number.
-			BlockNumber: interpreter.evm.BlockNumber.Uint64(),
-		})
 
-		interpreter.intPool.put(mStart, mSize)
-		return nil, nil
-	}
-}
 
-// ma"
-	bytecode := self createBytecodeForLOG: 0 memory: 1 size: 10.
-	interpreter bytecode: bytecode.
-	interpreter memory store: 'hola mundo' asByteArray at: 1 ensure: 10.
-	interpreter run.
-	self assert: interpreter logs isNotEmpty.
-	1 to: 0 do: [ :i | self assert: (interpreter logs first topics at: i) unsignedValue equals: i ].
-	self assert: interpreter logs first content equals: 'hola mundo' asByteArray
+
+
 ]
 
-{ #category : #test }
+{ #category : #'test - LOG' }
 FogEVMDecompileTransactionLogTest >> testLOG1 [
-	| bytecode |
-	"should test over 
-		func makeLog(size int) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		topics := make([]common.Hash, size)
-		mStart, mSize := stack.pop(), stack.pop()
-		for i := 0; i < size; i++ {
-			topics[i] = common.BigToHash(stack.pop())
-		}
+| sequence |
+	"
+	LOG1(MessageAddress, MessageSize, Topic [0..1]) ->
+	  sequence +
+	    msgAddress := MessageAddress.
+	    msgSize := MessageSize.
+	    msg := MemoryLoad(msgAddress, msgSize);
+	    topic0 := Topic[0].
+	    ...
+		 topic1 := Topic[1].
+		 log := Log(msg, topic0 .. topic1).
+	  stack + 
+   "
+	sequence := self decompile: (self createBytecodeForDecompileLOG: 1 memory: 1 write0xHexadecimal size: 10 write0xHexadecimal).
+	self assert: sequence statements size equals: 4 + 1.
+	self assert: sequence instructions size equals: 4 + 1.
+	sequence statements do: [ :s | self assertIsAssignment: s ].
 
-		d := memory.Get(mStart.Int64(), mSize.Int64())
-		interpreter.evm.StateDB.AddLog(&types.Log{
-			Address: contract.Address(),
-			Topics:  topics,
-			Data:    d,
-			// This is a non-consensus field, but assigned here because
-			// core/state doesnt know the current block number.
-			BlockNumber: interpreter.evm.BlockNumber.Uint64(),
-		})
+	self assert: (sequence statements nextToLast value isKindOf: FogEVMAstMemoryLoad).
+	self assert: (sequence statements at: 2 + 1) variable equals: sequence statements nextToLast value fromAddress.
+	self assert: (sequence statements at: 1 + 1) variable equals: sequence statements nextToLast value amountOfBytes.
+	self assert: (sequence statements last value isKindOf: FogEVMAstLog).
+	self assert: sequence statements last value topics size equals: 1.
+	self assert: sequence statements last value message equals: sequence statements nextToLast variable.
+	
 
-		interpreter.intPool.put(mStart, mSize)
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForLOG: 1 memory: 1 size: 10.
-	interpreter bytecode: bytecode.
-	interpreter memory store: 'hola mundo' asByteArray at: 1 ensure: 10.
-	interpreter run.
-	self assert: interpreter logs isNotEmpty.
-	1 to: 1 do: [ :i | self assert: (interpreter logs first topics at: i) unsignedValue equals: i ].
-	self assert: interpreter logs first content equals: 'hola mundo' asByteArray
 ]
 
-{ #category : #test }
+{ #category : #'test - LOG' }
 FogEVMDecompileTransactionLogTest >> testLOG2 [
-	| bytecode |
-	"should test over 
-		func makeLog(size int) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		topics := make([]common.Hash, size)
-		mStart, mSize := stack.pop(), stack.pop()
-		for i := 0; i < size; i++ {
-			topics[i] = common.BigToHash(stack.pop())
-		}
+| sequence |
+	"
+	LOG2(MessageAddress, MessageSize, Topic [0..2]) ->
+	  sequence +
+	    msgAddress := MessageAddress.
+	    msgSize := MessageSize.
+	    msg := MemoryLoad(msgAddress, msgSize);
+	    topic0 := Topic[0].
+	    ...
+		 topic2 := Topic[2].
+		 log := Log(msg, topic0 .. topic2).
+	  stack + 
+   "
+	sequence := self decompile: (self createBytecodeForDecompileLOG: 2 memory: 1 write0xHexadecimal size: 10 write0xHexadecimal).
+	self assert: sequence statements size equals: 4 + 2.
+	self assert: sequence instructions size equals: 4 + 2.
+	sequence statements do: [ :s | self assertIsAssignment: s ].
 
-		d := memory.Get(mStart.Int64(), mSize.Int64())
-		interpreter.evm.StateDB.AddLog(&types.Log{
-			Address: contract.Address(),
-			Topics:  topics,
-			Data:    d,
-			// This is a non-consensus field, but assigned here because
-			// core/state doesnt know the current block number.
-			BlockNumber: interpreter.evm.BlockNumber.Uint64(),
-		})
+	self assert: (sequence statements nextToLast value isKindOf: FogEVMAstMemoryLoad).
+	self assert: (sequence statements at: 2 + 2) variable equals: sequence statements nextToLast value fromAddress.
+	self assert: (sequence statements at: 1 + 2) variable equals: sequence statements nextToLast value amountOfBytes.
+	self assert: (sequence statements last value isKindOf: FogEVMAstLog).
+	self assert: sequence statements last value topics size equals: 2.
+	self assert: sequence statements last value message equals: sequence statements nextToLast variable.
+	
 
-		interpreter.intPool.put(mStart, mSize)
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForLOG: 2 memory: 1 size: 10.
-	interpreter bytecode: bytecode.
-	interpreter memory store: 'hola mundo' asByteArray at: 1 ensure: 10.
-	interpreter run.
-	self assert: interpreter logs isNotEmpty.
-	1 to: 2 do: [ :i | self assert: (interpreter logs first topics at: i) unsignedValue equals: i ].
-	self assert: interpreter logs first content equals: 'hola mundo' asByteArray
 ]
 
-{ #category : #test }
+{ #category : #'test - LOG' }
 FogEVMDecompileTransactionLogTest >> testLOG3 [
-	| bytecode |
-	"should test over 
-		func makeLog(size int) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		topics := make([]common.Hash, size)
-		mStart, mSize := stack.pop(), stack.pop()
-		for i := 0; i < size; i++ {
-			topics[i] = common.BigToHash(stack.pop())
-		}
+| sequence |
+	"
+	LOG3(MessageAddress, MessageSize, Topic [0..3]) ->
+	  sequence +
+	    msgAddress := MessageAddress.
+	    msgSize := MessageSize.
+	    msg := MemoryLoad(msgAddress, msgSize);
+	    topic0 := Topic[0].
+	    ...
+		 topic3 := Topic[3].
+		 log := Log(msg, topic0 .. topic3).
+	  stack + 
+   "
+	sequence := self decompile: (self createBytecodeForDecompileLOG: 3 memory: 1 write0xHexadecimal size: 10 write0xHexadecimal).
+	self assert: sequence statements size equals: 4 + 3.
+	self assert: sequence instructions size equals: 4 + 3.
+	sequence statements do: [ :s | self assertIsAssignment: s ].
 
-		d := memory.Get(mStart.Int64(), mSize.Int64())
-		interpreter.evm.StateDB.AddLog(&types.Log{
-			Address: contract.Address(),
-			Topics:  topics,
-			Data:    d,
-			// This is a non-consensus field, but assigned here because
-			// core/state doesnt know the current block number.
-			BlockNumber: interpreter.evm.BlockNumber.Uint64(),
-		})
+	self assert: (sequence statements nextToLast value isKindOf: FogEVMAstMemoryLoad).
+	self assert: (sequence statements at: 2 + 3) variable equals: sequence statements nextToLast value fromAddress.
+	self assert: (sequence statements at: 1 + 3) variable equals: sequence statements nextToLast value amountOfBytes.
+	self assert: (sequence statements last value isKindOf: FogEVMAstLog).
+	self assert: sequence statements last value topics size equals: 3.
+	self assert: sequence statements last value message equals: sequence statements nextToLast variable.
+	
 
-		interpreter.intPool.put(mStart, mSize)
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForLOG: 3 memory: 1 size: 10.
-	interpreter bytecode: bytecode.
-	interpreter memory store: 'hola mundo' asByteArray at: 1 ensure: 10.
-	interpreter run.
-	self assert: interpreter logs isNotEmpty.
-	1 to: 3 do: [ :i | self assert: (interpreter logs first topics at: i) unsignedValue equals: i ].
-	self assert: interpreter logs first content equals: 'hola mundo' asByteArray
 ]
 
-{ #category : #test }
+{ #category : #'test - LOG' }
 FogEVMDecompileTransactionLogTest >> testLOG4 [
-	| bytecode |
-	"should test over 
-		func makeLog(size int) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		topics := make([]common.Hash, size)
-		mStart, mSize := stack.pop(), stack.pop()
-		for i := 0; i < size; i++ {
-			topics[i] = common.BigToHash(stack.pop())
-		}
+| sequence |
+	"
+	LOG4(MessageAddress, MessageSize, Topic [0..4]) ->
+	  sequence +
+	    msgAddress := MessageAddress.
+	    msgSize := MessageSize.
+	    msg := MemoryLoad(msgAddress, msgSize);
+	    topic0 := Topic[0].
+	    ...
+		 topic4 := Topic[4].
+		 log := Log(msg, topic0 .. topic4).
+	  stack + 
+   "
+	sequence := self decompile: (self createBytecodeForDecompileLOG: 4 memory: 1 write0xHexadecimal size: 10 write0xHexadecimal).
+	self assert: sequence statements size equals: 4 + 4.
+	self assert: sequence instructions size equals: 4 + 4.
+	sequence statements do: [ :s | self assertIsAssignment: s ].
 
-		d := memory.Get(mStart.Int64(), mSize.Int64())
-		interpreter.evm.StateDB.AddLog(&types.Log{
-			Address: contract.Address(),
-			Topics:  topics,
-			Data:    d,
-			// This is a non-consensus field, but assigned here because
-			// core/state doesnt know the current block number.
-			BlockNumber: interpreter.evm.BlockNumber.Uint64(),
-		})
+	self assert: (sequence statements nextToLast value isKindOf: FogEVMAstMemoryLoad).
+	self assert: (sequence statements at: 2 + 4) variable equals: sequence statements nextToLast value fromAddress.
+	self assert: (sequence statements at: 1 + 4) variable equals: sequence statements nextToLast value amountOfBytes.
+	self assert: (sequence statements last value isKindOf: FogEVMAstLog).
+	self assert: sequence statements last value topics size equals: 4.
+	self assert: sequence statements last value message equals: sequence statements nextToLast variable.
+	
 
-		interpreter.intPool.put(mStart, mSize)
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForLOG: 4 memory: 1 size: 10.
-	interpreter bytecode: bytecode.
-	interpreter memory store: 'hola mundo' asByteArray at: 1 ensure: 10.
-	interpreter run.
-	self assert: interpreter logs isNotEmpty.
-	1 to: 4 do: [ :i | self assert: (interpreter logs first topics at: i) unsignedValue equals: i ].
-	self assert: interpreter logs first content equals: 'hola mundo' asByteArray
 ]

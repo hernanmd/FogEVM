@@ -13,6 +13,14 @@ FogEVMDecompileStackOpsTest >> assert: sequence dups: anInteger [
 ]
 
 { #category : #generated }
+FogEVMDecompileStackOpsTest >> assert: sequence swaps: anInt [
+	self assert: sequence statements size equals: 1 + anInt.
+	self assert: sequence instructions size equals: 3 + anInt.
+	self assert: sequence statements first variable equals: decompiler scope stack first .
+	self assert: sequence statements last variable equals: decompiler scope stack last
+]
+
+{ #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP1 [
 	| sequence |
 	"
@@ -29,572 +37,447 @@ FogEVMDecompileStackOpsTest >> testDUP1 [
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP10 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForDUP10.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 10
-			
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP10.
+	self assert: sequence dups:10.
 
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP11 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP11.
+	self assert: sequence dups:11.
 
-// ma"
-	bytecode := self createBytecodeForDUP11.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 11
-			
 
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP12 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP12.
+	self assert: sequence dups:12.
 
-// ma"
-	bytecode := self createBytecodeForDUP12.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 12
-			
-
+	
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP13 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForDUP13.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 13
-			
-
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP13.
+	self assert: sequence dups: 13
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP14 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP14.
+	self assert: sequence dups:14.
 
-// ma"
-	bytecode := self createBytecodeForDUP14.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 14
-			
 
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP15 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForDUP15.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 15
-			
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP15.
+	self assert: sequence dups:15.
 
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP16 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForDUP16.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 16
-			
+		| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP16.
+	self assert: sequence dups:16.
 
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP2 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForDUP2.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 2
-			
-
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP2.
+	self assert: sequence dups: 2
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP3 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForDUP3.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 3
-			
-
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP3.
+	self assert: sequence dups: 3
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP4 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP4.
+	self assert: sequence dups:4.
 
-// ma"
-	bytecode := self createBytecodeForDUP4.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 4
 			
 
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP5 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForDUP5.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 5
-			
-
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP5.
+	self assert: sequence dups: 5
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP6 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForDUP6.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 6
-			
+		| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP6.
+	self assert: sequence dups:6.
 
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP7 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForDUP7.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 7
-			
-
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP7.
+	self assert: sequence dups: 7
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP8 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForDUP8.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 8
-			
-
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP8.
+	self assert: sequence dups: 8
 ]
 
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> testDUP9 [
-	| bytecode |
-	"should test over 
-		func makeDup(size int64) executionFunc {
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.dup(interpreter.intPool, int(size))
-		return nil, nil
-	}
-}
-
-// ma"
-	bytecode := self createBytecodeForDUP9.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 9
-			
-
+	| sequence |
+	"
+	DUP1(V)
+	 sequence +
+	 stack +
+	  V
+	
+	"
+	sequence := self decompile: self createBytecodeForDUP9.
+	self assert: sequence dups: 9
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP1 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP1.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 2
-
+	| sequence |
+	"
+	SWAP11
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[1] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP1.
+	self assert: sequence swaps: 1.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP10 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP10.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 11
-
+	| sequence |
+	"
+	SWAP110
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[10] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP10.
+	self assert: sequence swaps: 10.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP11 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP11.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 12
-
+	| sequence |
+	"
+	SWAP111
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[11] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP11.
+	self assert: sequence swaps: 11.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP12 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP12.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 13
-
+	| sequence |
+	"
+	SWAP112
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[12] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP12.
+	self assert: sequence swaps: 12.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP13 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP13.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 14
-
+	| sequence |
+	"
+	SWAP113
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[13] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP13.
+	self assert: sequence swaps: 13.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP14 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP14.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 15
-
+	| sequence |
+	"
+	SWAP114
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[14] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP14.
+	self assert: sequence swaps: 14.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP15 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP15.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 16
-
+	| sequence |
+	"
+	SWAP115
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[15] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP15.
+	self assert: sequence swaps: 15.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP16 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP16.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 17
-
+	| sequence |
+	"
+	SWAP116
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[16] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP16.
+	self assert: sequence swaps: 16.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP2 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP2.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 3
-
+	| sequence |
+	"
+	SWAP12
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[2] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP2.
+	self assert: sequence swaps: 2.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP3 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP3.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 4
-
+	| sequence |
+	"
+	SWAP13
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[3] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP3.
+	self assert: sequence swaps: 3.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP4 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP4.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 5
-
+	| sequence |
+	"
+	SWAP14
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[4] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP4.
+	self assert: sequence swaps: 4.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP5 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP5.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 6
-
+	| sequence |
+	"
+	SWAP15
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[5] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP5.
+	self assert: sequence swaps: 5.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP6 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP6.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 7
-
+	| sequence |
+	"
+	SWAP16
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[6] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP6.
+	self assert: sequence swaps: 6.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP7 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP7.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 8
-
+	| sequence |
+	"
+	SWAP17
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[7] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP7.
+	self assert: sequence swaps: 7.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP8 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP8.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 9
-
+	| sequence |
+	"
+	SWAP18
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[8] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP8.
+	self assert: sequence swaps: 8.
 ]
 
-{ #category : #generated }
+{ #category : #'test swap' }
 FogEVMDecompileStackOpsTest >> testSWAP9 [
-	| bytecode |
-	"should test over 
-		func makeSwap(size int64) executionFunc {
-	// switch n + 1 otherwise n would be swapped with n
-	size++
-	return func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-		stack.swap(int(size))
-		"
-	bytecode := self createBytecodeForSWAP9.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: interpreter stack pop unsignedValue equals: 10
-
+	| sequence |
+	"
+	SWAP19
+	 sequence +
+	 stack +
+	dstack
+	  v[1] <=> v[9] 
+	"
+	sequence := self decompile: self createBytecodeForSWAP9.
+	self assert: sequence swaps: 9.
 ]

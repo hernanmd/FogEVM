@@ -60,7 +60,7 @@ FogVMPush1 class >> mnemonic [
 ]
 
 { #category : #'as yet unclassified' }
-FogVMPush1 >> initialize [ 
-		super initialize.
-		bytes := 1
+FogVMPush1 >> initialize [
+	super initialize.
+	bytes := 1
 ]

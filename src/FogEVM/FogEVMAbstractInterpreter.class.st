@@ -16,6 +16,11 @@ Class {
 	#category : #'FogEVM-ByteCode-Interpreter'
 }
 
+{ #category : #'as yet unclassified' }
+FogEVMAbstractInterpreter class >> byteSize [ 
+	^ 1
+]
+
 { #category : #test }
 FogEVMAbstractInterpreter class >> creationCall [
 	| call |

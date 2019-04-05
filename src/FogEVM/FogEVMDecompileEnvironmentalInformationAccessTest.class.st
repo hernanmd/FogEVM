@@ -6,11 +6,6 @@ Class {
 	#category : #'FogEVM-Decompiler-Tests'
 }
 
-{ #category : #assertion }
-FogEVMDecompileEnvironmentalInformationAccessTest >> assertIsMemoryWrite: aFogEVMAstMemoryStore [
-	self assert: (aFogEVMAstMemoryStore isKindOf: FogEVMAstMemoryStore)
-]
-
 { #category : #'three parameters globals' }
 FogEVMDecompileEnvironmentalInformationAccessTest >> decompiler [
 	^ decompiler

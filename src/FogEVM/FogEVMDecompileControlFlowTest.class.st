@@ -55,7 +55,7 @@ FogEVMDecompileControlFlowTest >> testJUMPI [
 	self assertIsAssignment: conditionalSequence statements first.
 	self assertIsAssignment: conditionalSequence statements second.
 	self assertIsAssignment: conditionalSequence statements last.
-	self assertIsBinaryOperation: conditionalSequence statements last value selector: #+.
+	self assertIsBinaryOperation: conditionalSequence statements last value selector: #plus:.
 	self assert: sequence statements last scope stack size equals: 1.
 	self assert: sequence statements last scope stack pop equals: conditionalSequence statements last variable
 ]

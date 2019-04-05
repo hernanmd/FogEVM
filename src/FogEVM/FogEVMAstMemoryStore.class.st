@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'address',
 		'value',
-		'isByteStore'
+		'isByteStore',
+		'amount'
 	],
 	#category : #'FogEVM-DecompilerAST'
 }
@@ -25,13 +26,13 @@ FogEVMAstMemoryStore >> address: aFogEVMAstVariable [
 ]
 
 { #category : #accessing }
-FogEVMAstMemoryStore >> isByteStore [
-	^ isByteStore ifNil: [ false ]
+FogEVMAstMemoryStore >> amount [
+	^ amount
 ]
 
 { #category : #accessing }
-FogEVMAstMemoryStore >> isByteStore: aValue [
-	isByteStore := aValue
+FogEVMAstMemoryStore >> amount: anAmount [
+	amount := anAmount
 ]
 
 { #category : #printing }

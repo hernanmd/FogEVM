@@ -2,7 +2,8 @@ Class {
 	#name : #FogEVMAstStorageLoad,
 	#superclass : #FogEVMAstNode,
 	#instVars : [
-		'address'
+		'address',
+		'amount'
 	],
 	#category : #'FogEVM-DecompilerAST'
 }
@@ -22,10 +23,19 @@ FogEVMAstStorageLoad >> address: aFogEVMAstVariable [
 	address := aFogEVMAstVariable
 ]
 
-{ #category : #testing }
-FogEVMAstStorageLoad >> isStorageAccess [ 
+{ #category : #accessing }
+FogEVMAstStorageLoad >> amount [
+	^ amount
+]
 
-	^ true 
+{ #category : #accessing }
+FogEVMAstStorageLoad >> amount: aFogEVMLiteral [
+	amount := aFogEVMLiteral
+]
+
+{ #category : #testing }
+FogEVMAstStorageLoad >> isStorageAccess [
+	^ true
 ]
 
 { #category : #printing }

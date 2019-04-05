@@ -105,14 +105,35 @@ DecompilerAssertions >> assertIsAssignment: aFogEVMAssignation [
 { #category : #assertions }
 DecompilerAssertions >> assertIsBinaryOperation: aFogAstNode selector: aSelector [ 
 	self assert: aFogAstNode isEVMMessageSend .
-	self assert: (aFogAstNode isKindOf: FogEVMAstBinaryMessageSend).
 	self assert: aFogAstNode selector equals: aSelector.
 	self assert: aFogAstNode arguments size equals: 1.
 ]
 
 { #category : #asserting }
+DecompilerAssertions >> assertIsBinaryOperationBytecode: sequence stack: stack selector: aSelector [
+   "BYTECODE(A,B)->
+	  sequence +
+	    a := A.
+		 b := B.
+		 addition := a OP b
+	  stack + 
+	    addition
+	"
+	self assert: sequence statements size equals: 3.
+	self assert: sequence instructions size equals: 4.
+	self assertIsBinaryOperation: sequence statements last value selector: aSelector.
+	self assert: stack size equals: 1.
+	self assert: stack pop equals: sequence statements last variable
+]
+
+{ #category : #asserting }
 DecompilerAssertions >> assertIsLiteral: aFogEVMLiteral [
 	self assert: (aFogEVMLiteral isKindOf: FogEVMLiteral)
+]
+
+{ #category : #assertion }
+DecompilerAssertions >> assertIsMemoryWrite: aFogEVMAstMemoryStore [
+	self assert: (aFogEVMAstMemoryStore isKindOf: FogEVMAstMemoryStore)
 ]
 
 { #category : #asserting }
@@ -130,6 +151,23 @@ DecompilerAssertions >> assertIsUnaryMessageSend: aFogAstNode selector: aSelecto
 	self assert: aFogAstNode isEVMMessageSend .
 	self assert: aFogAstNode selector equals: aSelector.
 	self assert: aFogAstNode arguments size equals: 1.
+]
+
+{ #category : #asserting }
+DecompilerAssertions >> assertIsUnaryMessageSendBytecode: sequence stack: stack selector: aSelector [
+   "BYTECODE(A,B)->
+	  sequence +
+	    a := A.
+		 b := B.
+		 addition := a OP b
+	  stack + 
+	    addition
+	"
+	self assert: sequence statements size equals: 3.
+	self assert: sequence instructions size equals: 4.
+	self assertIsUnaryMessageSend: sequence statements last value selector: aSelector.
+	self assert: stack size equals: 1.
+	self assert: stack pop equals: sequence statements last variable
 ]
 
 { #category : #asserting }
