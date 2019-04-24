@@ -35,7 +35,7 @@ FogEVMAstScope >> getProcessedInstruction: anInstruction [
 { #category : #testing }
 FogEVMAstScope >> getProcessedInstruction: anInstruction ifNone: aBlock [
 	^ sequence statements
-		detect: [ :s | s instructions anySatisfy: [ :i |i = anInstruction] ]
+		detect: [ :s | s instructions anySatisfy: [ :i | i = anInstruction ] ]
 		ifNone: [ parent
 				ifNil: [ aBlock value ]
 				ifNotNil: [ parent getProcessedInstruction: anInstruction ifNone: aBlock ] ]

@@ -122,7 +122,9 @@ FogEVMIREthereumDecompiler >> getOrCreateJumpDestination [
 
 { #category : #testing }
 FogEVMIREthereumDecompiler >> isValidDestination: aFogEVMAstVariable [
-	^ (program detect: [ :b | b byteNumber = aFogEVMAstVariable read ] ifNone: [ ^ false ]) instruction
+	| read |
+	read := aFogEVMAstVariable read.
+	^ (program detect: [ :b | b byteNumber = read ] ifNone: [ ^ false ]) instruction
 		isValidJumpDestination
 ]
 
@@ -302,18 +304,19 @@ FogEVMIREthereumDecompiler >> trace [
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitAdd: aFogVMAdd [
 	| variable |
-	self visitNode: aFogVMAdd .
+	
 	variable := self
 		binaryMessageSend: #plus:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
+	self visitNode: aFogVMAdd .
 	self push: variable
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitAddmod: aFogVMAddmod [
 	| variable |
-	self visitNode: aFogVMAddmod.
+	
 	variable := self
 		binaryMessageSend: #plus:
 		receiver: (self literalOrVariable: self pop)
@@ -322,66 +325,78 @@ FogEVMIREthereumDecompiler >> visitAddmod: aFogVMAddmod [
 		binaryMessageSend: #mod:
 		receiver: variable
 		argument: (self literalOrVariable: self pop).
+	self visitNode: aFogVMAddmod.
 	self push: variable
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitAddress: aFogVMAddress [
-	self visitNode: aFogVMAddress.
-	self push: self runningContractAddress
+	self push: self runningContractAddress.
+	self visitNode: aFogVMAddress
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitAnd: aFogVMAnd [
 	| variable |
-	self visitNode: aFogVMAnd.
-	variable := self binaryMessageSend: #and: receiver: (self literalOrVariable: self pop) argument: (self literalOrVariable: self pop).
-	self push: variable
+	variable := self
+		binaryMessageSend: #and:
+		receiver: (self literalOrVariable: self pop)
+		argument: (self literalOrVariable: self pop).
+	self push: variable.
+	self visitNode: aFogVMAnd
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitBalance: aFogVMBalance [
 	| var |
-	self visitNode: aFogVMBalance.
 	var := self
 		messageSend: #balanceFor:
 		receiver: self runtimeGlobal
 		arguments: {(self literalOrVariable: self pop)}.
-	self push: var
+	self push: var.
+	self visitNode: aFogVMBalance
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitBlockhash: aFogVMBlockhash [
-	self visitNode: aFogVMBlockhash.
 	self
 		push:
 			(self
 				messageSend: #blockHashFor:
 				receiver: self runtimeGlobal
-				arguments: {(self literalOrVariable: self pop)})
+				arguments: {(self literalOrVariable: self pop)}).
+	self visitNode: aFogVMBlockhash
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitByte: aFogVMByte [
 	| chunk position |
-	self visitNode: aFogVMByte.
 	chunk := self literalOrVariable: self pop.
 	position := self literalOrVariable: self pop.
-	self push: (self messageSend: #at: receiver: chunk arguments: {position})
+	self push: (self messageSend: #at: receiver: chunk arguments: {position}).
+	self visitNode: aFogVMByte
 ]
 
 { #category : #calling }
 FogEVMIREthereumDecompiler >> visitCall: aFogVMCall [
 	| var call |
-	self visitNode: aFogVMCall.
 	call := FogEVMAstCall new.
 	call gas: (self literalOrVariable: self pop).
 	call address: (self literalOrVariable: self pop).
 	call money: (self literalOrVariable: self pop).
-	call input: (self memoryReadfrom: (self literalOrVariable: self pop) to: (self literalOrVariable: self pop)).
-	call output: (self memoryWriteAt: (self literalOrVariable: self pop) value: (self literalOrVariable: self pop)).
+	call
+		input:
+			(self
+				memoryReadfrom: (self literalOrVariable: self pop)
+				to: (self literalOrVariable: self pop)).
+	call
+		output:
+			(self
+				memoryWriteAt: (self literalOrVariable: self pop)
+				value: (self literalOrVariable: self pop)).
 	var := self messageSend: #output receiver: call arguments: {}.
-	self push: var
+	self push: var.
+	self visitNode: aFogVMCall
 
 
 	"^ '
@@ -418,128 +433,130 @@ func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitCalldatacopy: aFogVMCalldatacopy [
 	| memOffset dataOffset length var |
-	self visitNode: aFogVMCalldatacopy.
 	memOffset := self literalOrVariable: self pop.
 	dataOffset := self literalOrVariable: self pop.
 	length := self literalOrVariable: self pop.
 	var := self
 		messageSend: #readFrom:to:
-		receiver: (self calldata)
+		receiver: self calldata
 		arguments:
 			{dataOffset.
 			length}.
-	self scope sequence addStatement: (self memoryWriteAt: memOffset value: var)
+	self scope sequence addStatement: (self memoryWriteAt: memOffset value: var).
+	self visitNode: aFogVMCalldatacopy
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitCalldataload: aFogVMCalldataload [
 	| var |
-	self visitNode: aFogVMCalldataload.
-	var := self messageSend: #wordAt: receiver: self calldata arguments: {(self literalOrVariable: self pop)}.
-	self push: var
+	var := self
+		messageSend: #wordAt:
+		receiver: self calldata
+		arguments: {(self literalOrVariable: self pop)}.
+	self push: var.
+	self visitNode: aFogVMCalldataload
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitCalldatasize: aFogVMCalldatasize [
 	| sizeMessage |
-	self visitNode: aFogVMCalldatasize.
 	sizeMessage := self messageSend: #size receiver: self calldata arguments: {}.
-	self push: sizeMessage
+	self push: sizeMessage.
+	self visitNode: aFogVMCalldatasize
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitCaller: aFogVMCaller [
-	self visitNode: aFogVMCaller.
-	self push: self caller
+	self push: self caller.
+	self visitNode: aFogVMCaller
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitCallvalue: aFogVMCallvalue [
-	self visitNode: aFogVMCallvalue.
 	self push: 6 write0xHexadecimal.
-	self visitCalldataload: aFogVMCallvalue
+	self visitCalldataload: aFogVMCallvalue.
+	self visitNode: aFogVMCallvalue
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitCodecopy: aFogVMCodecopy [
 	| value writeAt |
-	self visitNode: aFogVMCodecopy.
-	writeAt := (self literalOrVariable:  self pop).
+	writeAt := self literalOrVariable: self pop.
 	value := self
 		messageSend: #copyInstructionsFrom:amount:
 		receiver: self runningContract
 		arguments:
 			{(self literalOrVariable: self pop).
 			(self literalOrVariable: self pop)}.
-	self scope sequence addStatement: (self memoryWriteAt: writeAt value: value)
+	self scope sequence addStatement: (self memoryWriteAt: writeAt value: value).
+	self visitNode: aFogVMCodecopy
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitCodesize: aFogVMCodesize [
-	|  var |
-	self visitNode: aFogVMCodesize.
+	| var |
 	var := self messageSend: #codeSize receiver: self runningContract arguments: {}.
-	self push: var
+	self push: var.
+	self visitNode: aFogVMCodesize
 ]
 
 { #category : #'visit globals' }
-FogEVMIREthereumDecompiler >> visitCoinbase: aFogVMCoinbase [ 
-	self visitNode: aFogVMCoinbase.
-	self push: (self messageSend: #address receiver: self coinbase arguments: {})
+FogEVMIREthereumDecompiler >> visitCoinbase: aFogVMCoinbase [
+	self push: (self messageSend: #address receiver: self coinbase arguments: {}).
+	self visitNode: aFogVMCoinbase
 ]
 
 { #category : #'visit globals' }
-FogEVMIREthereumDecompiler >> visitDifficulty: aFogVMDifficulty [ 
-	self visitNode: aFogVMDifficulty.
+FogEVMIREthereumDecompiler >> visitDifficulty: aFogVMDifficulty [
 	self push: (self messageSend: #difficulty receiver: self currentBlock arguments: {}).
+	self visitNode: aFogVMDifficulty
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitDiv: aFogVMDiv [
 	| variable |
-	self visitNode: aFogVMDiv.
 	variable := self
 		binaryMessageSend: #divide:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMDiv
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitDup: aFogVMDup [
 	| element |
-	self visitNode: aFogVMDup.
-"	(self stack size = (aFogVMDup expectedPops -1)) ifTrue: [ self halt ]."
+	"	(self stack size = (aFogVMDup expectedPops -1)) ifTrue: [ self halt ]."
 	element := self stack at: aFogVMDup expectedPops.
-	self stack push: element 
+	self stack push: element.
+	self visitNode: aFogVMDup
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitEq: aFogVMEq [
 	| variable |
-	self visitNode: aFogVMEq.
 	variable := self
 		binaryMessageSend: #equals:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMEq.
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitExp: aFogVMExp [
 	| variable |
-	self visitNode: aFogVMExp.
 	variable := self
 		binaryMessageSend: #power:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMExp
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitExtcodecopy: aFogVMExtcodecopy [
 	| value writeAt contractAddress |
-	self visitNode: aFogVMExtcodecopy.
 	contractAddress := self literalOrVariable: self pop.
 	writeAt := self literalOrVariable: self pop.
 	value := self
@@ -548,94 +565,94 @@ FogEVMIREthereumDecompiler >> visitExtcodecopy: aFogVMExtcodecopy [
 		arguments:
 			{(self literalOrVariable: self pop).
 			(self literalOrVariable: self pop)}.
-	self scope sequence addStatement: (self memoryWriteAt: writeAt value: value)
+	self scope sequence addStatement: (self memoryWriteAt: writeAt value: value).
+	self visitNode: aFogVMExtcodecopy
 ]
 
 { #category : #'visiting global' }
-FogEVMIREthereumDecompiler >> visitExtcodehash: aFogVMExtcodehash [ 
+FogEVMIREthereumDecompiler >> visitExtcodehash: aFogVMExtcodehash [
 	| var |
-	self visitNode: aFogVMExtcodehash.
 	var := self
 		messageSend: #blockHashFor:
 		receiver: self runtimeGlobal
 		arguments: {(self literalOrVariable: self pop)}.
-	self push: var
+	self push: var.
+	self visitNode: aFogVMExtcodehash
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitExtcodesize: aFogVMExtcodesize [
 	| var |
-	self visitNode: aFogVMExtcodesize.
 	var := self
 		messageSend: #codeSizeForContract:
 		receiver: self runtimeGlobal
 		arguments: {(self literalOrVariable: self pop)}.
-	self push: var
+	self push: var.
+	self visitNode: aFogVMExtcodesize
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitGas: aFogVMGas [
-	self visitNode: aFogVMGas.
-	self push: self currentGas
+	self push: self currentGas.
+	self visitNode: aFogVMGas
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitGaslimit: aFogVMGaslimit [
-	self visitNode: aFogVMGaslimit.
-	self push: (self messageSend: #gasLimit receiver: self currentBlock arguments: {})
+	self push: (self messageSend: #gasLimit receiver: self currentBlock arguments: {}).
+	self visitNode: aFogVMGaslimit
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitGasprice: aFogVMGasprice [
-	self visitNode: aFogVMGasprice.
-	self push: self currentGasPrice
+	self push: self currentGasPrice.
+	self visitNode: aFogVMGasprice
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitGt: aFogVMGt [
 	| variable |
-	self visitNode: aFogVMGt.
 	variable := self
 		binaryMessageSend: #greaterThan:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMGt
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitInvalid: aFogVMInvalid [
 	| invalid |
-	self visitNode: aFogVMInvalid.
 	invalid := FogEVMAstInvalid new.
 	invalid instruction: self currentInstruction.
-	self scope sequence addStatement: invalid
+	self scope sequence addStatement: invalid.
+	self visitNode: aFogVMInvalid
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitIszero: aFogVMIszero [
 	| variable |
-	self visitNode: aFogVMIszero.
 	variable := self
 		binaryMessageSend: #equals:
 		receiver: self pop
 		argument: (FogEVMLiteral for: '0x0').
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMIszero
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitJump: aFogVMJump [
 	| jump |
-	self visitNode: aFogVMJump.
 	jump := FogEVMAstJump new.
 	jump address: self pop.
 	(jump address isAccessible and: [ self isValidDestination: jump address ])
-		ifTrue: [ 
-			jump instruction: self currentInstruction.
-			jump instruction: (self setNextInstructionToByte: jump address read).
-			self scope sequence addStatement: jump 
-		] ifFalse: [ 
-			self error: 'Error' 
-		]
+		ifTrue: [ (destinations includesKey: jump address read)
+				ifTrue: [ self scope sequence isClosed: true ]
+				ifFalse: [ jump instruction: self currentInstruction.
+					jump instruction: (self setNextInstructionToByte: jump address read).
+					self scope sequence addStatement: jump.
+					self visitNode: aFogVMJump ] ]
+		ifFalse: [ self error: 'Error' ]
 ]
 
 { #category : #visiting }
@@ -644,12 +661,13 @@ FogEVMIREthereumDecompiler >> visitJumpDestinationTo: jump [
 	(jump address isAccessible and: [ self isValidDestination: jump address ])
 		ifTrue: [ ip := instructionPointer.
 			self setNextInstructionToByte: jump address read.
-			destination := self scope
+			destination := (self scope
 				getProcessedInstruction: self currentInstruction
 				ifNone: [ | new |
+					jump instruction: self currentInstruction.
 					new := self getOrCreateJumpDestination.
 					new scope ifNil: [ new scope: (self newScopeDuring: [ self basicDecompile ]) ].
-					new ].
+					new ]) jumpDestination.
 			destination addOrigin: jump.
 			self setNextInstruction: ip.
 			^ destination ]
@@ -657,112 +675,113 @@ FogEVMIREthereumDecompiler >> visitJumpDestinationTo: jump [
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitJumpdest: aFogVMJumpdest [
-	self visitNode: aFogVMJumpdest
+	self visitNode: aFogVMJumpdest.
+	self getOrCreateJumpDestination
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitJumpi: aFogVMJumpi [
 	| conditionalJump |
-	self visitNode: aFogVMJumpi.
 	conditionalJump := FogEVMAstConditionalJump new.
 	conditionalJump
 		address: self pop;
 		condition: self pop.
+
 	self scope sequence addStatement: conditionalJump.
-	conditionalJump destination: (self visitJumpDestinationTo: conditionalJump) scope
+	conditionalJump jumpDestination: (self visitJumpDestinationTo: conditionalJump).
+	self visitNode: aFogVMJumpi
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitLog: aFogVMLog [
 	| log message |
-	self visitNode: aFogVMLog.
 	log := FogEVMAstLog new.
 	message := self memoryReadfrom: self pop to: self pop.
 	log message: message.
 	aFogVMLog topicsAmount
 		timesRepeat: [ log topics add: (self literalOrVariable: self pop) ].
 	log instruction: self currentInstruction.
-	self assignToTemporaryVariable: log
+	self assignToTemporaryVariable: log.
+	self visitNode: aFogVMLog
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitLt: aFogVMLt [
 	| variable |
-	self visitNode: aFogVMLt.
 	variable := self
 		binaryMessageSend: #lesserThan:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMLt
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitMload: aFogVMMload [
 	| memoryLoadNode from amount var |
-	self visitNode: aFogVMMload.
 	memoryLoadNode := FogEVMAstMemoryLoad new.
 	from := self literalOrVariable: self pop.
 	amount := self literalOrVariable: FogEVMAbstractInterpreter wordSize write0xHexadecimal.
 	memoryLoadNode fromAddress: from.
 	memoryLoadNode amountOfBytes: amount.
 	var := self assignToTemporaryVariable: memoryLoadNode.
-	self push: var
+	self push: var.
+	self visitNode: aFogVMMload
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitMod: aFogVMMod [
 	| variable |
-	self visitNode: aFogVMMod.
 	variable := self
 		binaryMessageSend: #mod:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMMod
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitMsize: aFogVMMsize [
-	self visitNode: aFogVMMsize.
-	self push: (self runtimeGlobal: #memorySize)
+	self push: (self runtimeGlobal: #memorySize).
+	self visitNode: aFogVMMsize
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitMstore8: aFogVMMstore8 [
 	| val |
-	self visitNode: aFogVMMstore8.
 	val := self
 		memoryWriteAt: (self literalOrVariable: self pop)
 		value: (self literalOrVariable: self pop)
 		amount: (self literalOrVariable: FogEVMAbstractInterpreter byteSize write0xHexadecimal).
-	self scope sequence addStatement: val
+	self scope sequence addStatement: val.
+	self visitNode: aFogVMMstore8
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitMstore: aFogVMMstore [
-	self visitNode: aFogVMMstore.
 	self scope sequence
 		addStatement:
 			(self
 				memoryWriteAt: (self literalOrVariable: self pop)
 				value: (self literalOrVariable: self pop)
-				amount: (self literalOrVariable: FogEVMAbstractInterpreter wordSize write0xHexadecimal))
+				amount: (self literalOrVariable: FogEVMAbstractInterpreter wordSize write0xHexadecimal)).
+	self visitNode: aFogVMMstore
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitMul: aFogVMMul [
 	| variable |
-	self visitNode: aFogVMMul.
 	variable := self
 		binaryMessageSend: #multiply:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMMul
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitMulmod: aFogVMMulmod [
 	| variable |
-	self visitNode: aFogVMMulmod.
 	variable := self
 		binaryMessageSend: #multiply:
 		receiver: (self literalOrVariable: self pop)
@@ -771,55 +790,59 @@ FogEVMIREthereumDecompiler >> visitMulmod: aFogVMMulmod [
 		binaryMessageSend: #mod:
 		receiver: variable
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMMulmod
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitNode: aNode [
-	self scope sequence instruction: aNode.
+	| sequence |
+	sequence := self scope sequence statements
+		ifEmpty: [ self scope parent sequence ]
+		ifNotEmpty: [ self scope sequence ].
+	sequence statements last instruction: aNode
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitNot: aFogVMNot [
 	| variable |
-	self visitNode: aFogVMNot.
 	variable := self
 		messageSend: #not
 		receiver: (self literalOrVariable: self pop)
 		arguments: {}.
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMNot
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitNumber: aFogVMNumber [
 	| var |
-	self visitNode: aFogVMNumber.
 	var := self messageSend: #number receiver: self currentBlock arguments: {}.
-	self push: var
+	self push: var.
+	self visitNode: aFogVMNumber
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitOr: aFogVMOr [
 	| variable |
-	self visitNode: aFogVMOr.
 	variable := self
-		binaryMessageSend: #'or:'
+		binaryMessageSend: #or:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMOr
 ]
 
 { #category : #'visit globals' }
 FogEVMIREthereumDecompiler >> visitOrigin: aFogVMOrigin [
-	self visitNode: aFogVMOrigin.
-	self push: self origin
+	self push: self origin.
+	self visitNode: aFogVMOrigin
 ]
 
 { #category : #'visit globals' }
 FogEVMIREthereumDecompiler >> visitPc: aFogVMPc [
-	self visitNode: aFogVMPc.
-	
-	self push: (self runtimeGlobal: #currentProgramCounter)
+	self push: (self runtimeGlobal: #currentProgramCounter).
+	self visitNode: aFogVMPc
 ]
 
 { #category : #visiting }
@@ -827,24 +850,24 @@ FogEVMIREthereumDecompiler >> visitPop: aFogVMPop [
 	"	| pop |
 	pop := FogEVMAstPop new.
 	pop variable: "
-	self visitNode: aFogVMPop.
-	self pop
+
+	self pop.
+	self visitNode: aFogVMPop
 	"	self currentScope sequence addStatement: pop"
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitPush: aFogVMPush1 [
 	| variable literal |
-	self visitNode: aFogVMPush1.
 	literal := self literalOrVariable: aFogVMPush1 parameter.
 	variable := self assignToTemporaryVariable: literal.
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMPush1
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitReturn: aFogVMReturn [
 	| var |
-	self visitNode: aFogVMReturn.
 	var := self
 		messageSend: #readFrom:to:
 		receiver: self returningData
@@ -852,13 +875,13 @@ FogEVMIREthereumDecompiler >> visitReturn: aFogVMReturn [
 			{(self literalOrVariable: self pop).
 			(self literalOrVariable: self pop)}.
 	self scope sequence addStatement: var.
-	self scope finishesAt: self currentInstruction
+	self scope sequence isClosed: true.
+	self visitNode: aFogVMReturn
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitReturndatacopy: aFogVMReturndatacopy [
 	| memOffset dataOffset length var |
-	self visitNode: aFogVMReturndatacopy.
 	memOffset := self literalOrVariable: self pop.
 	dataOffset := self literalOrVariable: self pop.
 	length := self literalOrVariable: self pop.
@@ -868,193 +891,194 @@ FogEVMIREthereumDecompiler >> visitReturndatacopy: aFogVMReturndatacopy [
 		arguments:
 			{dataOffset.
 			length}.
-	self scope sequence addStatement: (self memoryWriteAt: memOffset value: var)
+	self scope sequence addStatement: (self memoryWriteAt: memOffset value: var).
+	self visitNode: aFogVMReturndatacopy
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitReturndatasize: aFogVMReturndatasize [
 	| var |
-	self visitNode: aFogVMReturndatasize.
 	var := self messageSend: #size receiver: self returningData arguments: {}.
-	self push: var
+	self push: var.
+	self visitNode: aFogVMReturndatasize
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitRevert: aFogVMRevert [
 	| rev |
-	self visitNode: aFogVMRevert.
 	rev := FogEVMAstRevert new.
 	rev message: (self memoryReadfrom: self pop to: self pop).
 	rev instruction: self currentInstruction.
-	self scope sequence addStatement: rev
+	self scope sequence addStatement: rev.
+	self visitNode: aFogVMRevert
 ]
 
 { #category : #visiting }
-FogEVMIREthereumDecompiler >> visitSar: aFogVMSar [ 
-	| variable | 
-	self visitNode: aFogVMSar .
+FogEVMIREthereumDecompiler >> visitSar: aFogVMSar [
+	| variable |
 	variable := self
 		binaryMessageSend: #sar:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMSar
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitSdiv: aFogVMSdiv [
 	| variable |
-	self visitNode: aFogVMSdiv.
 	variable := self
 		binaryMessageSend: #signedDivision:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMSdiv
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitSelfdestruct: aFogVMSelfdestruct [
 	| sd |
-	self visitNode: aFogVMSelfdestruct.
 	sd := FogEVMAstSelfDestruct new.
 	sd account: (self literalOrVariable: self pop).
 	sd instruction: self currentInstruction.
-	self scope sequence addStatement: sd
+	self scope sequence addStatement: sd.
+	self visitNode: aFogVMSelfdestruct
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitSgt: aFogVMSgt [
 	| variable |
-	self visitNode: aFogVMSgt.
 	variable := self
 		binaryMessageSend: #signedGreaterThan:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMSgt
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitSha3: aFogVMSha3 [
 	| content result |
-	self visitNode: aFogVMSha3.
 	content := self memoryReadfrom: self pop to: self pop.
 	result := self messageSend: #sha3: receiver: self runtimeGlobal arguments: {content}.
-	self push: result
+	self push: result.
+	self visitNode: aFogVMSha3
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitShl: aFogVMShl [
 	| variable |
-	self visitNode: aFogVMShl.
 	variable := self
 		binaryMessageSend: #shiftLeft:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMShl
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitShr: aFogVMShr [
 	| variable |
-	self visitNode: aFogVMShr.
 	variable := self
 		binaryMessageSend: #shiftRight:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMShr
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitSignextend: aFogVMSignextend [
 	| variable |
-	self visitNode: aFogVMSignextend.
 	variable := self
 		binaryMessageSend: #extendRepresentationTo:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMSignextend
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitSload: aFogVMSload [
 	| storageLoadNode from var amount |
-	self visitNode: aFogVMSload.
 	storageLoadNode := FogEVMAstStorageLoad new.
 	from := self literalOrVariable: self pop.
 	amount := self literalOrVariable: FogEVMAbstractInterpreter wordSize write0xHexadecimal.
 	storageLoadNode address: from.
 	storageLoadNode amount: amount.
 	var := self assignToTemporaryVariable: storageLoadNode.
-	self push: var
+	self push: var.
+	self visitNode: aFogVMSload
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitSlt: aFogVMSlt [
 	| variable |
-	self visitNode: aFogVMSlt.
 	variable := self
 		messageSend: #signedIsLesserThan:
 		receiver: (self literalOrVariable: self pop)
 		arguments: {(self literalOrVariable: self pop)}.
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMSlt
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitSmod: aFogVMSmod [
 	| variable |
-	self visitNode: aFogVMSmod.
 	variable := self
 		binaryMessageSend: #signedMod:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMSmod
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitSstore: aFogVMSstore [
 	| sStoreNode |
-	self visitNode: aFogVMSstore.
 	sStoreNode := FogEVMAstStorageStore new.
 	sStoreNode address: (self literalOrVariable: self pop).
 	sStoreNode value: (self literalOrVariable: self pop).
-	self scope sequence addStatement: sStoreNode
+	self scope sequence addStatement: sStoreNode.
+	self visitNode: aFogVMSstore
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitStop: aFogVMStop [
-	self visitNode: aFogVMStop.
-	self scope sequence isClosed: true
+	self scope sequence isClosed: true.
+	self visitNode: aFogVMStop
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitSub: aFogVMSub [
 	| variable |
-	self visitNode: aFogVMSub.
 	variable := self
 		binaryMessageSend: #minus:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMSub
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitSwap: aFogVMSwap [
-	self visitNode: aFogVMSwap.
-	self stack swap: 1 with: aFogVMSwap expectedPops
+	self stack swap: 1 with: aFogVMSwap expectedPops.
+	self visitNode: aFogVMSwap
 ]
 
 { #category : #'visiting global' }
 FogEVMIREthereumDecompiler >> visitTimestamp: aFogVMTimestamp [
-	self visitNode: aFogVMTimestamp.
-	self push: (self messageSend: #timestamp receiver: self currentBlock arguments: {})
+	self push: (self messageSend: #timestamp receiver: self currentBlock arguments: {}).
+	self visitNode: aFogVMTimestamp
 ]
 
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitXor: aFogVMXor [
 	| variable |
-	self visitNode: aFogVMXor.
 	variable := self
 		binaryMessageSend: #xor:
 		receiver: (self literalOrVariable: self pop)
 		argument: (self literalOrVariable: self pop).
-	self push: variable
+	self push: variable.
+	self visitNode: aFogVMXor
 ]

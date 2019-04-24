@@ -34,6 +34,11 @@ FogEVMAstJumpDestination >> deepCopy [
 	^ self 
 ]
 
+{ #category : #accessing }
+FogEVMAstJumpDestination >> destination [
+	^ self 
+]
+
 { #category : #printing }
 FogEVMAstJumpDestination >> initialize [
 	super initialize.
@@ -43,6 +48,11 @@ FogEVMAstJumpDestination >> initialize [
 { #category : #testing }
 FogEVMAstJumpDestination >> isJumpDest [
 	^ true 
+]
+
+{ #category : #accessing }
+FogEVMAstJumpDestination >> jumpDestination [
+	^ self 
 ]
 
 { #category : #printing }

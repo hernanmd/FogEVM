@@ -1,10 +1,13 @@
 Class {
 	#name : #FogEVMAstConditionalJump,
 	#superclass : #FogEVMAstNode,
+	#traits : 'TEquality',
+	#classTraits : 'TEquality classTrait',
 	#instVars : [
 		'address',
 		'condition',
-		'destination'
+		'destination',
+		'jumpDestination'
 	],
 	#category : #'FogEVM-DecompilerAST'
 }
@@ -41,12 +44,7 @@ FogEVMAstConditionalJump >> deepCopy [
 
 { #category : #accessing }
 FogEVMAstConditionalJump >> destination [
-	^ destination
-]
-
-{ #category : #accessing }
-FogEVMAstConditionalJump >> destination: aJumpDestination [
-	destination := aJumpDestination
+	^ jumpDestination scope
 ]
 
 { #category : #testing }
@@ -57,6 +55,16 @@ FogEVMAstConditionalJump >> isConditionalJump [
 { #category : #testing }
 FogEVMAstConditionalJump >> isJump [
 	^ true
+]
+
+{ #category : #accessing }
+FogEVMAstConditionalJump >> jumpDestination [
+	^ jumpDestination
+]
+
+{ #category : #accessing }
+FogEVMAstConditionalJump >> jumpDestination: aFogEVMAstJumpDestination [
+	jumpDestination := aFogEVMAstJumpDestination
 ]
 
 { #category : #testing }

@@ -73,7 +73,7 @@ FogEVMDecompileControlFlowTest >> testPC [
 	"
 	sequence := self decompile: self createBytecodeForPCDecompile.
 	self assert: sequence statements size equals: 2 .
-	self assert: sequence instructions size equals: 1 .
+	self assert: sequence instructions size equals: 2 .
 	self assertIsAssignment: sequence statements first.
 	self assertIsAssignment: sequence statements second.
 	self assertIsVariable: sequence statements first variable named: #Runtime.
