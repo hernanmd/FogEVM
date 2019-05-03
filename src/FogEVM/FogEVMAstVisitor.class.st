@@ -26,6 +26,15 @@ FogEVMAstVisitor >> visitAstNode: aFogEVMAstNode [
 ]
 
 { #category : #visiting }
+FogEVMAstVisitor >> visitCall: aFogEVMAstCall [
+	aFogEVMAstCall address accept: self.
+	aFogEVMAstCall gas accept: self.
+	aFogEVMAstCall money accept: self.
+	aFogEVMAstCall input accept: self.
+	self visitAstNode: aFogEVMAstCall
+]
+
+{ #category : #visiting }
 FogEVMAstVisitor >> visitCaller: aFogEVMAstCaller [ 
 		self visitAstNode:aFogEVMAstCaller
 ]
@@ -50,10 +59,14 @@ FogEVMAstVisitor >> visitConditionalJump: aFogEVMAstConditionalJump [
 ]
 
 { #category : #visiting }
+FogEVMAstVisitor >> visitInvalid: aFogEVMAstInvalid [ 
+	self visitAstNode: aFogEVMAstInvalid.
+]
+
+{ #category : #visiting }
 FogEVMAstVisitor >> visitJump: aFogEVMAstJump [
 	self visitAstNode: aFogEVMAstJump.
-	aFogEVMAstJump address accept: self.
-	aFogEVMAstJump destination accept: self
+	aFogEVMAstJump address accept: self
 ]
 
 { #category : #visiting }
@@ -98,6 +111,11 @@ FogEVMAstVisitor >> visitReturn: aFogEVMAstReturn [
 FogEVMAstVisitor >> visitRevert: aFogEVMAstRevert [ 
 	self visitAstNode: aFogEVMAstRevert.
 	aFogEVMAstRevert message accept: self
+]
+
+{ #category : #visiting }
+FogEVMAstVisitor >> visitRuntimeGlobal: aFogEVMAstRuntimeGlobal [ 
+	self visitAstNode: aFogEVMAstRuntimeGlobal.
 ]
 
 { #category : #visiting }

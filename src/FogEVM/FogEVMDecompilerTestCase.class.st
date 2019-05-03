@@ -9062,3 +9062,57 @@ contract ZilleriumPresale is Presale, SafeMath
      }
 }'.
 ]
+
+{ #category : #generated }
+FogEVMDecompilerTestCase >> testSellContract [
+	"Example contracts found in the Etherscan <https://etherscan.io/contractsVerified>. 
+	Contract name: WWAMPricingStrategy 
+	version 0.4.6
+	https://etherscan.io/address/0xe4b9b539f047f08991a231cc1b01eb0fa1849946#code
+	"
+self parseTest: 
+'pragma solidity ^0.4.8;
+
+contract Sell {
+	
+	enum State { ON_SALE, WAITING_SEND, SENT, FINISH } 
+	
+	address _owner;
+	address buyer;
+	uint payed;
+	uint price;
+	string itemName;
+	
+	State state; 
+	
+	function Sell (uint toPay, string name) public {
+		_owner = msg.sender; 
+                itemName = name;
+   	        price = toPay;
+	}
+    function prepare() public {
+	state = State.ON_SALE;
+    }
+    function buy() payable public {
+		if (state != State.ON_SALE) { return ; }
+		if( price != msg.value ) revert(); 
+		state = State.WAITING_SEND;
+		payed = msg.value;
+		buyer = msg.sender;
+    }
+
+    function informItemReceived  () public {
+		if ( buyer == msg.sender && state == State.WAITING_SEND ) {
+			state = State.SENT;
+		}
+    }
+
+    function withdrawMoneyTo  (address toAddress) public{
+		if ( _owner == msg.sender && state == State.SENT) {
+			toAddress.transfer(price);
+			state = State.FINISH;
+		}
+    }
+}
+'.
+]

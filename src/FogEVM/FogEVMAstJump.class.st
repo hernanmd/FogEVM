@@ -2,8 +2,7 @@ Class {
 	#name : #FogEVMAstJump,
 	#superclass : #FogEVMAstNode,
 	#instVars : [
-		'address',
-		'destination'
+		'address'
 	],
 	#category : #'FogEVM-DecompilerAST'
 }
