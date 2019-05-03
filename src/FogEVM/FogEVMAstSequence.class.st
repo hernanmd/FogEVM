@@ -20,10 +20,23 @@ FogEVMAstSequence >> addStatement: aFogEVMAssignation [
 	statements add: aFogEVMAssignation
 ]
 
+{ #category : #testing }
+FogEVMAstSequence >> allInstructions [
+	self assert: (instructions isEmpty not and: (statements flatCollect: #instructions) isEmpty not) not.
+	^ instructions , (statements flatCollect: #instructions)
+]
+
 { #category : #initialization }
 FogEVMAstSequence >> initialize [
 	super initialize.
 	statements := OrderedCollection new
+]
+
+{ #category : #testing }
+FogEVMAstSequence >> instruction: anObject [
+	statements
+		ifEmpty: [ super instruction: anObject ]
+		ifNotEmpty: [ statements last instruction: anObject ]
 ]
 
 { #category : #testing }

@@ -22,6 +22,11 @@ FogEVMAstScope >> addTemporary: aFogEVMAstVariable [
 	temporaries add: aFogEVMAstVariable
 ]
 
+{ #category : #convenience }
+FogEVMAstScope >> allInstructions [
+	^ sequence allInstructions
+]
+
 { #category : #testing }
 FogEVMAstScope >> alreadyProcessedInstruction: anInstruction [
 	^ (self getProcessedInstruction: anInstruction ifNone: [ nil ]) isNotNil
@@ -100,6 +105,11 @@ FogEVMAstScope >> sequence [
 { #category : #accessing }
 FogEVMAstScope >> stack [
 	^ stack
+]
+
+{ #category : #convenienve }
+FogEVMAstScope >> statements [
+	^ sequence statements
 ]
 
 { #category : #'as yet unclassified' }

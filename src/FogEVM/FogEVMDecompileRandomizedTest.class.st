@@ -66,7 +66,7 @@ FogEVMDecompileRandomizedTest >> testADDMOD [
 	sequence := self decompile: (self createBytecodeForADDMOD: x and: y and: z).
 	
 	self assert: sequence statements size equals: 5.
-	self assert: sequence instructions size equals: 5.
+	self assert: sequence allInstructions size equals: 5.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
 	self assertIsBinaryOperation: sequence statements fourth value selector: #plus:.
 	self assertIsBinaryOperation: sequence statements last value selector: #mod:.
@@ -204,7 +204,7 @@ FogEVMDecompileRandomizedTest >> testMUL [
 
 { #category : #test }
 FogEVMDecompileRandomizedTest >> testMULMOD [
-| sequence |
+	| sequence |
 	" 
 	MULMOD(A,B,C)->
 	 sequence +
@@ -216,19 +216,24 @@ FogEVMDecompileRandomizedTest >> testMULMOD [
 	 stack +
 	  summod
 	"
-sequence := self decompile: (self createBytecodeForMULMOD: x and: y and: z).
-	
+	sequence := self
+		decompile: (self createBytecodeForMULMOD: x and: y and: z).
 	self assert: sequence statements size equals: 5.
-	self assert: sequence instructions size equals: 5.
+	self assert: sequence allInstructions size equals: 5.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
-	self assertIsBinaryOperation: sequence statements fourth value selector: #multiply:.
-	self assertIsBinaryOperation: sequence statements last value selector: #mod:.
-	
-	self assert: sequence statements last value receiver equals: sequence statements fourth variable.
+	self
+		assertIsBinaryOperation: sequence statements fourth value
+		selector: #multiply:.
+	self
+		assertIsBinaryOperation: sequence statements last value
+		selector: #mod:.
+	self
+		assert: sequence statements last value receiver
+		equals: sequence statements fourth variable.
 	self assert: decompiler scope stack size equals: 1.
-	self assert: decompiler scope stack pop equals: sequence statements last variable.
-	
-	
+	self
+		assert: decompiler scope stack pop
+		equals: sequence statements last variable
 ]
 
 { #category : #test }
@@ -243,7 +248,7 @@ FogEVMDecompileRandomizedTest >> testPOP [
 	"
 	sequence := self decompile: (self createBytecodeForPOP: x).
 	self assert: sequence statements size equals: 1.
-	self assert: sequence instructions size equals: 3.
+	self assert: sequence allInstructions size equals: 3.
 	self assertIsAssignment: sequence statements first.
 	
 	

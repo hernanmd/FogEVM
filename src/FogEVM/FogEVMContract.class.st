@@ -3,7 +3,9 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'bytecode',
-		'address'
+		'address',
+		'value',
+		'salt'
 	],
 	#category : #'FogEVM-Environment-Objects'
 }
@@ -29,6 +31,21 @@ FogEVMContract >> bytecode: aFogEVMByteCode [
 ]
 
 { #category : #'as yet unclassified' }
+FogEVMContract >> salt [
+	^ salt
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMContract >> salt: aSalt [
+	salt := aSalt
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMContract >> value: anAmountOfMoney [
+	value := anAmountOfMoney
+]
+
+{ #category : #'as yet unclassified' }
 FogEVMContract >> values [
-	^ { address . bytecode }
+	^ { address . bytecode . salt}
 ]

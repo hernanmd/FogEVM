@@ -41,6 +41,8 @@ FogEVMAstMemoryStore >> printOn: aStream [
 	address printOn: aStream.
 	aStream nextPutAll: ' put: '.
 	value printOn: aStream.
+	aStream nextPutAll: ' size: '.
+	amount printOn: aStream.
 	aStream nextPutAll: ')'.
 ]
 

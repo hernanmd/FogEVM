@@ -17,7 +17,7 @@ DecompilerAssertions >> assertGlobalWithOneParameter: sequence [
 
 	self assert: self decompiler programHasFinished.
 	self assertIsSequence: sequence.
-	self assert: sequence instructions size equals: 3.
+	self assert: sequence allInstructions size equals: 3.
 	self assert: sequence statements size equals: 3.
 	self assertIsAssignment: sequence statements first.
 	self assertIsAssignment: sequence statements second.
@@ -45,7 +45,7 @@ DecompilerAssertions >> assertGlobalWithOneParameterAndOneIndirection: sequence 
 
 	self assert: self decompiler programHasFinished.
 	self assertIsSequence: sequence.
-	self assert: sequence instructions size equals: 3.
+	self assert: sequence allInstructions size equals: 3.
 	self assert: sequence statements size equals: 4.
 	self assertIsAssignment: sequence statements first.
 	self assertIsAssignment: sequence statements second.
@@ -75,7 +75,7 @@ DecompilerAssertions >> assertGlobalWithoutParameter: sequence [
 
 	self assert: self decompiler programHasFinished.
 	self assertIsSequence: sequence.
-	self assert: sequence instructions size equals: 2.
+	self assert: sequence allInstructions size equals: 2.
 	self assert: sequence statements size equals: 3.
 	
 	self assertIsAssignment: sequence statements first.
@@ -120,7 +120,7 @@ DecompilerAssertions >> assertIsBinaryOperationBytecode: sequence stack: stack s
 	    addition
 	"
 	self assert: sequence statements size equals: 3.
-	self assert: sequence instructions size equals: 4.
+	self assert: sequence allInstructions size equals: 4.
 	self assertIsBinaryOperation: sequence statements last value selector: aSelector.
 	self assert: stack size equals: 1.
 	self assert: stack pop equals: sequence statements last variable
@@ -129,6 +129,11 @@ DecompilerAssertions >> assertIsBinaryOperationBytecode: sequence stack: stack s
 { #category : #asserting }
 DecompilerAssertions >> assertIsLiteral: aFogEVMLiteral [
 	self assert: (aFogEVMLiteral isKindOf: FogEVMLiteral)
+]
+
+{ #category : #assertion }
+DecompilerAssertions >> assertIsMemoryLoad: aFogEVMAstMemoryLoad [
+	self assert: (aFogEVMAstMemoryLoad isKindOf: FogEVMAstMemoryLoad)
 ]
 
 { #category : #assertion }
@@ -164,7 +169,7 @@ DecompilerAssertions >> assertIsUnaryMessageSendBytecode: sequence stack: stack 
 	    addition
 	"
 	self assert: sequence statements size equals: 3.
-	self assert: sequence instructions size equals: 4.
+	self assert: sequence allInstructions size equals: 4.
 	self assertIsUnaryMessageSend: sequence statements last value selector: aSelector.
 	self assert: stack size equals: 1.
 	self assert: stack pop equals: sequence statements last variable
@@ -190,7 +195,7 @@ DecompilerAssertions >> assertRuntimeDirectGlobalWithoutParameter: sequence [
 
 	self assert: self decompiler programHasFinished.
 	self assertIsSequence: sequence.
-	self assert: sequence instructions size equals: 2.
+	self assert: sequence allInstructions size equals: 2.
 	self assert: sequence statements size equals: 2.
 	
 	self assertIsAssignment: sequence statements first.

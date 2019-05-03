@@ -37,7 +37,7 @@ FogEVMDecompileLoadStoreTest >> testMLOAD [
 	"
 	sequence := self decompile: (self createBytecodeForMLOAD: memoryStart).
 	self assert: sequence statements size equals: 2.
-	self assert: sequence instructions size equals: 3.
+	self assert: sequence allInstructions size equals: 3.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
 	self assert: (sequence statements last value isKindOf: FogEVMAstMemoryLoad).
 	self assert: sequence statements first variable equals: sequence statements last value fromAddress.
@@ -58,7 +58,7 @@ FogEVMDecompileLoadStoreTest >> testMSIZE [
 	"
 	sequence := self decompile: self createBytecodeForMSIZE.
 	self assert: sequence statements size equals: 2.
-	self assert: sequence instructions size equals: 2.
+	self assert: sequence allInstructions size equals: 2.
 	self assertIsAssignment: sequence statements first.
 	self assertIsMessageSend: sequence statements last value.
 	self assert: sequence statements last value receiver equals: sequence statements first variable.
@@ -79,7 +79,7 @@ FogEVMDecompileLoadStoreTest >> testMSTORE [
 	"
 	sequence := self decompile: (self createBytecodeForMSTORE: value at: memoryStart).
 	self assert: sequence statements size equals: 3.
-	self assert: sequence instructions size equals: 4.
+	self assert: sequence allInstructions size equals: 4.
 	self assert: decompiler scope stack isEmpty.
 	self assert: (sequence statements last isKindOf: FogEVMAstMemoryStore).
 	self assert: sequence statements last address equals: sequence statements second variable.
@@ -99,7 +99,7 @@ FogEVMDecompileLoadStoreTest >> testMSTORE8 [
 	"
 	sequence := self decompile: (self createBytecodeForMSTORE8: value at: memoryStart).
 	self assert: sequence statements size equals: 3.
-	self assert: sequence instructions size equals: 4.
+	self assert: sequence allInstructions size equals: 4.
 	self assert: decompiler scope stack isEmpty.
 	self assert: (sequence statements last isKindOf: FogEVMAstMemoryStore).
 	self assert: sequence statements last address equals: sequence statements second variable.
@@ -123,7 +123,7 @@ FogEVMDecompileLoadStoreTest >> testSHA3 [
 	"
 	sequence := self decompile: (self createBytecodeForSHA3: memoryStart to: '0x20').
 	self assert: sequence statements size equals: 5.
-	self assert: sequence instructions size equals: 4.
+	self assert: sequence allInstructions size equals: 4.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
 	self assertIsRuntimeGlobal: sequence statements fourth value.
 	self assert: sequence statements second variable equals: sequence statements third value fromAddress.
@@ -145,7 +145,7 @@ FogEVMDecompileLoadStoreTest >> testSLOAD [
 	"
 	sequence := self decompile: (self createBytecodeForSLOAD: memoryStart).
 	self assert: sequence statements size equals: 2.
-	self assert: sequence instructions size equals: 3.
+	self assert: sequence allInstructions size equals: 3.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
 	self assert: (sequence statements last value isKindOf: FogEVMAstStorageLoad).
 	self assert: sequence statements first variable equals: sequence statements last value address.
@@ -166,7 +166,7 @@ FogEVMDecompileLoadStoreTest >> testSSTORE [
 	"
 	sequence := self decompile: (self createBytecodeForSSTORE: value at: memoryStart).
 	self assert: sequence statements size equals: 3.
-	self assert: sequence instructions size equals: 4.
+	self assert: sequence allInstructions size equals: 4.
 	self assert: decompiler scope stack isEmpty.
 	self assert: (sequence statements last isKindOf: FogEVMAstStorageStore).
 	self assert: sequence statements last address equals: sequence statements second variable.

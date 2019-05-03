@@ -33,7 +33,7 @@ FogEVMDecompileLogicGateTest >> testISZERO [
 	"
 	sequence := self decompile: (self createBytecodeForISZERO: '0x1').
 	self assert: sequence statements size equals: 2.
-	self assert: sequence instructions size equals: 3.
+	self assert: sequence allInstructions size equals: 3.
 	self assertIsBinaryOperation: sequence statements last value selector: #equals:.
 	self assert: decompiler scope stack size equals: 1.
 	self assert: decompiler scope stack pop equals: sequence statements last variable
@@ -50,7 +50,7 @@ FogEVMDecompileLogicGateTest >> testNOT [
 	  notA
    "
 	sequence := self decompile: (self createBytecodeForNOT: '0x1').
-	self assert: sequence instructions size equals: 3.
+	self assert: sequence allInstructions size equals: 3.
 	self assert: sequence statements size equals: 2.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
 	self assertIsMessageSend: sequence statements last value.

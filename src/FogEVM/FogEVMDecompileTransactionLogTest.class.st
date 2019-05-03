@@ -23,7 +23,7 @@ FogEVMDecompileTransactionLogTest >> testLOG0 [
    "
 	sequence := self decompile: (self createBytecodeForLOG: 0 memory: '0x1' size: '0x10').
 	self assert: sequence statements size equals: 4 + 0.
-	self assert: sequence instructions size equals: 4 + 0.
+	self assert: sequence allInstructions size equals: 4 + 0.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
 	self assert: (sequence statements third value isKindOf: FogEVMAstMemoryLoad).
 	self assert: sequence statements second variable equals: sequence statements third value fromAddress.
@@ -56,7 +56,7 @@ FogEVMDecompileTransactionLogTest >> testLOG1 [
    "
 	sequence := self decompile: (self createBytecodeForDecompileLOG: 1 memory: 1 write0xHexadecimal size: 10 write0xHexadecimal).
 	self assert: sequence statements size equals: 4 + 1.
-	self assert: sequence instructions size equals: 4 + 1.
+	self assert: sequence allInstructions size equals: 4 + 1.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
 
 	self assert: (sequence statements nextToLast value isKindOf: FogEVMAstMemoryLoad).
@@ -86,7 +86,7 @@ FogEVMDecompileTransactionLogTest >> testLOG2 [
    "
 	sequence := self decompile: (self createBytecodeForDecompileLOG: 2 memory: 1 write0xHexadecimal size: 10 write0xHexadecimal).
 	self assert: sequence statements size equals: 4 + 2.
-	self assert: sequence instructions size equals: 4 + 2.
+	self assert: sequence allInstructions size equals: 4 + 2.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
 
 	self assert: (sequence statements nextToLast value isKindOf: FogEVMAstMemoryLoad).
@@ -116,7 +116,7 @@ FogEVMDecompileTransactionLogTest >> testLOG3 [
    "
 	sequence := self decompile: (self createBytecodeForDecompileLOG: 3 memory: 1 write0xHexadecimal size: 10 write0xHexadecimal).
 	self assert: sequence statements size equals: 4 + 3.
-	self assert: sequence instructions size equals: 4 + 3.
+	self assert: sequence allInstructions size equals: 4 + 3.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
 
 	self assert: (sequence statements nextToLast value isKindOf: FogEVMAstMemoryLoad).
@@ -146,7 +146,7 @@ FogEVMDecompileTransactionLogTest >> testLOG4 [
    "
 	sequence := self decompile: (self createBytecodeForDecompileLOG: 4 memory: 1 write0xHexadecimal size: 10 write0xHexadecimal).
 	self assert: sequence statements size equals: 4 + 4.
-	self assert: sequence instructions size equals: 4 + 4.
+	self assert: sequence allInstructions size equals: 4 + 4.
 	sequence statements do: [ :s | self assertIsAssignment: s ].
 
 	self assert: (sequence statements nextToLast value isKindOf: FogEVMAstMemoryLoad).

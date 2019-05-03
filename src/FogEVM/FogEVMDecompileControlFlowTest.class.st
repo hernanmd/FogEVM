@@ -18,7 +18,7 @@ FogEVMDecompileControlFlowTest >> testJUMP [
 	"
 	sequence := self decompile: (self createBytecodeForJUMP: '0x24').
 	self assert: sequence statements size equals: 2.
-	self assert: sequence instructions size equals: 4.
+	self assert: sequence allInstructions size equals: 4.
 	self assertIsAssignment: sequence statements first.
 	self assert: sequence statements last isStrictJump.
 	self assert: sequence statements last address equals: sequence statements first variable
@@ -37,8 +37,8 @@ FogEVMDecompileControlFlowTest >> testJUMPI [
 	
 	sequence := self decompile: (self createBytecodeForJUMPIDecompilation: '0x1' Pointer: '0x45').
 	"Main scope related test"
-	self assert: sequence instructions size equals: 4.
-	self assert: sequence instructions last isFinishStatus.
+	self assert: sequence allInstructions size equals: 5.
+	self assert: sequence allInstructions last isFinishStatus.
 	self assert: sequence statements size equals: 3.
 	self assertIsAssignment: sequence statements first.
 	self assertIsAssignment: sequence statements second.
@@ -48,16 +48,16 @@ FogEVMDecompileControlFlowTest >> testJUMPI [
 	self assert: decompiler scope stack isEmpty.
 
 	"Conditional scope"
-	conditionalSequence := sequence statements last scope sequence.
-	self assert: conditionalSequence instructions size equals: 5.
-	self assert: conditionalSequence instructions last isFinishStatus.
+	conditionalSequence := sequence statements last jumpDestination scope sequence.
+	self assert: conditionalSequence allInstructions size equals: 4.
+	self assert: conditionalSequence allInstructions last isFinishStatus.
 	self assert: conditionalSequence statements size equals: 3.
 	self assertIsAssignment: conditionalSequence statements first.
 	self assertIsAssignment: conditionalSequence statements second.
 	self assertIsAssignment: conditionalSequence statements last.
 	self assertIsBinaryOperation: conditionalSequence statements last value selector: #plus:.
-	self assert: sequence statements last scope stack size equals: 1.
-	self assert: sequence statements last scope stack pop equals: conditionalSequence statements last variable
+	self assert: sequence statements last jumpDestination scope stack size equals: 1.
+	self assert: sequence statements last jumpDestination scope stack pop equals: conditionalSequence statements last variable
 ]
 
 { #category : #test }
@@ -73,7 +73,7 @@ FogEVMDecompileControlFlowTest >> testPC [
 	"
 	sequence := self decompile: self createBytecodeForPCDecompile.
 	self assert: sequence statements size equals: 2 .
-	self assert: sequence instructions size equals: 2 .
+	self assert: sequence allInstructions size equals: 2 .
 	self assertIsAssignment: sequence statements first.
 	self assertIsAssignment: sequence statements second.
 	self assertIsVariable: sequence statements first variable named: #Runtime.
@@ -88,7 +88,7 @@ FogEVMDecompileControlFlowTest >> testSTOP [
 	  stack
 	"
 	sequence := self decompile: self createBytecodeForSTOP.
-	self assert: sequence instructions size equals: 1.
+	self assert: sequence allInstructions size equals: 1.
 	self assert: sequence statements isEmpty.
 	self assert: sequence isClosed.
 	self should: [ sequence addStatement: nil ] raise: Error

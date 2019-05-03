@@ -95,3 +95,15 @@ FogEVMCall >> gasPrice [
 FogEVMCall >> gasPrice: aFogEVMRegistry [
 	gasPrice := aFogEVMRegistry
 ]
+
+{ #category : #accessing }
+FogEVMCall >> printOn: aStream [
+	aStream
+		nextPutAll: 'Call(';
+		nextPutAll: callerAddress;
+		nextPut: $,;
+		nextPutAll: contractInput;
+		nextPut: $,;
+		nextPutAll: gas;
+		nextPut: $)
+]

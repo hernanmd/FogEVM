@@ -81,7 +81,7 @@ FogEVMContractsByteCodeTest >> testCALL [
 		at: inOffset
 		value: value
 		contract: address
-		usign: gas.
+		using: gas.
 		
 	interpreter bytecode: bytecode.
 	interpreter run.
@@ -176,7 +176,10 @@ FogEVMContractsByteCodeTest >> testCREATE [
 		return res, nil
 	}
 	return"
-		bytecode := self createBytecodeForCREATE.
+		bytecode :=  self
+		createBytecodeForCREATE: '0x20'
+		bytecodeAtMemory: '0x1'
+		offset: '0x10'.
 		interpreter bytecode:bytecode.
 		interpreter run. 
 		

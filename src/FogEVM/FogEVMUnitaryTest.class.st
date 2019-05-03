@@ -10,7 +10,7 @@ Class {
 
 { #category : #'as yet unclassified' }
 FogEVMUnitaryTest >> assertIsSequence: aSequence [
-	self assert: (aSequence isKindOf: FogEVMAstSequence)
+	self assert: (aSequence sequence isKindOf: FogEVMAstSequence)
 ]
 
 { #category : #'bytecode generation' }
@@ -304,7 +304,7 @@ FogEVMUnitaryTest >> createBytecodeForCALLER [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForCALLReturn: retSize at: retOffset parameters: inSize at: inOffset value: value contract: address usign: gas [
+FogEVMUnitaryTest >> createBytecodeForCALLReturn: retSize at: retOffset parameters: inSize at: inOffset value: value contract: address using: gas [
 	| bytecode stream |
 	bytecode := FogEVMByteCode new.
 	stream := bytecode writeStream.
@@ -431,49 +431,6 @@ FogEVMUnitaryTest >> createBytecodeForCOINBASE [
 ]
 
 { #category : #'bytecode generation' }
-FogEVMUnitaryTest >> createBytecodeForCREATE [
-		| bytecode stream |
-		bytecode :=	FogEVMByteCode new .
-		stream := bytecode writeStream. 
-		"should test over 
-		func opCreate(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	var (
-		value        = stack.pop()
-		offset, size = stack.pop(), stack.pop()
-		input        = memory.Get(offset.Int64(), size.Int64())
-		gas          = contract.Gas
-	)
-	if interpreter.evm.ChainConfig().IsEIP150(interpreter.evm.BlockNumber) {
-		gas -= gas / 64
-	}
-
-	contract.UseGas(gas)
-	res, addr, returnGas, suberr := interpreter.evm.Create(contract, input, gas, value)
-	// Push item on the stack based on the returned error. If the ruleset is
-	// homestead we must check for CodeStoreOutOfGasError (homestead only
-	// rule) and treat as an error, if the ruleset is frontier we must
-	// ignore this error and pretend the operation was successful.
-	if interpreter.evm.ChainConfig().IsHomestead(interpreter.evm.BlockNumber) && suberr == ErrCodeStoreOutOfGas {
-		stack.push(interpreter.intPool.getZero())
-	} else if suberr != nil && suberr != ErrCodeStoreOutOfGas {
-		stack.push(interpreter.intPool.getZero())
-	} else {
-		stack.push(addr.Big())
-	}
-	contract.Gas += returnGas
-	interpreter.intPool.put(value, offset, size)
-
-	if suberr == errExecutionReverted {
-		return res, nil
-	}
-	return"
-		self shouldBeImplemented.
-		^ bytecode.
-		
-		
-]
-
-{ #category : #'bytecode generation' }
 FogEVMUnitaryTest >> createBytecodeForCREATE2 [
 		| bytecode stream |
 		bytecode :=	FogEVMByteCode new .
@@ -509,6 +466,99 @@ FogEVMUnitaryTest >> createBytecodeForCREATE2 [
 		^ bytecode.
 		
 		
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForCREATE2: value bytecodeAtMemory: at offset: size salt: salt [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opCreate(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	var (
+		value        = stack.pop()
+		offset, size = stack.pop(), stack.pop()
+		input        = memory.Get(offset.Int64(), size.Int64())
+		gas          = contract.Gas
+	)
+	if interpreter.evm.ChainConfig().IsEIP150(interpreter.evm.BlockNumber) {
+		gas -= gas / 64
+	}
+
+	contract.UseGas(gas)
+	res, addr, returnGas, suberr := interpreter.evm.Create(contract, input, gas, value)
+	// Push item on the stack based on the returned error. If the ruleset is
+	// homestead we must check for CodeStoreOutOfGasError (homestead only
+	// rule) and treat as an error, if the ruleset is frontier we must
+	// ignore this error and pretend the operation was successful.
+	if interpreter.evm.ChainConfig().IsHomestead(interpreter.evm.BlockNumber) && suberr == ErrCodeStoreOutOfGas {
+		stack.push(interpreter.intPool.getZero())
+	} else if suberr != nil && suberr != ErrCodeStoreOutOfGas {
+		stack.push(interpreter.intPool.getZero())
+	} else {
+		stack.push(addr.Big())
+	}
+	contract.Gas += returnGas
+	interpreter.intPool.put(value, offset, size)
+
+	if suberr == errExecutionReverted {
+		return res, nil
+	}
+	return"
+	stream
+		nextPutPush10: salt;
+		nextPutPush10: size;
+		nextPutPush10: at;
+		nextPutPush10: value;
+		nextPutCreate;
+		nextPutStop.
+	^ bytecode
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForCREATE: value bytecodeAtMemory: at offset: size [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		func opCreate(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	var (
+		value        = stack.pop()
+		offset, size = stack.pop(), stack.pop()
+		input        = memory.Get(offset.Int64(), size.Int64())
+		gas          = contract.Gas
+	)
+	if interpreter.evm.ChainConfig().IsEIP150(interpreter.evm.BlockNumber) {
+		gas -= gas / 64
+	}
+
+	contract.UseGas(gas)
+	res, addr, returnGas, suberr := interpreter.evm.Create(contract, input, gas, value)
+	// Push item on the stack based on the returned error. If the ruleset is
+	// homestead we must check for CodeStoreOutOfGasError (homestead only
+	// rule) and treat as an error, if the ruleset is frontier we must
+	// ignore this error and pretend the operation was successful.
+	if interpreter.evm.ChainConfig().IsHomestead(interpreter.evm.BlockNumber) && suberr == ErrCodeStoreOutOfGas {
+		stack.push(interpreter.intPool.getZero())
+	} else if suberr != nil && suberr != ErrCodeStoreOutOfGas {
+		stack.push(interpreter.intPool.getZero())
+	} else {
+		stack.push(addr.Big())
+	}
+	contract.Gas += returnGas
+	interpreter.intPool.put(value, offset, size)
+
+	if suberr == errExecutionReverted {
+		return res, nil
+	}
+	return"
+	stream
+		nextPutPush10: size;
+		nextPutPush10: at;
+		nextPutPush10: value;
+		nextPutCreate;
+		nextPutStop.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }
@@ -1753,6 +1803,28 @@ FogEVMUnitaryTest >> createBytecodeForREVERT [
 		^ bytecode.
 		
 		
+]
+
+{ #category : #'bytecode generation' }
+FogEVMUnitaryTest >> createBytecodeForREVERTMessage: offset size: size [
+	| bytecode stream |
+	bytecode := FogEVMByteCode new.
+	stream := bytecode writeStream.
+	"should test over 
+		
+	func opRevert(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	offset, size := stack.pop(), stack.pop()
+	ret := memory.GetPtr(offset.Int64(), size.Int64())
+
+	interpreter.intPool.put(offset, size)
+	return ret, nil
+}
+	"
+	stream
+		nextPutPush10: size;
+		nextPutPush10: offset;
+		nextPutRevert.
+	^ bytecode
 ]
 
 { #category : #'bytecode generation' }

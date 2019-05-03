@@ -7,7 +7,7 @@ Class {
 { #category : #assertion }
 FogEVMDecompileStackOpsTest >> assert: sequence dups: anInteger [ 
 		self assert: sequence statements size equals: anInteger.
-	self assert: sequence instructions size equals: anInteger + 2.
+	self assert: sequence allInstructions size equals: anInteger + 2.
 	self assert: decompiler stack size equals: anInteger + 1.
 	self assert: decompiler scope stack pop equals: (decompiler scope stack at: anInteger)
 ]
@@ -15,7 +15,7 @@ FogEVMDecompileStackOpsTest >> assert: sequence dups: anInteger [
 { #category : #generated }
 FogEVMDecompileStackOpsTest >> assert: sequence swaps: anInt [
 	self assert: sequence statements size equals: 1 + anInt.
-	self assert: sequence instructions size equals: 3 + anInt.
+	self assert: sequence allInstructions size equals: 3 + anInt.
 	self assert: sequence statements first variable equals: decompiler scope stack first .
 	self assert: sequence statements last variable equals: decompiler scope stack last
 ]

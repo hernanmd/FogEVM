@@ -1,6 +1,11 @@
 Class {
 	#name : #FogEVMDecompileContractsByteCodeTest,
 	#superclass : #FogEVMUnitaryTest,
+	#traits : 'DecompilerAssertions',
+	#classTraits : 'DecompilerAssertions classTrait',
+	#classInstVars : [
+		'users'
+	],
 	#category : #'FogEVM-Decompiler-Tests'
 }
 
@@ -38,20 +43,20 @@ FogEVMDecompileContractsByteCodeTest >> setUp [
 FogEVMDecompileContractsByteCodeTest >> testCALL [
 	| bytecode retSize retOffset inSize inOffset address gas value sequence |
 	"
-	CALL(ContractAddress,Value,InputAddress,InputSize,ReturnAddress,ReturnSize)->
+	CALL(Gas, ContractAddress,Value,InputAddress,InputSize,ReturnAddress,ReturnSize)->
 	 sequence + 
+	  gas := Gas.
 	  address := ContractAddress.
-	  value := Value.
+ 	  value := Value.
 	  inputAddress := InputAddress.
 	  inputSize := InputSize.
 	  returnAddress := ReturnAddress.
 	  returnSize := ReturnSize.
-	  runtime := #Runtime.
-	  gas := runtime gas.
 	  input := MemoryLoad(inputAddress,inputSize).
 	  call := Call(address,input,gas).
-	  callExitStatus := call exitStatus.  
-	  MemoryStore(returnAddress,returnSize, call). 
+	  callExitStatus := call exitStatus. 
+	  callReturn := call return.
+	  MemoryStore(returnAddress,returnSize, callReturn). 
 	  
 	 stack +
 		callExitStatus
@@ -70,12 +75,20 @@ FogEVMDecompileContractsByteCodeTest >> testCALL [
 		at: inOffset write0xHexadecimal
 		value: value write0xHexadecimal
 		contract: address write0xHexadecimal
-		usign: gas write0xHexadecimal.
+		using: gas write0xHexadecimal.
 	sequence := self decompile: bytecode.
 	self assert: sequence statements size equals: 12.
-	self assert: sequence instructions size equals: 9.
-	sequence instructions allButLast do: [ :s | self assertIsAssignment: s ].
-	self halt
+	self assert: sequence allInstructions size equals: 9.
+	sequence statements allButLast
+		do: [ :s | self assertIsAssignment: s ].
+	self assertIsMessageSend: (sequence statements at: 10) value.
+	self
+		assert: (sequence statements at: 10) variable
+		equals: decompiler stack top.
+	self assertIsMemoryLoad: (sequence statements at: 8) value.
+	self assertIsMemoryWrite: (sequence statements at: 12).
+	self
+		assert: ((sequence statements at: 9) value isKindOf: FogEVMAstCall)
 ]
 
 { #category : #test }
@@ -131,87 +144,59 @@ FogEVMDecompileContractsByteCodeTest >> testCALLCODE [
 
 { #category : #test }
 FogEVMDecompileContractsByteCodeTest >> testCREATE [
-		|  bytecode  |
-		
-		"should test over 
-		func opCreate(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	var (
-		value        = stack.pop()
-		offset, size = stack.pop(), stack.pop()
-		input        = memory.Get(offset.Int64(), size.Int64())
-		gas          = contract.Gas
-	)
-	if interpreter.evm.ChainConfig().IsEIP150(interpreter.evm.BlockNumber) {
-		gas -= gas / 64
-	}
-
-	contract.UseGas(gas)
-	res, addr, returnGas, suberr := interpreter.evm.Create(contract, input, gas, value)
-	// Push item on the stack based on the returned error. If the ruleset is
-	// homestead we must check for CodeStoreOutOfGasError (homestead only
-	// rule) and treat as an error, if the ruleset is frontier we must
-	// ignore this error and pretend the operation was successful.
-	if interpreter.evm.ChainConfig().IsHomestead(interpreter.evm.BlockNumber) && suberr == ErrCodeStoreOutOfGas {
-		stack.push(interpreter.intPool.getZero())
-	} else if suberr != nil && suberr != ErrCodeStoreOutOfGas {
-		stack.push(interpreter.intPool.getZero())
-	} else {
-		stack.push(addr.Big())
-	}
-	contract.Gas += returnGas
-	interpreter.intPool.put(value, offset, size)
-
-	if suberr == errExecutionReverted {
-		return res, nil
-	}
-	return"
-		bytecode := self createBytecodeForCREATE.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	| bytecode sequence |
+	"
+	CREATE(Value,Offset,Size)
+	 sequence +
+	   value := Value.
+	   offset := Offset.
+	   size := Size.
+	   input := MemoryRead(Offset, Size).
+	   contract := Create(value, offset, size). 
+	   address := contract address.
+    stack + 
+      address
+	"
+	
+	bytecode := self
+		createBytecodeForCREATE: '0x20'
+		bytecodeAtMemory: '0x1'
+		offset: '0x10'.
+	sequence := self decompile: bytecode.
+	self assert: sequence statements size equals: 6.
+	self assert: sequence allInstructions size equals: 5.
+	sequence statements do: [ : s | self assertIsAssignment: s ].
+	self assertIsMessageSend:  sequence statements last value 
+	
 ]
 
 { #category : #test }
 FogEVMDecompileContractsByteCodeTest >> testCREATE2 [
-		|  bytecode  |
-		
-		"should test over 
-		func opCreate2(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	var (
-		endowment    = stack.pop()
-		offset, size = stack.pop(), stack.pop()
-		salt         = stack.pop()
-		input        = memory.Get(offset.Int64(), size.Int64())
-		gas          = contract.Gas
-	)
-
-	// Apply EIP150
-	gas -= gas / 64
-	contract.UseGas(gas)
-	res, addr, returnGas, suberr := interpreter.evm.Create2(contract, input, gas, endowment, salt)
-	// Push item on the stack based on the returned error.
-	if suberr != nil {
-		stack.push(interpreter.intPool.getZero())
-	} else {
-		stack.push(addr.Big())
-	}
-	contract.Gas += returnGas
-	interpreter.intPool.put(endowment, offset, size, salt)
-
-	if suberr == errExecutionReverted {
-		return res, nil
-	}
-	retur"
-		bytecode := self createBytecodeForCREATE2.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: false.
-		
-
+	| bytecode sequence |
+	"
+	CREATE(Value,Offset,Size)
+	 sequence +
+	   value := Value.
+	   offset := Offset.
+	   size := Size.
+	   input := MemoryRead(Offset, Size).
+	   contract := Create(value, offset, size). 
+	   address := contract address.
+    stack + 
+      address
+	"
+	
+	bytecode := self
+		createBytecodeForCREATE2: '0x20'
+		bytecodeAtMemory: '0x1'
+		offset: '0x10'
+		salt: '0x11'.
+	sequence := self decompile: bytecode.
+	self assert: sequence statements size equals: 7.
+	self assert: sequence allInstructions size equals: 6.
+	sequence statements do: [ : s | self assertIsAssignment: s ].
+	self assertIsMessageSend:  sequence statements last value 
+	
 ]
 
 { #category : #test }
@@ -328,31 +313,43 @@ FogEVMDecompileContractsByteCodeTest >> testRETURNDATASIZE [
 
 { #category : #test }
 FogEVMDecompileContractsByteCodeTest >> testREVERT [
-		|  bytecode  |
-		
-		"should test over 
-		
-	func opRevert(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	offset, size := stack.pop(), stack.pop()
-	ret := memory.GetPtr(offset.Int64(), size.Int64())
-
-	interpreter.intPool.put(offset, size)
-	return ret, nil
-}
+	| bytecode sequence |
 	"
-		bytecode := self createBytecodeForREVERT.
-		interpreter bytecode:bytecode.
-		interpreter run. 
-		
-		self assert: interpreter isReverted .
-		
+	REVERT(MessageOffset, MessageSize)
+	 sequence +  
+	  size := MessageSize.
+	  offset := MessageOffset.
+	  message := Memory(offset, size).
+	  revert(message).
+	 stack +
+	"
+	bytecode := self createBytecodeForREVERTMessage: '0x10' size: '0x40'.
+	sequence := self decompile: bytecode.
+	self assert: sequence statements size equals: 4.
+	self assert: sequence allInstructions size equals: 3.
+	sequence statements allButLast
+		do: [ :s | self assertIsAssignment: s ].
+	self assert: (sequence statements last isKindOf: FogEVMAstRevert).
+	self assert: sequence statements last message equals: sequence statements allButLast last variable.
+	self assert: sequence statements allButLast last value amountOfBytes equals: sequence statements first variable.
+	self assert: sequence statements allButLast last value fromAddress equals: sequence statements second variable.
+	self assert: decompiler scope stack isEmpty
+
 
 ]
 
 { #category : #test }
 FogEVMDecompileContractsByteCodeTest >> testSELFDESTRUCT [
-	| bytecode |
-	"should test over 
+	| bytecode sequence |
+	"
+	SelfDestruct(Address):
+	  sequence +
+	    address := Address.
+	    Suicide(address).
+	  stack + 
+	
+	
+	should test over 
 		func opSuicide(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	balance := interpreter.evm.StateDB.GetBalance(contract.Address())
 	interpreter.evm.StateDB.AddBalance(common.BigToAddress(stack.pop()), balance)
@@ -360,16 +357,13 @@ FogEVMDecompileContractsByteCodeTest >> testSELFDESTRUCT [
 	interpreter.evm.StateDB.Suicide(contract.Address())
 	return nil, nil
 }"
-	self deny: (interpreter storageFor: interpreter call contractAddress) destroyed equals: FogEVMRegistry true.
-	bytecode := self createBytecodeForSELFDESTRUCT: interpreter  call callerAddress unsignedValue.
-	(interpreter storageFor: interpreter call contractAddress) addBalance: (FogEVMRegistry forValue: 9999 bytesLength: 32).
-	self assert: (interpreter storageFor: interpreter call contractAddress) balance equals: (FogEVMRegistry forValue: 9999 bytesLength: 32).
-	self assert: (interpreter storageFor: interpreter call callerAddress) balance equals: FogEVMRegistry zero.
-	interpreter bytecode: bytecode.
-	interpreter run.
-	self assert: (interpreter storageFor: interpreter currentActivation contractAddress) destroyed equals: FogEVMRegistry true.
-	self assert: (interpreter storageFor: interpreter currentActivation callerAddress) balance equals: (FogEVMRegistry forValue: 9999 bytesLength: 32).
-	self assert: (interpreter storageFor: interpreter currentActivation contractAddress) balance equals: FogEVMRegistry zero
+	bytecode := self
+		createBytecodeForSELFDESTRUCT: '0x31243513411512ABC54'.
+	sequence := self decompile: bytecode.
+	self assert: sequence statements size equals: 2.
+	self assert: sequence allInstructions size equals: 3.
+	self assertIsAssignment: sequence statements first.
+	self assert:sequence statements second account equals: sequence statements first variable .
 ]
 
 { #category : #test }

@@ -10,6 +10,7 @@ FogEVMDecompilerTestCase >> parseTest: code [
 	runtime := FogConnection new session loadPackageForCode: code named: #test.
 	decompiler := FogEVMIREthereumDecompiler new.
 	decompiled := decompiler decompilePackage: runtime.
+	decompiled inspect.
 	^ decompiled
 ]
 

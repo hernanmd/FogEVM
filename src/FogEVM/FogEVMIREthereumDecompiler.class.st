@@ -84,7 +84,7 @@ FogEVMIREthereumDecompiler >> decompile: aFogEVMMnemonicContract [
 	destinations := Dictionary new.
 	self newScope.
 	self basicDecompile.
-	^ scope sequence 
+	^ scope  
 ]
 
 { #category : #decompiling }
@@ -379,55 +379,28 @@ FogEVMIREthereumDecompiler >> visitByte: aFogVMByte [
 
 { #category : #calling }
 FogEVMIREthereumDecompiler >> visitCall: aFogVMCall [
-	| var call |
+	| var call callVar input |
 	call := FogEVMAstCall new.
 	call gas: (self literalOrVariable: self pop).
 	call address: (self literalOrVariable: self pop).
 	call money: (self literalOrVariable: self pop).
-	call
-		input:
+	input := 
 			(self
 				memoryReadfrom: (self literalOrVariable: self pop)
 				to: (self literalOrVariable: self pop)).
-	call
-		output:
+	call input: input.
+	callVar := self assignToTemporaryVariable: call.
+	
+	var := self messageSend: #exitStatus receiver: callVar arguments: {}.
+	self scope sequence
+		addStatement:
 			(self
 				memoryWriteAt: (self literalOrVariable: self pop)
-				value: (self literalOrVariable: self pop)).
-	var := self messageSend: #output receiver: call arguments: {}.
+				value: (self messageSend: #return receiver: callVar arguments: {})
+				amount: (self literalOrVariable: self pop)).
 	self push: var.
-	self visitNode: aFogVMCall
+	self visitNode: aFogVMCall.
 
-
-	"^ '
-func opCall(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	// Pop gas. The actual gas in interpreter.evm.callGasTemp.
-	interpreter.intPool.put(stack.pop())
-	gas := interpreter.evm.callGasTemp
-	// Pop other call parameters.
-	addr, value, inOffset, inSize, retOffset, retSize := stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop(), stack.pop()
-	toAddr := common.BigToAddress(addr)
-	value = math.U256(value)
-	// Get the arguments from the memory.
-	args := memory.Get(inOffset.Int64(), inSize.Int64())
-
-	if value.Sign() != 0 {
-		gas += params.CallStipend
-	}
-	ret, returnGas, err := interpreter.evm.Call(contract, toAddr, args, gas, value)
-	if err != nil {
-		stack.push(interpreter.intPool.getZero())
-	} else {
-		stack.push(interpreter.intPool.get().SetUint64(1))
-	}
-	if err == nil || err == errExecutionReverted {
-		memory.Set(retOffset.Uint64(), retSize.Uint64(), ret)
-	}
-	contract.Gas += returnGas
-
-	interpreter.intPool.put(addr, value, inOffset, inSize, retOffset, retSize)
-	return ret, nil
-}'"
 ]
 
 { #category : #'visiting global' }
@@ -504,6 +477,99 @@ FogEVMIREthereumDecompiler >> visitCodesize: aFogVMCodesize [
 FogEVMIREthereumDecompiler >> visitCoinbase: aFogVMCoinbase [
 	self push: (self messageSend: #address receiver: self coinbase arguments: {}).
 	self visitNode: aFogVMCoinbase
+]
+
+{ #category : #visiting }
+FogEVMIREthereumDecompiler >> visitCreate2: aFogVMCreate2 [
+	| var create |
+	create := FogEVMContract new.
+	create value: (self literalOrVariable: self pop).
+	create
+		bytecode:
+			(self
+				assignToTemporaryVariable:
+					(self
+						memoryReadfrom: (self literalOrVariable: self pop)
+						to: (self literalOrVariable: self pop))).
+	create salt:  (self literalOrVariable: self pop).
+	
+	var := self messageSend: #address receiver: create arguments: {}.
+	self push: var.
+	self visitNode: aFogVMCreate2.
+	'func opCreate2(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	var (
+		endowment    = stack.pop()
+		offset, size = stack.pop(), stack.pop()
+		salt         = stack.pop()
+		input        = memory.Get(offset.Int64(), size.Int64())
+		gas          = contract.Gas
+	)
+
+	// Apply EIP150
+	gas -= gas / 64
+	contract.UseGas(gas)
+	res, addr, returnGas, suberr := interpreter.evm.Create2(contract, input, gas, endowment, salt)
+	// Push item on the stack based on the returned error.
+	if suberr != nil {
+		stack.push(interpreter.intPool.getZero())
+	} else {
+		stack.push(addr.Big())
+	}
+	contract.Gas += returnGas
+	interpreter.intPool.put(endowment, offset, size, salt)
+
+	if suberr == errExecutionReverted {
+		return res, nil
+	}
+	retur'
+]
+
+{ #category : #visiting }
+FogEVMIREthereumDecompiler >> visitCreate: aFogVMCreate [
+	| var create |
+	create := FogEVMContract new.
+	create value: (self literalOrVariable: self pop).
+	create
+		bytecode:
+			(self
+				assignToTemporaryVariable:
+					(self
+						memoryReadfrom: (self literalOrVariable: self pop)
+						to: (self literalOrVariable: self pop))).
+	var := self messageSend: #address receiver: create arguments: {}.
+	self push: var.
+	self visitNode: aFogVMCreate.
+	'func opCreate(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	var (
+		value        = stack.pop()
+		offset, size = stack.pop(), stack.pop()
+		input        = memory.Get(offset.Int64(), size.Int64())
+		gas          = contract.Gas
+	)
+	if interpreter.evm.ChainConfig().IsEIP150(interpreter.evm.BlockNumber) {
+		gas -= gas / 64
+	}
+
+	contract.UseGas(gas)
+	res, addr, returnGas, suberr := interpreter.evm.Create(contract, input, gas, value)
+	// Push item on the stack based on the returned error. If the ruleset is
+	// homestead we must check for CodeStoreOutOfGasError (homestead only
+	// rule) and treat as an error, if the ruleset is frontier we must
+	// ignore this error and pretend the operation was successful.
+	if interpreter.evm.ChainConfig().IsHomestead(interpreter.evm.BlockNumber) && suberr == ErrCodeStoreOutOfGas {
+		stack.push(interpreter.intPool.getZero())
+	} else if suberr != nil && suberr != ErrCodeStoreOutOfGas {
+		stack.push(interpreter.intPool.getZero())
+	} else {
+		stack.push(addr.Big())
+	}
+	contract.Gas += returnGas
+	interpreter.intPool.put(value, offset, size)
+
+	if suberr == errExecutionReverted {
+		return res, nil
+	}
+	return'
 ]
 
 { #category : #'visit globals' }
@@ -624,7 +690,6 @@ FogEVMIREthereumDecompiler >> visitGt: aFogVMGt [
 FogEVMIREthereumDecompiler >> visitInvalid: aFogVMInvalid [
 	| invalid |
 	invalid := FogEVMAstInvalid new.
-	invalid instruction: self currentInstruction.
 	self scope sequence addStatement: invalid.
 	self visitNode: aFogVMInvalid
 ]
@@ -645,11 +710,13 @@ FogEVMIREthereumDecompiler >> visitJump: aFogVMJump [
 	| jump |
 	jump := FogEVMAstJump new.
 	jump address: self pop.
-	(jump address isAccessible and: [ self isValidDestination: jump address ])
+	(jump address isAccessible
+		and: [ self isValidDestination: jump address ])
 		ifTrue: [ (destinations includesKey: jump address read)
 				ifTrue: [ self scope sequence isClosed: true ]
-				ifFalse: [ jump instruction: self currentInstruction.
-					jump instruction: (self setNextInstructionToByte: jump address read).
+				ifFalse: [ "jump instruction: self currentInstruction."
+					"					jump instruction: ."
+					self setNextInstructionToByte: jump address read.
 					self scope sequence addStatement: jump.
 					self visitNode: aFogVMJump ] ]
 		ifFalse: [ self error: 'Error' ]
@@ -658,17 +725,19 @@ FogEVMIREthereumDecompiler >> visitJump: aFogVMJump [
 { #category : #visiting }
 FogEVMIREthereumDecompiler >> visitJumpDestinationTo: jump [
 	| ip destination |
-	(jump address isAccessible and: [ self isValidDestination: jump address ])
+	(jump address isAccessible
+		and: [ self isValidDestination: jump address ])
 		ifTrue: [ ip := instructionPointer.
 			self setNextInstructionToByte: jump address read.
 			destination := (self scope
 				getProcessedInstruction: self currentInstruction
 				ifNone: [ | new |
-					jump instruction: self currentInstruction.
+					"jump instruction: self currentInstruction."
 					new := self getOrCreateJumpDestination.
-					new scope ifNil: [ new scope: (self newScopeDuring: [ self basicDecompile ]) ].
+					new scope
+						ifNil: [ new scope: (self newScopeDuring: [ self basicDecompile ]) ].
 					new ]) jumpDestination.
-			destination addOrigin: jump.
+			destination ifNotNil: [ destination addOrigin: jump ].
 			self setNextInstruction: ip.
 			^ destination ]
 ]
@@ -700,7 +769,6 @@ FogEVMIREthereumDecompiler >> visitLog: aFogVMLog [
 	log message: message.
 	aFogVMLog topicsAmount
 		timesRepeat: [ log topics add: (self literalOrVariable: self pop) ].
-	log instruction: self currentInstruction.
 	self assignToTemporaryVariable: log.
 	self visitNode: aFogVMLog
 ]
@@ -798,9 +866,11 @@ FogEVMIREthereumDecompiler >> visitMulmod: aFogVMMulmod [
 FogEVMIREthereumDecompiler >> visitNode: aNode [
 	| sequence |
 	sequence := self scope sequence statements
-		ifEmpty: [ self scope parent sequence ]
+		ifEmpty: [ self scope parent
+				ifNil: [ self scope sequence ]
+				ifNotNil: [ self scope parent sequence ] ]
 		ifNotEmpty: [ self scope sequence ].
-	sequence statements last instruction: aNode
+	sequence instruction: aNode
 ]
 
 { #category : #visiting }
@@ -908,7 +978,6 @@ FogEVMIREthereumDecompiler >> visitRevert: aFogVMRevert [
 	| rev |
 	rev := FogEVMAstRevert new.
 	rev message: (self memoryReadfrom: self pop to: self pop).
-	rev instruction: self currentInstruction.
 	self scope sequence addStatement: rev.
 	self visitNode: aFogVMRevert
 ]
@@ -940,7 +1009,6 @@ FogEVMIREthereumDecompiler >> visitSelfdestruct: aFogVMSelfdestruct [
 	| sd |
 	sd := FogEVMAstSelfDestruct new.
 	sd account: (self literalOrVariable: self pop).
-	sd instruction: self currentInstruction.
 	self scope sequence addStatement: sd.
 	self visitNode: aFogVMSelfdestruct
 ]

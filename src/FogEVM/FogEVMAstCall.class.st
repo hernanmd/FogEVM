@@ -5,8 +5,7 @@ Class {
 		'address',
 		'gas',
 		'money',
-		'input',
-		'output'
+		'input'
 	],
 	#category : #'FogEVM-DecompilerAST'
 }
@@ -32,6 +31,13 @@ FogEVMAstCall >> money: aFogEVMAstVariable [
 ]
 
 { #category : #accessing }
-FogEVMAstCall >> output: aFogEVMAstMemoryStore [ 
-	output := aFogEVMAstMemoryStore
+FogEVMAstCall >> printOn: aStream [
+	aStream
+		nextPutAll: 'Call(';
+		nextPutAll: address printString;
+		nextPut: $,;
+		nextPutAll: input printString;
+		nextPut: $,;
+		nextPutAll: gas printString;
+		nextPut: $)
 ]

@@ -74,7 +74,7 @@ FogEVMDecompileEnvironmentalInformationAccessTest >> testCALLDATACOPY [
 	sequence := self decompile: (self createBytecodeForCALLDATACOPY: '0x1' data: '0x3' length: '0x5').
 	self assert: self decompiler programHasFinished.
 	self assertIsSequence: sequence.
-	self assert: sequence instructions size equals: 5.
+	self assert: sequence allInstructions size equals: 5.
 	self assert: sequence statements size equals: 7.
 	(sequence statements first: 6) do: [ :s | self assertIsAssignment: s ].
 	self assertIsMemoryWrite: sequence statements last.
@@ -175,7 +175,7 @@ FogEVMDecompileEnvironmentalInformationAccessTest >> testCODECOPY [
 	self assert: self decompiler programHasFinished.
 	
 	self assertIsSequence: sequence.
-	self assert: sequence instructions size equals: 5.
+	self assert: sequence allInstructions size equals: 5.
 	self assert: sequence statements size equals: 7.
 	(sequence statements first: 6 ) do: [ :s | self assertIsAssignment: s ].
 	self assertIsMemoryWrite: sequence statements last .
@@ -268,7 +268,7 @@ FogEVMDecompileEnvironmentalInformationAccessTest >> testEXTCODECOPY [
 		length: '0x5').
 	self assert: self decompiler programHasFinished.
 	self assertIsSequence: sequence.
-	self assert: sequence instructions size equals: 6.
+	self assert: sequence allInstructions size equals: 6.
 	self assert: sequence statements size equals: 8.
 	(sequence statements first: 7) do: [ :s | self assertIsAssignment: s ].
 	self assertIsMemoryWrite: sequence statements last.
