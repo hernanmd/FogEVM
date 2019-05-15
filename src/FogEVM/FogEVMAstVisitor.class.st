@@ -27,11 +27,12 @@ FogEVMAstVisitor >> visitAstNode: aFogEVMAstNode [
 
 { #category : #visiting }
 FogEVMAstVisitor >> visitCall: aFogEVMAstCall [
+	self visitAstNode: aFogEVMAstCall.
 	aFogEVMAstCall address accept: self.
 	aFogEVMAstCall gas accept: self.
 	aFogEVMAstCall money accept: self.
 	aFogEVMAstCall input accept: self.
-	self visitAstNode: aFogEVMAstCall
+	
 ]
 
 { #category : #visiting }
@@ -134,8 +135,10 @@ FogEVMAstVisitor >> visitSelfDestruct: aFogEVMAstSelfDestruct [
 
 { #category : #visiting }
 FogEVMAstVisitor >> visitSequence: aFogEVMSequence [
+	| statements |
 	self visitAstNode: aFogEVMSequence.
-	aFogEVMSequence statements do: [ :s | s ifNotNil: [ s accept: self ] ]
+	statements := aFogEVMSequence statements asArray.
+	statements do: [ :s | s ifNotNil: [ s accept: self ] ]
 ]
 
 { #category : #visiting }

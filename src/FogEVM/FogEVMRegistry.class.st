@@ -213,6 +213,11 @@ FogEVMRegistry >> \\ aFogEVMRegistry [
 ]
 
 { #category : #converting }
+FogEVMRegistry >> asAddress [
+	^ self printString
+]
+
+{ #category : #converting }
 FogEVMRegistry >> asByteArray [
 	^ self byteArray
 ]

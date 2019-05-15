@@ -457,7 +457,7 @@ FogEVMAbstractInterpreter >> stackSize [
 
 { #category : #accessing }
 FogEVMAbstractInterpreter >> storage [
-	^ storage ifNil: [ storage := Dictionary new ]
+	^ storage 
 ]
 
 { #category : #accessing }

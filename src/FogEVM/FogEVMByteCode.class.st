@@ -84,6 +84,11 @@ FogEVMByteCode >> at: anIdx put: aValue [
 	content at: anIdx put: aValue
 ]
 
+{ #category : #accessing }
+FogEVMByteCode >> bytecode [
+	^ self
+]
+
 { #category : #'as yet unclassified' }
 FogEVMByteCode >> bytecodeSize [
 	^ (content reject: #isNil thenCollect: [ :c | c instruction size ]) sum
@@ -123,6 +128,11 @@ FogEVMByteCode >> hasConstructor [
 FogEVMByteCode >> initialize [
 	super initialize.
 	content := OrderedCollection new
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMByteCode >> instructions [
+	^ content reject: #isNil  thenCollect: #instruction
 ]
 
 { #category : #converting }

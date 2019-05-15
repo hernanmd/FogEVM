@@ -82,15 +82,33 @@ FogEVMActivationForActivation >> model: aModel [
 FogEVMActivationForActivation >> setUp: aFogEVMInterpreterBuilder [
 	| fromRegistry toRegistry contractAddress inputByteArray valueRegistry contextAddress gasRegistry gasPriceRegistry |
 	fromRegistry := self createRegistryFor: from text asString length: 20.
-	toRegistry := to selectedItem.
-	contractAddress := contract text asString ifEmpty: [ toRegistry  ].
-
-	valueRegistry := self createRegistryFor: transferValue text asString length: 8.
-	contextAddress := self createRegistryFor: context text asString length: 20.
-
-	inputByteArray := self createByteArrayFor: input text asString.
+	toRegistry := to selectedIndex = 0
+		ifTrue: [ self
+				createRegistryFor:
+					(UIManager default
+						request: ' Please enter a valid hash for sending the activation ')
+				length: 20 ]
+		ifFalse: [ to selectedItem ].
+	contractAddress := contract text asString ifEmpty: [ toRegistry ].
+	valueRegistry := self
+		createRegistryFor: transferValue text asString
+		length: 8.
+	contextAddress := self
+		createRegistryFor: context text asString
+		length: 20.
+	
+	inputByteArray := #( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) asByteArray .
+	
+	(self createByteArrayFor: input text asString) doWithIndex: [ :v : i | inputByteArray at: i put: v ].
+	
+	
+	
+	self halt .
+	
 	gasRegistry := self createRegistryFor: gas text asString length: 8.
-	gasPriceRegistry := self createRegistryFor: gasPrice text asString length: 8.
+	gasPriceRegistry := self
+		createRegistryFor: gasPrice text asString
+		length: 8.
 	^ aFogEVMInterpreterBuilder
 		from: fromRegistry
 		to: toRegistry

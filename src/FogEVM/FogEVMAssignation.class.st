@@ -13,6 +13,11 @@ FogEVMAssignation >> accept: aFogEVMAstVariableWiperVisitor [
 	aFogEVMAstVariableWiperVisitor visitAssignation: self 
 ]
 
+{ #category : #'as yet unclassified' }
+FogEVMAssignation >> isAssignation [
+	^ true
+]
+
 { #category : #printing }
 FogEVMAssignation >> printOn: aStream [
 	variable name printOn: aStream.

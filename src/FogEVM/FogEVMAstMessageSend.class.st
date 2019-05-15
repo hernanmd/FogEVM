@@ -81,3 +81,12 @@ FogEVMAstMessageSend >> selector [
 FogEVMAstMessageSend >> selector: aString [ 
 	selector := aString
 ]
+
+{ #category : #unyfiny }
+FogEVMAstMessageSend >> unify: aFogEVMAstVariable with: aFogEVMLiteral [
+	instructions := aFogEVMAstVariable instructions , instructions.
+	receiver = aFogEVMAstVariable
+		ifTrue: [ receiver := aFogEVMLiteral ].
+	(arguments includes: aFogEVMAstVariable)
+		ifTrue: [ arguments replaceAll: aFogEVMAstVariable with: aFogEVMLiteral ]
+]

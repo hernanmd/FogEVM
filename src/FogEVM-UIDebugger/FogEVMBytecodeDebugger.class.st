@@ -21,10 +21,8 @@ Class {
 	#superclass : #ComposablePresenter,
 	#instVars : [
 		'context',
-		'bytecode',
 		'executed',
 		'preview',
-		'stack',
 		'store',
 		'memory',
 		'interpreter',
@@ -35,7 +33,9 @@ Class {
 		'resources',
 		'downSideTabs',
 		'logs',
-		'errors'
+		'errors',
+		'bytecodeAndStack',
+		'codeTab'
 	],
 	#category : #'FogEVM-UIDebugger'
 }
@@ -49,9 +49,12 @@ FogEVMBytecodeDebugger class >> defaultSpec [
 				newRow: #menu height: self toolbarHeight;
 				newRow: [ :mainRow | 
 					mainRow
-						newColumn: [ :col | col newRow: #leftSideTabs ] width: (self defaultFont widthOfString: '16rB4EBF466889C4A0239379125A7D0F9C4E8BF2A14') + 12;
-						newColumn: #bytecode width: 250;
-						newColumn: #stack width: 150;
+						newColumn: [ :col | col newRow: #leftSideTabs ]
+							width:
+							(self defaultFont
+								widthOfString: '16rB4EBF466889C4A0239379125A7D0F9C4E8BF2A14')
+								+ 12;
+						newColumn: #codeTab width: 250 + 150;
 						newColumn: [ :secondHalf | 
 							secondHalf
 								newRow: [ :upperPart | 
@@ -91,14 +94,14 @@ FogEVMBytecodeDebugger class >> menuCommandOn: aBuilder [
 { #category : #convenience }
 FogEVMBytecodeDebugger >> bindComponents [
 	context activation: interpreter currentActivation.
-	bytecode elements: interpreter currentActivation executableMemory.
-	bytecode ip: interpreter currentActivation nextInstruction.
+	bytecodeAndStack bytecode elements: interpreter currentActivation executableMemory.
+	bytecodeAndStack bytecode ip: interpreter currentActivation nextInstruction.
 	preview
 		preview:
 			(FogEVMExecutionPreview
 				from: interpreter currentActivation nextInstruction
 				and: interpreter stack).
-	stack stack: interpreter stack.
+	bytecodeAndStack stack stack: interpreter stack.
 	store storage: interpreter storage.
 	memory memory: interpreter memory.
 	logs items: interpreter logs.
@@ -108,7 +111,12 @@ FogEVMBytecodeDebugger >> bindComponents [
 
 { #category : #accessing }
 FogEVMBytecodeDebugger >> bytecode [
-	^ bytecode 
+	^ bytecodeAndStack bytecode 
+]
+
+{ #category : #accessing }
+FogEVMBytecodeDebugger >> codeTab [
+	^ codeTab
 ]
 
 { #category : #accessing }
@@ -138,17 +146,16 @@ FogEVMBytecodeDebugger >> executed: anObject [
 
 { #category : #initialization }
 FogEVMBytecodeDebugger >> initializeWidgets [
-	bytecode := self instantiate: FogEVMBytecodeList.
 	executed := self instantiate: FogEVMBytecodeExecutionPreviewHistoric.
 	preview := self instantiate: FogEVMBytecodeExecutionPreview.
-	stack := self instantiate: FogEVMStackView.
-
+	bytecodeAndStack := self
+		instantiate: FogEVMBytecodeAndStackVisualizer.
+	codeTab := self newTabManager.
+	codeTab addTab: (self newTab: 'Bytecode' for: bytecodeAndStack).
 	self installResources.
 	self installContextualdata.
 	self installMenu.
-	self installLogs.	
-	
-
+	self installLogs
 ]
 
 { #category : #initialization }
@@ -326,7 +333,7 @@ FogEVMBytecodeDebugger >> runInterpreter [
 
 { #category : #accessing }
 FogEVMBytecodeDebugger >> stack [
-	^ stack
+	^ bytecodeAndStack stack
 ]
 
 { #category : #convenience }
@@ -352,10 +359,11 @@ FogEVMBytecodeDebugger >> store [
 { #category : #convenience }
 FogEVMBytecodeDebugger >> transferData [
 	context activation: interpreter currentActivation.
-	bytecode ip: interpreter currentActivation nextInstruction.
-	bytecode refresh.
+	bytecodeAndStack bytecode
+		ip: interpreter currentActivation nextInstruction.
+	bytecodeAndStack bytecode refresh.
 	executed refresh.
-	stack refresh.
+	bytecodeAndStack stack refresh.
 	store storage: interpreter storage.
 	logs items: interpreter logs.
 	errors items: interpreter errors.

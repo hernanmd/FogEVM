@@ -25,6 +25,11 @@ FogEVMAstNode >> instructions [
 ]
 
 { #category : #testing }
+FogEVMAstNode >> isAssignation [
+	^ false
+]
+
+{ #category : #testing }
 FogEVMAstNode >> isConditionalJump [
 	^ false 
 ]

@@ -41,6 +41,14 @@ FogEVMMemoryStorage >> at: aKey [
 ]
 
 { #category : #accessing }
+FogEVMMemoryStorage >> createStorageFor: aContractAddress at: aStateHash [
+	^ FogEVMBucketStorage new
+		address: aContractAddress;
+		beLocal;
+		yourself
+]
+
+{ #category : #accessing }
 FogEVMMemoryStorage >> initialize [
 	super initialize.
 	name := UUID new asString
@@ -74,9 +82,7 @@ FogEVMMemoryStorage >> storage [
 FogEVMMemoryStorage >> storageFor: aContractAddress state: aStateHash [
 	^ self storage
 		at: aContractAddress
-		ifAbsentPut: [ FogEVMBucketStorage new
-				address: aContractAddress;
-				yourself ]
+		ifAbsentPut: [ self createStorageFor: aContractAddress at: aStateHash ]
 ]
 
 { #category : #accessing }

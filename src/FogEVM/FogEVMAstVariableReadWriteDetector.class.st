@@ -1,5 +1,5 @@
 Class {
-	#name : #FogEVMAstVariableWiperVisitor,
+	#name : #FogEVMAstVariableReadWriteDetector,
 	#superclass : #FogEVMAstVisitor,
 	#instVars : [
 		'readWriteTracker',
@@ -7,54 +7,68 @@ Class {
 		'assignationValue',
 		'scopesTracking'
 	],
-	#category : #'FogEVM-Decompiler-Vitamins'
+	#category : #'FogEVM-Decompiler-Unifier-Tests'
 }
 
 { #category : #'as yet unclassified' }
-FogEVMAstVariableWiperVisitor >> anyScopeHasChanged [
+FogEVMAstVariableReadWriteDetector >> anyScopeHasChanged [
 	^ readWriteTracker keys anySatisfy: [ :v | v isEVMVariable not ]
 ]
 
 { #category : #visiting }
-FogEVMAstVariableWiperVisitor >> currentScope [
+FogEVMAstVariableReadWriteDetector >> currentScope [
 	^ scopesTracking top
 ]
 
 { #category : #visiting }
-FogEVMAstVariableWiperVisitor >> currentScope: aScope [
+FogEVMAstVariableReadWriteDetector >> currentScope: aScope [
  	scopesTracking push: aScope.
 ]
 
 { #category : #visiting }
-FogEVMAstVariableWiperVisitor >> initialize [
+FogEVMAstVariableReadWriteDetector >> initialize [
 	super initialize.
-	scopesTracking := Stack new
+	scopesTracking := Stack new.
+	state := #reading
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMAstVariableWiperVisitor >> readWriteTracker [
+FogEVMAstVariableReadWriteDetector >> readWriteTracker [
 	^ readWriteTracker ifNil: [ readWriteTracker := Dictionary new ]
 ]
 
 { #category : #visiting }
-FogEVMAstVariableWiperVisitor >> releaseScope [
+FogEVMAstVariableReadWriteDetector >> releaseScope [
 	scopesTracking pop.
 ]
 
-{ #category : #visiting }
-FogEVMAstVariableWiperVisitor >> visitAssignation: aFogEVMAssignation [
-	(aFogEVMAssignation value = aFogEVMAssignation variable or: [ aFogEVMAssignation variable isEVMVariable not ])
-		ifTrue: [ 
-			self currentScope sequence removeStatement: aFogEVMAssignation ]
-		ifFalse: [ state := #writing.
-			assignationValue := aFogEVMAssignation value.
-			aFogEVMAssignation variable accept: self.
-			state := #reading.
-			aFogEVMAssignation value accept: self ]
+{ #category : #'as yet unclassified' }
+FogEVMAstVariableReadWriteDetector >> unify: aFogEVMAstScope [
+	| unifier |
+	aFogEVMAstScope accept: self.
+	unifier := FogEVMAstVariableUnifier new.
+	unifier readWriteTracker: readWriteTracker.
+	aFogEVMAstScope accept: unifier
 ]
 
 { #category : #visiting }
-FogEVMAstVariableWiperVisitor >> visitScope: aFogEVMAstScope [
+FogEVMAstVariableReadWriteDetector >> visitAssignation: aFogEVMAssignation [
+
+	(aFogEVMAssignation value = aFogEVMAssignation variable or: [ aFogEVMAssignation variable isEVMVariable not ])
+		ifTrue: [ 
+			self currentScope sequence removeStatement: aFogEVMAssignation 
+		]
+		ifFalse: [ 
+			state := #writing.
+			assignationValue := aFogEVMAssignation value.
+			aFogEVMAssignation variable accept: self.
+			state := #reading.
+			aFogEVMAssignation value accept: self 
+		]
+]
+
+{ #category : #visiting }
+FogEVMAstVariableReadWriteDetector >> visitScope: aFogEVMAstScope [
 	self currentScope: aFogEVMAstScope.
 	aFogEVMAstScope temporaries: (aFogEVMAstScope temporaries select: #isEVMVariable).
 	aFogEVMAstScope temporaries do: [ :t | self visitVariableDefinition: t ].
@@ -62,13 +76,8 @@ FogEVMAstVariableWiperVisitor >> visitScope: aFogEVMAstScope [
 	self releaseScope
 ]
 
-{ #category : #'as yet unclassified' }
-FogEVMAstVariableWiperVisitor >> visitSelfDestruct: aFogEVMAstSelfDestruct [ 
-	aFogEVMAstSelfDestruct account accept: self 
-]
-
 { #category : #visiting }
-FogEVMAstVariableWiperVisitor >> visitVariable: aFogEVMAstVariable [
+FogEVMAstVariableReadWriteDetector >> visitVariable: aFogEVMAstVariable [
 	state = #writing
 		ifTrue: [ (self readWriteTracker at: aFogEVMAstVariable) at: #lastAssignment put: assignationValue.
 			(self readWriteTracker at: aFogEVMAstVariable) at: #write put: ((self readWriteTracker at: aFogEVMAstVariable) at: #write) + 1 ]
@@ -76,7 +85,7 @@ FogEVMAstVariableWiperVisitor >> visitVariable: aFogEVMAstVariable [
 ]
 
 { #category : #visiting }
-FogEVMAstVariableWiperVisitor >> visitVariableDefinition: aFogEVMAstVariable [
+FogEVMAstVariableReadWriteDetector >> visitVariableDefinition: aFogEVMAstVariable [
 	self readWriteTracker
 		at: aFogEVMAstVariable
 		ifPresent: [ :d | (d at: #scopes) add: self currentScope ]
@@ -86,7 +95,7 @@ FogEVMAstVariableWiperVisitor >> visitVariableDefinition: aFogEVMAstVariable [
 ]
 
 { #category : #'as yet unclassified' }
-FogEVMAstVariableWiperVisitor >> wipe [
+FogEVMAstVariableReadWriteDetector >> wipe [
 	(readWriteTracker associations
 		select: [ :a | a key isGenerated and: [ (a value at: #read) = 1 and: [ (a value at: #write) = 1 ] ] ])
 		do: [ :a | a key becomeForward: (a value at: #lastAssignment) ].

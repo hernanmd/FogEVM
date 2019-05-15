@@ -22,7 +22,6 @@ FogEVMAstSequence >> addStatement: aFogEVMAssignation [
 
 { #category : #testing }
 FogEVMAstSequence >> allInstructions [
-	self assert: (instructions isEmpty not and: (statements flatCollect: #instructions) isEmpty not) not.
 	^ instructions , (statements flatCollect: #instructions)
 ]
 
@@ -37,6 +36,11 @@ FogEVMAstSequence >> instruction: anObject [
 	statements
 		ifEmpty: [ super instruction: anObject ]
 		ifNotEmpty: [ statements last instruction: anObject ]
+]
+
+{ #category : #accessing }
+FogEVMAstSequence >> instructions: aCollection [
+	instructions := aCollection
 ]
 
 { #category : #testing }
@@ -59,6 +63,11 @@ FogEVMAstSequence >> printOn: aStream [
 ]
 
 { #category : #removing }
+FogEVMAstSequence >> removeNode: aFogEVMAssignation [
+	statements remove: aFogEVMAssignation
+]
+
+{ #category : #removing }
 FogEVMAstSequence >> removeStatement: aFogEVMAssignation [ 
 	statements remove: aFogEVMAssignation
 ]
@@ -66,4 +75,9 @@ FogEVMAstSequence >> removeStatement: aFogEVMAssignation [
 { #category : #'as yet unclassified' }
 FogEVMAstSequence >> statements [
 	^ statements
+]
+
+{ #category : #unifiying }
+FogEVMAstSequence >> unify: aFogEVMAstVariable with: aFogEVMLiteral [ 
+	self shouldBeImplemented.
 ]
