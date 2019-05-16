@@ -27,3 +27,9 @@ FogEVMAstSelfDestruct >> printOn: aStream [
 	aStream nextPutAll: 'SELF-DESTRUCT Account: '.
 	account printOn: aStream
 ]
+
+{ #category : #unifying }
+FogEVMAstSelfDestruct >> unify: aFogEVMAstVariable with: aFogEVMLiteral [
+	account = aFogEVMAstVariable
+		ifTrue: [ account := aFogEVMLiteral ]
+]

@@ -1,10 +1,10 @@
 Class {
-	#name : #FogEVMAstDuckType,
+	#name : #FogEVMAstUnknownType,
 	#superclass : #FogEVMAstNode,
 	#category : #'FogEVM-DecompilerAST'
 }
 
 { #category : #printing }
-FogEVMAstDuckType >> printOn: aStream [
+FogEVMAstUnknownType >> printOn: aStream [
 	aStream nextPutAll: 'Unknown type'
 ]

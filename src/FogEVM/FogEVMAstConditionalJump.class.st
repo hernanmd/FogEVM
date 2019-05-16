@@ -44,7 +44,13 @@ FogEVMAstConditionalJump >> deepCopy [
 
 { #category : #accessing }
 FogEVMAstConditionalJump >> destination [
+	jumpDestination ifNil: [ ^ nil ].
 	^ jumpDestination scope
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMAstConditionalJump >> instructions: aCollection [
+	instructions := aCollection
 ]
 
 { #category : #testing }
@@ -76,7 +82,23 @@ FogEVMAstConditionalJump >> printOn: aStream [
 	aStream nextPutAll: '] '
 ]
 
+{ #category : #removeing }
+FogEVMAstConditionalJump >> removeNode: aFogEVMAssignation [ 
+
+]
+
 { #category : #accessing }
 FogEVMAstConditionalJump >> scope [
 	^ destination
+]
+
+{ #category : #unifyinh }
+FogEVMAstConditionalJump >> unify: aFogEVMAstVariable with: aFogEVMLiteral [
+	address = aFogEVMAstVariable
+		ifTrue: [ address := aFogEVMLiteral.
+			^ self ].
+	condition = aFogEVMAstVariable
+		ifTrue: [ condition := aFogEVMLiteral.
+			^ self ].
+	"self error: 'Should by unifying something does it ? '"
 ]

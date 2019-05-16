@@ -6,7 +6,8 @@ Class {
 		'instructionPointer',
 		'scope',
 		'instruction',
-		'destinations'
+		'destinations',
+		'nodesInMemory'
 	],
 	#category : #'FogEVM-Decompiler'
 }
@@ -22,6 +23,7 @@ FogEVMIREthereumDecompiler >> assignToTemporaryVariable: aNode [
 		variable: var;
 		value: aNode.
 	var lastValue: aNode.
+	var value: aNode.
 	self scope sequence addStatement: assignment.
 	^ var
 ]
@@ -77,6 +79,16 @@ FogEVMIREthereumDecompiler >> currentInstruction [
 	^ instruction 
 ]
 
+{ #category : #visiting }
+FogEVMIREthereumDecompiler >> currentMemory [
+	^ nodesInMemory top
+]
+
+{ #category : #realInstruction }
+FogEVMIREthereumDecompiler >> currentMemory: aFogEVMMnemonicExecutableMemoryEntry [ 
+	nodesInMemory push: aFogEVMMnemonicExecutableMemoryEntry.
+]
+
 { #category : #public }
 FogEVMIREthereumDecompiler >> decompile: aFogEVMMnemonicContract [
 	program := aFogEVMMnemonicContract content copy.
@@ -118,6 +130,12 @@ FogEVMIREthereumDecompiler >> getOrCreateJumpDestination [
 			destination := FogEVMAstJumpDestination new.
 			destination address: self currentInstruction byteNumber.
 			destination instruction: self currentInstruction ]
+]
+
+{ #category : #convenience }
+FogEVMIREthereumDecompiler >> initialize [
+	super initialize.
+	nodesInMemory := Stack new.
 ]
 
 { #category : #testing }
@@ -691,6 +709,7 @@ FogEVMIREthereumDecompiler >> visitInvalid: aFogVMInvalid [
 	| invalid |
 	invalid := FogEVMAstInvalid new.
 	self scope sequence addStatement: invalid.
+	self scope sequence isClosed: true.
 	self visitNode: aFogVMInvalid
 ]
 
@@ -757,8 +776,9 @@ FogEVMIREthereumDecompiler >> visitJumpi: aFogVMJumpi [
 		condition: self pop.
 
 	self scope sequence addStatement: conditionalJump.
+	self visitNode: aFogVMJumpi.
 	conditionalJump jumpDestination: (self visitJumpDestinationTo: conditionalJump).
-	self visitNode: aFogVMJumpi
+
 ]
 
 { #category : #visiting }
@@ -870,7 +890,9 @@ FogEVMIREthereumDecompiler >> visitNode: aNode [
 				ifNil: [ self scope sequence ]
 				ifNotNil: [ self scope parent sequence ] ]
 		ifNotEmpty: [ self scope sequence ].
-	sequence instruction: aNode
+
+	self assert: aNode = self currentMemory instruction. 
+	sequence instruction: self currentMemory.
 ]
 
 { #category : #visiting }

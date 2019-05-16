@@ -71,3 +71,8 @@ FogVMJumpi class >> mnemonic [
 		^'JUMPI'.
 	
 ]
+
+{ #category : #testing }
+FogVMJumpi >> isConditionalJump [ 
+	^ true
+]

@@ -42,3 +42,10 @@ FogEVMAstJump >> printOn: aStream [
 	aStream nextPutAll: ' interpreter jumpTo: '.
 	address printOn: aStream. 
 ]
+
+{ #category : #unifying }
+FogEVMAstJump >> unify: aFogEVMAstVariable with: aFogEVMLiteral [
+	self assert: address = aFogEVMAstVariable.
+	address = aFogEVMAstVariable
+		ifTrue: [ address := aFogEVMLiteral ]
+]

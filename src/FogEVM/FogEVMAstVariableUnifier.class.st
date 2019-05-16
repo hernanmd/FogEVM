@@ -1,18 +1,34 @@
+"
+I do variable unification, by refactoring the decompiled AST. I need a registry of variable read and writes for working.
+"
 Class {
 	#name : #FogEVMAstVariableUnifier,
 	#superclass : #FogEVMAstParentingVisitor,
 	#instVars : [
 		'scope',
 		'state',
-		'readWriteTracker'
+		'readWriteTracker',
+		'changes'
 	],
 	#category : #'FogEVM-Decompiler-Unifier-Tests'
 }
 
 { #category : #unifying }
+FogEVMAstVariableUnifier >> changed [
+	^ changes
+]
+
+{ #category : #unifying }
+FogEVMAstVariableUnifier >> changed: aValue [
+	self halt.
+	changes := aValue
+]
+
+{ #category : #unifying }
 FogEVMAstVariableUnifier >> initialize [
 	super initialize.
-	state := #reading
+	state := #reading.
+	changes := false.
 ]
 
 { #category : #unifying }
@@ -52,7 +68,7 @@ FogEVMAstVariableUnifier >> variableShouldBeMarkedAsUseless: aVariable [
 { #category : #unifying }
 FogEVMAstVariableUnifier >> variableShouldBeReplaced: aVariable [
 	| variableState |
-	variableState := readWriteTracker at: aVariable.
+	variableState := readWriteTracker at: aVariable ifAbsent: [^ false].
 	^ ((variableState at: #read) = 1
 		and: [ (variableState at: #write) = 1 ])
 		or: [ ((variableState at: #read) > 1
@@ -63,10 +79,24 @@ FogEVMAstVariableUnifier >> variableShouldBeReplaced: aVariable [
 { #category : #unifying }
 FogEVMAstVariableUnifier >> visitAssignation: anAssignation [
 	super visitAssignation: anAssignation.
-	(self variableShouldBeReplaced: anAssignation variable) ifTrue: [ 
-			self parent instructions: (self parent instructions , anAssignation instructions).
-			self parent removeNode: anAssignation 
-		]
+	(self variableShouldBeReplaced: anAssignation variable)
+		ifTrue: [ self parent
+				instructions: self parent instructions , anAssignation instructions.
+			scopes
+				select: [ :s | s statements includes: anAssignation ]
+				thenDo: [ :s | s removeNode: anAssignation ].
+			self parent removeNode: anAssignation.
+			self changed: true ]
+]
+
+{ #category : #unifying }
+FogEVMAstVariableUnifier >> visitSequence: aSequence [
+	super visitSequence: aSequence.
+	"collection := self parent temporaries
+		reject: [ :v | self variableShouldBeReplaced: v ].
+	self parent temporaries = collection
+		ifFalse: [ changes := true.
+			self parent temporaries: collection ]"
 ]
 
 { #category : #unifying }
@@ -76,13 +106,17 @@ FogEVMAstVariableUnifier >> visitVariable: aVariable [
 		ifTrue: [ ^ self ].
 	aVariable isGenerated
 		ifFalse: [ ^ self ].
-	variableState := readWriteTracker at: aVariable.
+	variableState := readWriteTracker at: aVariable ifAbsent:[ ^ self] .
 	(self variableShouldBeReplaced: aVariable)
-		ifTrue: [ self parent
+		ifTrue: [ self changed: true.
+			self parent
 				unify: aVariable
 				with: (variableState at: #lastAssignment) ].
-	(self variableShouldBeMarkedAsUseless: aVariable)
-		ifTrue: [ aVariable markAsUseless ].
-	(self variableShouldBeMarkedAsConstant: aVariable)
-		ifTrue: [ aVariable constant: true ]
+	((self variableShouldBeMarkedAsUseless: aVariable) and: [  aVariable isUseless not ]) 
+		ifTrue: [ self changed:true.
+			aVariable markAsUseless ].
+	((self variableShouldBeMarkedAsConstant: aVariable)
+		and: [ aVariable isConstant not ])
+		ifTrue: [ self changed: true.
+			aVariable constant: true ]
 ]

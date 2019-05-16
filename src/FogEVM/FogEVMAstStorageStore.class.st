@@ -38,6 +38,14 @@ FogEVMAstStorageStore >> printOn: aStream [
 	aStream nextPutAll: ' )'
 ]
 
+{ #category : #unifying }
+FogEVMAstStorageStore >> unify: aFogEVMAstVariable with: aFogEVMLiteral [
+	address = aFogEVMAstVariable
+		ifTrue: [ address := aFogEVMLiteral ].
+	value = aFogEVMAstVariable
+		ifTrue: [ value := aFogEVMLiteral ]
+]
+
 { #category : #accessing }
 FogEVMAstStorageStore >> value [
 	^ value 

@@ -232,6 +232,11 @@ FogEVMAbstractInterpreter >> currentInstructionPointer [
 	^ FogEVMRegistry forValue: self currentActivation currentInstructionPointer bytesLength: 8
 ]
 
+{ #category : #polimorphic }
+FogEVMAbstractInterpreter >> currentMemory: aFogEVMMnemonicExecutableMemoryEntry [ 
+
+]
+
 { #category : #accessing }
 FogEVMAbstractInterpreter >> errors [
 	^ errors

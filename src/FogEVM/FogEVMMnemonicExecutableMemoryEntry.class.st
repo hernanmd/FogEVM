@@ -75,6 +75,10 @@ FogEVMMnemonicExecutableMemoryEntry >> readsStorage [
 ]
 
 { #category : #'as yet unclassified' }
+FogEVMMnemonicExecutableMemoryEntry >> releaseCurrentMemory [
+]
+
+{ #category : #'as yet unclassified' }
 FogEVMMnemonicExecutableMemoryEntry >> shouldBreak [
 	<doc: 'It return true or false according to the entry configuration, informing if it should halt or not on the execution of this instruction'>
 	^ breakpoint

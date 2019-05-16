@@ -66,3 +66,15 @@ FogEVMAstCall >> printOn: aStream [
 		nextPutAll: gas printString;
 		nextPut: $)
 ]
+
+{ #category : #unifying }
+FogEVMAstCall >> unify: aFogEVMAstVariable with: aFogEVMLiteral [
+	address = aFogEVMAstVariable
+		ifTrue: [ address := aFogEVMLiteral ].
+	gas = aFogEVMAstVariable
+		ifTrue: [ gas := aFogEVMLiteral ].
+	input = aFogEVMAstVariable
+		ifTrue: [ input := aFogEVMLiteral ].
+	money = aFogEVMAstVariable
+		ifTrue: [ money := aFogEVMLiteral ]
+]

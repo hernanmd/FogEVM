@@ -49,3 +49,11 @@ FogEVMAstStorageLoad >> printOn: aStream [
 FogEVMAstStorageLoad >> resolve [
 	self shouldBeImplemented.
 ]
+
+{ #category : #unifying }
+FogEVMAstStorageLoad >> unify: aFogEVMAstVariable with: aFogEVMLiteral [
+	address = aFogEVMAstVariable
+		ifTrue: [ address := aFogEVMLiteral ].
+	amount = aFogEVMAstVariable
+		ifTrue: [ amount := aFogEVMLiteral ]
+]

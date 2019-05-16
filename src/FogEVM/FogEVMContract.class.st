@@ -1,6 +1,6 @@
 Class {
 	#name : #FogEVMContract,
-	#superclass : #Object,
+	#superclass : #FogEVMAstNode,
 	#instVars : [
 		'bytecode',
 		'address',
@@ -9,6 +9,11 @@ Class {
 	],
 	#category : #'FogEVM-Environment-Objects'
 }
+
+{ #category : #accessing }
+FogEVMContract >> accept: aVisitor [
+	aVisitor visitContract: self
+]
 
 { #category : #accessing }
 FogEVMContract >> address [
@@ -38,6 +43,21 @@ FogEVMContract >> salt [
 { #category : #'as yet unclassified' }
 FogEVMContract >> salt: aSalt [
 	salt := aSalt
+]
+
+{ #category : #unifying }
+FogEVMContract >> unify: aFogEVMAstVariable with: aFogEVMAstValue [
+	bytecode = aFogEVMAstVariable
+		ifTrue: [ bytecode := aFogEVMAstValue ].
+	value = aFogEVMAstVariable
+		ifTrue: [ value := aFogEVMAstValue ].
+	salt = aFogEVMAstVariable
+		ifTrue: [ salt := aFogEVMAstValue ]
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMContract >> value [ 
+	^ value
 ]
 
 { #category : #'as yet unclassified' }

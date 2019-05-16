@@ -50,11 +50,6 @@ FogEVMAstParentingVisitor >> visitCall: aFogEVMAstCall [
 			aFogEVMAstCall input accept: self ]
 ]
 
-{ #category : #visiting }
-FogEVMAstParentingVisitor >> visitCaller: aFogEVMAstCaller [
-	self visitAstNode: aFogEVMAstCaller
-]
-
 { #category : #'as yet unclassified' }
 FogEVMAstParentingVisitor >> visitCodeCopy: aFogEVMAstCodeCopy [
 	self visitAstNode: aFogEVMAstCodeCopy.
@@ -72,19 +67,25 @@ FogEVMAstParentingVisitor >> visitConditionalJump: aFogEVMAstConditionalJump [
 		parentNode: aFogEVMAstConditionalJump
 		for: [ aFogEVMAstConditionalJump condition accept: self.
 			aFogEVMAstConditionalJump address accept: self.
+			aFogEVMAstConditionalJump destination ifNil: [ ^ self ].
 			aFogEVMAstConditionalJump destination accept: self ]
 ]
 
 { #category : #visiting }
-FogEVMAstParentingVisitor >> visitInvalid: aFogEVMAstInvalid [ 
-	self visitAstNode: aFogEVMAstInvalid.
+FogEVMAstParentingVisitor >> visitContract: aFogEVMContract [
+	self visitAstNode: aFogEVMContract.
+	self
+		parentNode: aFogEVMContract
+		for: [ aFogEVMContract bytecode accept: self.
+			aFogEVMContract value accept: self ]
 ]
 
 { #category : #visiting }
 FogEVMAstParentingVisitor >> visitJump: aFogEVMAstJump [
 	self visitAstNode: aFogEVMAstJump.
-	aFogEVMAstJump address accept: self.
-	
+	self
+		parentNode: aFogEVMAstJump
+		for: [ aFogEVMAstJump address accept: self ]
 ]
 
 { #category : #visiting }
@@ -96,8 +97,12 @@ FogEVMAstParentingVisitor >> visitJumpTag: aFogEVMAstJumpTag [
 ]
 
 { #category : #visiting }
-FogEVMAstParentingVisitor >> visitLiteral: aFogEVMLiteral [
-	self visitAstNode: aFogEVMLiteral
+FogEVMAstParentingVisitor >> visitLog: aFogEVMAstLog [
+	self visitAstNode: aFogEVMAstLog.
+	self
+		parentNode: aFogEVMAstLog
+		for: [ aFogEVMAstLog message accept: self.
+			aFogEVMAstLog topics do: [ :t | t accept: self ] ]
 ]
 
 { #category : #visiting }
@@ -144,11 +149,6 @@ FogEVMAstParentingVisitor >> visitRevert: aFogEVMAstRevert [
 ]
 
 { #category : #visiting }
-FogEVMAstParentingVisitor >> visitRuntimeGlobal: aFogEVMAstRuntimeGlobal [ 
-	self visitAstNode: aFogEVMAstRuntimeGlobal.
-]
-
-{ #category : #visiting }
 FogEVMAstParentingVisitor >> visitScope: aFogEVMAstScope [
 	(scopes includes: aFogEVMAstScope)
 		ifFalse: [ self
@@ -177,11 +177,6 @@ FogEVMAstParentingVisitor >> visitSequence: aFogEVMSequence [
 ]
 
 { #category : #visiting }
-FogEVMAstParentingVisitor >> visitStop: aFogEVMAstStop [
-	self visitAstNode: aFogEVMAstStop
-]
-
-{ #category : #visiting }
 FogEVMAstParentingVisitor >> visitStorageLoad: aFogEVMAstStorageLoad [
 	self visitAstNode: aFogEVMAstStorageLoad.
 	self
@@ -204,9 +199,4 @@ FogEVMAstParentingVisitor >> visitThrow: aFogEVMAstRevert [
 	self
 		parentNode: aFogEVMAstRevert
 		for: [ aFogEVMAstRevert message accept: self ]
-]
-
-{ #category : #visiting }
-FogEVMAstParentingVisitor >> visitVariable: aFogEVMAstVariable [
-	self visitAstNode: aFogEVMAstVariable
 ]

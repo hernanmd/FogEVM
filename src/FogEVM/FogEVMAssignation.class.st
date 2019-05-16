@@ -18,11 +18,22 @@ FogEVMAssignation >> isAssignation [
 	^ true
 ]
 
+{ #category : #jumpTounknown }
+FogEVMAssignation >> jumpDestination [
+	^ nil.
+]
+
 { #category : #printing }
 FogEVMAssignation >> printOn: aStream [
 	variable name printOn: aStream.
 	aStream nextPutAll: ' := '.
 	value printOn: aStream
+]
+
+{ #category : #unifying }
+FogEVMAssignation >> unify: aFogEVMAstVariable with: aFogEVMAstValue [
+	self assert: value = aFogEVMAstVariable.
+	value := aFogEVMAstValue
 ]
 
 { #category : #accessing }

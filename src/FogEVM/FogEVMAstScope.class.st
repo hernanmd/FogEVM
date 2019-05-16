@@ -38,12 +38,12 @@ FogEVMAstScope >> getProcessedInstruction: anInstruction [
 ]
 
 { #category : #testing }
-FogEVMAstScope >> getProcessedInstruction: anInstruction ifNone: aBlock [
+FogEVMAstScope >> getProcessedInstruction: anInstructionInMemory ifNone: aBlock [
 	^ sequence statements
-		detect: [ :s | s instructions anySatisfy: [ :i | i = anInstruction ] ]
+		detect: [ :s | s instructions  anySatisfy: [ :i | i = anInstructionInMemory ] ]
 		ifNone: [ parent
 				ifNil: [ aBlock value ]
-				ifNotNil: [ parent getProcessedInstruction: anInstruction ifNone: aBlock ] ]
+				ifNotNil: [ parent getProcessedInstruction: anInstructionInMemory ifNone: aBlock ] ]
 ]
 
 { #category : #initialization }
@@ -97,6 +97,21 @@ FogEVMAstScope >> printOn: aStream [
 	sequence printOn: aStream
 ]
 
+{ #category : #remove }
+FogEVMAstScope >> removeNode: aFogEVMAssignation [ 
+	sequence removeNode: aFogEVMAssignation 
+]
+
+{ #category : #'as yet unclassified' }
+FogEVMAstScope >> scopeTemporaries [
+	^ temporaries
+]
+
+{ #category : #accessing }
+FogEVMAstScope >> scopeTemporaries: aCollectionOfTemporaries [
+	temporaries := aCollectionOfTemporaries
+]
+
 { #category : #'as yet unclassified' }
 FogEVMAstScope >> sequence [
 	^ sequence
@@ -114,12 +129,7 @@ FogEVMAstScope >> statements [
 
 { #category : #'as yet unclassified' }
 FogEVMAstScope >> temporaries [
-	^ (parent ifNil: [ {} ] ifNotNil: [ parent temporaries ]) , temporaries
-]
-
-{ #category : #accessing }
-FogEVMAstScope >> temporaries: aCollectionOfTemporaries [
-	temporaries := aCollectionOfTemporaries
+	^ ((parent ifNil: [ {} ] ifNotNil: [ parent temporaries ]) , temporaries) asSet
 ]
 
 { #category : #initialization }

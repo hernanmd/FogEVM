@@ -2,7 +2,8 @@ Class {
 	#name : #FogEVMAstVisitor,
 	#superclass : #Object,
 	#instVars : [
-		'scopes'
+		'scopes',
+		'destinations'
 	],
 	#category : #'FogEVM-Decompiler-Vitamins'
 }
@@ -11,6 +12,7 @@ Class {
 FogEVMAstVisitor >> initialize [
 	super initialize.
 	scopes := OrderedCollection new.
+	destinations := OrderedCollection new.
 ]
 
 { #category : #visiting }
@@ -56,7 +58,16 @@ FogEVMAstVisitor >> visitConditionalJump: aFogEVMAstConditionalJump [
 	self visitAstNode: aFogEVMAstConditionalJump.
 	aFogEVMAstConditionalJump condition accept: self.
 	aFogEVMAstConditionalJump address accept: self.
-	aFogEVMAstConditionalJump destination accept: self
+	aFogEVMAstConditionalJump destination ifNil: [ ^ self ].
+	(scopes includes: aFogEVMAstConditionalJump destination)
+		ifFalse: [ aFogEVMAstConditionalJump destination accept: self ]
+]
+
+{ #category : #visiting }
+FogEVMAstVisitor >> visitContract: aFogEVMContract [
+	self visitAstNode: aFogEVMContract.
+	aFogEVMContract bytecode accept: self.
+	aFogEVMContract value accept: self
 ]
 
 { #category : #visiting }
@@ -79,6 +90,13 @@ FogEVMAstVisitor >> visitJumpTag: aFogEVMAstJumpTag [
 { #category : #visiting }
 FogEVMAstVisitor >> visitLiteral: aFogEVMLiteral [
 	self visitAstNode: aFogEVMLiteral
+]
+
+{ #category : #visiting }
+FogEVMAstVisitor >> visitLog: aFogEVMAstLog [
+	self visitAstNode: aFogEVMAstLog.
+	aFogEVMAstLog message accept: self.
+	aFogEVMAstLog topics do: [ :t | t accept: self ]
 ]
 
 { #category : #visiting }

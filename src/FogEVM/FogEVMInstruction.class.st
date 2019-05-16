@@ -818,9 +818,12 @@ FogEVMInstruction >> accept: anInterpreter loadedAt: byteNumber of: anExecutable
 	perform := ('visit' , localMnemonic asLowercase capitalized , ':') asSymbol.
 	stackSize := anInterpreter stackSize.
 	"self manageBreakpointFor: anExecutableMemoryReificaiton atMethod: anInterpreter class >> perform."
+	anInterpreter currentMemory: anExecutableMemoryReificaiton.
 	result := anInterpreter perform: perform withArguments: {self}.
+	anExecutableMemoryReificaiton releaseCurrentMemory.
 	self
 		assert: anInterpreter stackSize = (stackSize - (self expectedPops - self expectedPushes)).
+	
 	^ result
 ]
 
@@ -845,6 +848,11 @@ FogEVMInstruction >> expectedPops [
 { #category : #generated }
 FogEVMInstruction >> expectedPushes [
 	^ self class expectedPushes
+]
+
+{ #category : #testing }
+FogEVMInstruction >> isConditionalJump [ 
+	^ false
 ]
 
 { #category : #'as yet unclassified' }

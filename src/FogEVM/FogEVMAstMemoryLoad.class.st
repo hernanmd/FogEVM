@@ -41,3 +41,11 @@ FogEVMAstMemoryLoad >> printOn: aStream [
 	amountOfBytes printOn: aStream.
 	aStream nextPutAll: ') '
 ]
+
+{ #category : #unifying }
+FogEVMAstMemoryLoad >> unify: aFogEVMAstVariable with: aFogEVMLiteral [
+	amountOfBytes = aFogEVMAstVariable
+		ifTrue: [ amountOfBytes := aFogEVMLiteral ].
+	fromAddress = aFogEVMAstVariable
+		ifTrue: [ fromAddress := aFogEVMLiteral ]
+]

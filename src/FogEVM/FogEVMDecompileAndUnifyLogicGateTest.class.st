@@ -1,23 +1,10 @@
 Class {
 	#name : #FogEVMDecompileAndUnifyLogicGateTest,
-	#superclass : #FogEVMUnitaryTest,
+	#superclass : #FogEVMDecompileAndUnifyTest,
 	#traits : 'DecompilerAssertions',
 	#classTraits : 'DecompilerAssertions classTrait',
-	#instVars : [
-		'bytecode'
-	],
 	#category : #'FogEVM-Decompiler-Unifier-Tests'
 }
-
-{ #category : #test }
-FogEVMDecompileAndUnifyLogicGateTest >> decompile: aSequence [
-	| unifier decompiled |
-	bytecode := aSequence.
-	unifier := FogEVMAstVariableReadWriteDetector new.
-	decompiled := super decompile: aSequence.
-	unifier unify: decompiled.
-	^ decompiled 
-]
 
 { #category : #test }
 FogEVMDecompileAndUnifyLogicGateTest >> testAND [

@@ -40,3 +40,9 @@ FogEVMAstThrow >> printOn: aStream [
 	aStream nextPutAll:'THROW'.
 	self printMessageOn: aStream.
 ]
+
+{ #category : #'as yet unclassified' }
+FogEVMAstThrow >> unify: aFogEVMAstVariable with: aFogEVMAstMemoryLoad [
+	message = aFogEVMAstVariable
+		ifTrue: [ message := aFogEVMAstMemoryLoad ]
+]

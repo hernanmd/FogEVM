@@ -7,7 +7,8 @@ Class {
 		'type',
 		'constant',
 		'value',
-		'lastValue'
+		'lastValue',
+		'isUseless'
 	],
 	#classInstVars : [
 		'lastNumber'
@@ -89,9 +90,19 @@ FogEVMAstVariable >> isGenerated [
 	^ name isNil or: [ name beginsWith: 'TVar']
 ]
 
+{ #category : #settings }
+FogEVMAstVariable >> isUseless [
+	^ isUseless ifNil: [ false ].
+]
+
 { #category : #accessing }
 FogEVMAstVariable >> lastValue: aFogEVMLiteral [ 
 	lastValue := aFogEVMLiteral 
+]
+
+{ #category : #marking }
+FogEVMAstVariable >> markAsUseless [
+	isUseless := true
 ]
 
 { #category : #accessing }
@@ -125,7 +136,7 @@ FogEVMAstVariable >> read [
 
 { #category : #'as yet unclassified ' }
 FogEVMAstVariable >> type [
-	^ type ifNil: [ type := FogEVMAstDuckType new ]
+	^ type ifNil: [ type := FogEVMAstUnknownType new ]
 ]
 
 { #category : #printing }

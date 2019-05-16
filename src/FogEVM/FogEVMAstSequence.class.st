@@ -22,6 +22,11 @@ FogEVMAstSequence >> addStatement: aFogEVMAssignation [
 
 { #category : #testing }
 FogEVMAstSequence >> allInstructions [
+	^ (instructions , (statements flatCollect: #instructions)) collect: #instruction
+]
+
+{ #category : #testing }
+FogEVMAstSequence >> allInstructionsInMemory [
 	^ instructions , (statements flatCollect: #instructions)
 ]
 
@@ -78,6 +83,6 @@ FogEVMAstSequence >> statements [
 ]
 
 { #category : #unifiying }
-FogEVMAstSequence >> unify: aFogEVMAstVariable with: aFogEVMLiteral [ 
-	self shouldBeImplemented.
+FogEVMAstSequence >> unify: aFogEVMAstVariable with: aFogEVMValue [ 
+	statements replaceAll: aFogEVMAstVariable  with: aFogEVMValue
 ]
