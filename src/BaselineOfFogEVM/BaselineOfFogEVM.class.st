@@ -17,5 +17,5 @@ BaselineOfFogEVM >> baseline: spec [
 			spec baseline: 'ParametrizedTests' with: [ spec repository: 'github://tesonep/ParametrizedTests' ].
 			spec baseline: 'Equals' with: [ spec repository: 'github://bouraqadi/PharoMisc' ].
 			
-			spec package: #FogEVM with: [ spec requires: #('TaskItShell' 'ParametrizedTests' 'Equals' 'Hexadecimal' 'Keccak') ] ]
+			spec package: #FogEVM with: [ spec requires: #('ParametrizedTests' 'Equals' 'Hexadecimal' 'Keccak') ] ]
 ]
